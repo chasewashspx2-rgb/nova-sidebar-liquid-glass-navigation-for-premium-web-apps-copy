@@ -624,13 +624,62 @@ export default function Dashboard() {
                     </div>
 
                     <div className="hidden lg:flex flex-1 items-center justify-between gap-6">
-                      <div className="relative w-full max-w-[200px] h-[170px] rounded-[28px] overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.35) 0%, rgba(121,113,249,0.25) 100%)", border: "1px solid rgba(255,255,255,0.3)" }}>
-                        <div className="absolute inset-0 backdrop-blur-sm" style={{ background: "radial-gradient(160px 140px at 40% 40%, rgba(255,255,255,0.25), transparent 65%)" }} />
-                        <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 200 170" fill="none" preserveAspectRatio="none">
-                          <path d="M0 140 Q 35 90, 70 110 T 140 80 L200 70 L200 170 L0 170 Z" fill="rgba(255,255,255,0.15)" />
-                          <path d="M0 140 Q 35 90, 70 110 T 140 80 L200 70" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                        </svg>
-                      </div>
+                      <M.div 
+                        className="relative w-full max-w-[430px] h-[170px] rounded-[34px] overflow-hidden glass"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                      >                        
+                        {/* Gradient background */}                                                                                         
+                        <M.div                                                                                                                
+                          className="absolute inset-0"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.8 }}                                                                                                          
+                          style={{                                                                                                          
+                            background: "radial-gradient(240px 200px at 30% 50%, rgba(121,113,249,0.45), rgba(255,255,255,0.08) 60%), radial-gradient(220px 170px at 70% 50%, rgba(104,155,251,0.26), transparent 65%), linear-gradient(120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.10))"                                                                      
+                          }}                                                                                                                
+                        />                                                                                                                  
+                                                                                                                                
+                        {/* SVG line graph */}                                                                                              
+                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none">
+                          <M.path                                                                                                             
+                            d="M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110"                                                
+                            stroke="rgba(255,255,255,0.78)"                                                                                 
+                            strokeWidth="4"                                                                                                 
+                            strokeLinecap="round"
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 1 }}
+                            transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1], delay: 0.4 }}                                                                                           
+                          />
+                          {/* Animated glow effect */}
+                          <M.circle
+                            r="8"
+                            fill="rgba(255,255,255,0.6)"
+                            initial={{ offsetDistance: "0%", opacity: 0 }}
+                            animate={{ 
+                              offsetDistance: "100%",
+                              opacity: [0, 1, 1, 0]
+                            }}
+                            transition={{ 
+                              duration: 2.5,
+                              repeat: Infinity,
+                              ease: "linear",
+                              delay: 0.6
+                            }}
+                            style={{
+                              offsetPath: "path('M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110')"
+                            }}
+                          >
+                            <animate
+                              attributeName="r"
+                              values="6;10;6"
+                              dur="1.5s"
+                              repeatCount="indefinite"
+                            />
+                          </M.circle>                                                                                                                
+                        </svg>                                                                                                              
+                      </M.div>
 
                       <div className="flex flex-col gap-3 ml-auto relative z-10">
                         <M.button
