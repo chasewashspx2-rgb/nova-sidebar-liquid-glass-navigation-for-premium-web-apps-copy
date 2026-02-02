@@ -255,7 +255,14 @@ export default function Dashboard() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 glass-strong p-6"
+              className="lg:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 p-6"
+              style={{ 
+                background: "linear-gradient(135deg, rgba(104,155,251,0.22) 0%, rgba(121,113,249,0.18) 100%)",
+                border: "1px solid rgba(255,255,255,0.35)",
+                backdropFilter: "blur(26px)",
+                WebkitBackdropFilter: "blur(26px)",
+                boxShadow: "0 30px 92px rgba(15, 23, 42, 0.18)"
+              }}
             >
               <div className="flex items-center justify-between mb-8">
                 <BrandMark />
@@ -299,7 +306,10 @@ export default function Dashboard() {
                     setMobileMenuOpen(false);
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl glass cursor-pointer"
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all",
+                    bottomActive === "notifications" ? "glass-strong font-semibold" : "hover:glass"
+                  )}
                 >
                   <Bell size={18} />
                   <span className="text-sm">Notifications</span>
@@ -310,7 +320,10 @@ export default function Dashboard() {
                     setMobileMenuOpen(false);
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl glass cursor-pointer"
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all",
+                    bottomActive === "profile" ? "glass-strong font-semibold" : "hover:glass"
+                  )}
                 >
                   <img
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=face"
