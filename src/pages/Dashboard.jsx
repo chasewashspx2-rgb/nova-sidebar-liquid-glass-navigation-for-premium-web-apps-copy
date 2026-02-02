@@ -715,72 +715,140 @@ export default function Dashboard() {
                     <div className="relative mt-4 sm:mt-5 h-24 sm:h-28">
                       <svg className="w-full h-full" viewBox="0 0 360 130" fill="none" preserveAspectRatio="none">
                         <defs>
-                          <linearGradient id="healthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="rgba(104,155,251,0.35)" />
+                          <linearGradient id="portfolioGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="rgba(104,155,251,0.45)" />
+                            <stop offset="50%" stopColor="rgba(121,113,249,0.25)" />
                             <stop offset="100%" stopColor="rgba(104,155,251,0)" />
                           </linearGradient>
-                          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="rgba(104,155,251,0.6)" />
+                          <linearGradient id="portfolioLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="rgba(104,155,251,0.7)" />
+                            <stop offset="50%" stopColor="rgba(121,113,249,0.9)" />
                             <stop offset="100%" stopColor="rgba(104,155,251,1)" />
                           </linearGradient>
+                          <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                              <feMergeNode in="coloredBlur"/>
+                              <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                          </filter>
                         </defs>
 
-                        <line x1="0" y1="40" x2="360" y2="40" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
-                        <line x1="0" y1="70" x2="360" y2="70" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
+                        {/* Grid lines */}
+                        <MG initial={{ opacity: 0 }} animate={{ opacity: 0.6 }} transition={{ duration: 0.5 }}>
+                          <line x1="0" y1="30" x2="360" y2="30" stroke="rgba(var(--text),0.08)" strokeWidth="1" strokeDasharray="3 6" />
+                          <line x1="0" y1="60" x2="360" y2="60" stroke="rgba(var(--text),0.08)" strokeWidth="1" strokeDasharray="3 6" />
+                          <line x1="0" y1="90" x2="360" y2="90" stroke="rgba(var(--text),0.08)" strokeWidth="1" strokeDasharray="3 6" />
+                        </MG>
 
+                        {/* Area fill */}
                         <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28 L360 130 L0 130 Z"
-                          fill="url(#healthGradient)"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.8, delay: 0.3 }}
+                          d="M0 110 Q 45 100, 90 85 T 180 65 T 270 45 T 340 32 L360 30 L360 130 L0 130 Z"
+                          fill="url(#portfolioGradient)"
+                          initial={{ opacity: 0, scaleY: 0 }}
+                          animate={{ opacity: 1, scaleY: 1 }}
+                          transition={{ duration: 1, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+                          style={{ transformOrigin: "center bottom" }}
                         />
 
+                        {/* Main line */}
                         <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28"
+                          d="M0 110 Q 45 100, 90 85 T 180 65 T 270 45 T 340 32 L360 30"
                           fill="none"
-                          stroke="url(#lineGradient)"
-                          strokeWidth="3"
+                          stroke="url(#portfolioLine)"
+                          strokeWidth="3.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
+                          filter="url(#glow)"
                           initial={{ pathLength: 0 }}
                           animate={{ pathLength: 1 }}
-                          transition={{ duration: 1.2, ease: [0.2, 0.8, 0.2, 1] }}
+                          transition={{ duration: 1.6, delay: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
                         />
 
+                        {/* Data points with hover effect */}
                         {[
-                          { x: 80, y: 75 },
-                          { x: 160, y: 60 },
-                          { x: 240, y: 45 },
+                          { x: 90, y: 85, label: "$42k" },
+                          { x: 180, y: 65, label: "$54k" },
+                          { x: 270, y: 45, label: "$61k" },
                         ].map((point, i) => (
-                          <MCircle
-                            key={i}
-                            cx={point.x}
-                            cy={point.y}
-                            r="4"
-                            fill="rgba(104,155,251,0.9)"
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.4 + i * 0.15, type: "spring", stiffness: 300, damping: 20 }}
-                          />
+                          <MG key={i}>
+                            <MCircle
+                              cx={point.x}
+                              cy={point.y}
+                              r="8"
+                              fill="rgba(104,155,251,0.15)"
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ 
+                                scale: [0, 1.2, 1],
+                                opacity: [0, 0.6, 0.4]
+                              }}
+                              transition={{ 
+                                delay: 0.5 + i * 0.12, 
+                                duration: 0.6,
+                                ease: [0.2, 0.8, 0.2, 1]
+                              }}
+                            />
+                            <MCircle
+                              cx={point.x}
+                              cy={point.y}
+                              r="5"
+                              fill="white"
+                              stroke="rgba(104,155,251,0.95)"
+                              strokeWidth="2.5"
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              transition={{ 
+                                delay: 0.5 + i * 0.12, 
+                                type: "spring", 
+                                stiffness: 350, 
+                                damping: 18 
+                              }}
+                            />
+                          </MG>
                         ))}
 
+                        {/* Current point with pulse */}
                         <MG
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 0.9, type: "spring", stiffness: 300, damping: 15 }}
-                          style={{ transformOrigin: "320px 30px" }}
+                          transition={{ delay: 1.1, type: "spring", stiffness: 300, damping: 15 }}
+                          style={{ transformOrigin: "340px 32px" }}
                         >
-                          <circle cx="320" cy="30" r="10" fill="rgba(104,155,251,0.2)" className="animate-pulse" />
-                          <circle cx="320" cy="30" r="5" fill="rgb(104,155,251)" />
+                          <MCircle
+                            cx="340"
+                            cy="32"
+                            r="12"
+                            fill="rgba(104,155,251,0.2)"
+                            animate={{ 
+                              scale: [1, 1.4, 1],
+                              opacity: [0.3, 0, 0.3]
+                            }}
+                            transition={{ 
+                              duration: 2.5,
+                              repeat: Infinity,
+                              ease: "easeInOut"
+                            }}
+                          />
+                          <circle cx="340" cy="32" r="7" fill="white" />
+                          <circle cx="340" cy="32" r="5" fill="url(#portfolioLine)" />
                         </MG>
 
-                        <MG initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-                          <text x="320" y="20" fontSize="11" fontWeight="600" fill="rgb(var(--text))" textAnchor="middle">$68.2k</text>
+                        {/* Value label */}
+                        <MG 
+                          initial={{ opacity: 0, y: 10 }} 
+                          animate={{ opacity: 1, y: 0 }} 
+                          transition={{ delay: 1.2, duration: 0.4 }}
+                        >
+                          <rect x="310" y="8" width="58" height="18" rx="9" fill="rgba(104,155,251,0.95)" />
+                          <text x="339" y="19" fontSize="10" fontWeight="700" fill="white" textAnchor="middle">$68.2k</text>
                         </MG>
-                        <text x="8" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Feb</text>
-                        <text x="170" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jul</text>
-                        <text x="340" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jan</text>
+
+                        {/* Time labels */}
+                        <MG initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}>
+                          <text x="8" y="122" fontSize="9" fontWeight="500" fill="rgba(var(--text),0.45)">Feb</text>
+                          <text x="160" y="122" fontSize="9" fontWeight="500" fill="rgba(var(--text),0.45)">Jul</text>
+                          <text x="320" y="122" fontSize="9" fontWeight="500" fill="rgba(var(--text),0.45)">Dec</text>
+                        </MG>
                       </svg>
                     </div>
                   </M.div>
