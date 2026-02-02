@@ -8,7 +8,6 @@ import { Tooltip } from "@/components/tooltip";
 import { CursorGlow } from "@/components/cursor-glow";
 import { PremiumCursor } from "@/components/cursor";
 import { MDiv, MPath, MCircle, MG } from "@/components/motion";
-import { AiInsightsSparkline } from "@/components/AiInsightsSparkline";
 
 const transactions = [
   { id: "t1", name: "Spotify", date: "Jan 28", status: "Pending", amount: "-$14.99" },
@@ -690,7 +689,101 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <AiInsightsSparkline />
+                  <M.div
+                    whileHover={{ scale: 1.02, y: -4 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="relative rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6 overflow-hidden cursor-pointer"
+                    style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.45) 0%, rgba(121,113,249,0.35) 100%)", border: "1px solid rgba(255,255,255,0.35)" }}
+                  >
+                    <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(400px 300px at 30% 20%, rgba(255,255,255,0.25), transparent 70%)" }} />
+                    <div className="relative flex items-center justify-between">
+                      <div className="text-sm sm:text-base font-semibold text-[rgb(var(--text))]">Portfolio growth</div>
+                      <M.button
+                        whileHover={{ scale: 1.1, x: 2 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="icon-tile focus-ring cursor-pointer bg-white/30 dark:bg-white/20 border-white/40 dark:border-white/25"
+                      >
+                        <ChevronRight size={18} className="text-[rgb(var(--text))]" />
+                      </M.button>
+                    </div>
+
+                    <div className="relative mt-4 sm:mt-5 lg:mt-6">
+                      <div className="text-[28px] sm:text-[32px] lg:text-4xl font-semibold text-[rgb(var(--text))]">+12.4%</div>
+                      <div className="text-xs sm:text-sm text-[rgba(var(--text),0.7)]">year to date returns</div>
+                    </div>
+
+                    <div className="relative mt-4 sm:mt-5 h-24 sm:h-28">
+                      <svg className="w-full h-full" viewBox="0 0 360 130" fill="none" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="healthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="rgba(104,155,251,0.35)" />
+                            <stop offset="100%" stopColor="rgba(104,155,251,0)" />
+                          </linearGradient>
+                          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="rgba(104,155,251,0.6)" />
+                            <stop offset="100%" stopColor="rgba(104,155,251,1)" />
+                          </linearGradient>
+                        </defs>
+
+                        <line x1="0" y1="40" x2="360" y2="40" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
+                        <line x1="0" y1="70" x2="360" y2="70" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
+
+                        <MPath
+                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28 L360 130 L0 130 Z"
+                          fill="url(#healthGradient)"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.8, delay: 0.3 }}
+                        />
+
+                        <MPath
+                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28"
+                          fill="none"
+                          stroke="url(#lineGradient)"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 1.2, ease: [0.2, 0.8, 0.2, 1] }}
+                        />
+
+                        {[
+                          { x: 80, y: 75 },
+                          { x: 160, y: 60 },
+                          { x: 240, y: 45 },
+                        ].map((point, i) => (
+                          <MCircle
+                            key={i}
+                            cx={point.x}
+                            cy={point.y}
+                            r="4"
+                            fill="rgba(104,155,251,0.9)"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.4 + i * 0.15, type: "spring", stiffness: 300, damping: 20 }}
+                          />
+                        ))}
+
+                        <MG
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.9, type: "spring", stiffness: 300, damping: 15 }}
+                          style={{ transformOrigin: "320px 30px" }}
+                        >
+                          <circle cx="320" cy="30" r="10" fill="rgba(104,155,251,0.2)" className="animate-pulse" />
+                          <circle cx="320" cy="30" r="5" fill="rgb(104,155,251)" />
+                        </MG>
+
+                        <MG initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+                          <text x="320" y="20" fontSize="11" fontWeight="600" fill="rgb(var(--text))" textAnchor="middle">$68.2k</text>
+                        </MG>
+                        <text x="8" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Feb</text>
+                        <text x="170" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jul</text>
+                        <text x="340" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jan</text>
+                      </svg>
+                    </div>
+                  </M.div>
                 </div>
 
                 <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
