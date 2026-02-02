@@ -197,6 +197,7 @@ export default function Dashboard() {
   const [prevBottomActive, setPrevBottomActive] = React.useState(null);
   const [searchOpen, setSearchOpen] = React.useState(false);
   const [sendMoneyTab, setSendMoneyTab] = React.useState("Recent");
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const bottomScale = useMotionValue(1);
   const smoothBottomScale = useSpring(bottomScale, { stiffness: 400, damping: 15, mass: 0.8 });
@@ -223,15 +224,112 @@ export default function Dashboard() {
   }, [bottomActive, prevBottomActive, bottomScale]);
 
   return (
-    <main className="min-h-screen p-6 lg:p-10">
+    <main className="min-h-screen p-3 sm:p-6 lg:p-10">
       <PremiumCursor />
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
-      <MDiv initial={{ opacity: 0, y: 12, scale: 0.995 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }} className="relative mx-auto max-w-[1280px] rounded-[40px] glass-strong overflow-hidden grain">
+      {/* Mobile Menu Button */}
+      <M.button
+        onClick={() => setMobileMenuOpen(true)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full glass-strong shadow-2xl grid place-items-center cursor-pointer"
+        style={{ boxShadow: "0 12px 40px rgba(104,155,251,0.3)" }}
+      >
+        <LayoutGrid size={22} />
+      </M.button>
+
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <M.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+            />
+            <M.div
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              className="lg:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 glass-strong p-6"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <BrandMark />
+                <M.button
+                  onClick={() => setMobileMenuOpen(false)}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-10 h-10 rounded-full glass grid place-items-center cursor-pointer"
+                >
+                  <X size={18} />
+                </M.button>
+              </div>
+
+              <div className="space-y-3">
+                {sidebar.map((item) => (
+                  <M.button
+                    key={item.key}
+                    onClick={() => {
+                      setActive(item.key);
+                      setBottomActive(null);
+                      setMobileMenuOpen(false);
+                    }}
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all cursor-pointer",
+                      active === item.key && !bottomActive
+                        ? "glass-strong font-semibold"
+                        : "hover:glass"
+                    )}
+                  >
+                    {item.icon}
+                    <span className="text-sm">{item.label}</span>
+                  </M.button>
+                ))}
+              </div>
+
+              <div className="absolute bottom-6 left-6 right-6 space-y-3">
+                <M.button
+                  onClick={() => {
+                    setBottomActive("notifications");
+                    setMobileMenuOpen(false);
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl glass cursor-pointer"
+                >
+                  <Bell size={18} />
+                  <span className="text-sm">Notifications</span>
+                </M.button>
+                <M.button
+                  onClick={() => {
+                    setBottomActive("profile");
+                    setMobileMenuOpen(false);
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl glass cursor-pointer"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=face"
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <span className="text-sm">Profile</span>
+                </M.button>
+              </div>
+            </M.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <MDiv initial={{ opacity: 0, y: 12, scale: 0.995 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }} className="relative mx-auto max-w-[1280px] rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] glass-strong overflow-hidden grain">
         <CursorGlow />
 
-        <div className="relative grid grid-cols-[88px_1fr] lg:grid-cols-[98px_1fr]">
-          <aside className="relative z-10 px-4 py-6 lg:px-5 lg:py-8">
+        <div className="relative grid grid-cols-1 lg:grid-cols-[98px_1fr]">
+          <aside className="hidden lg:block relative z-10 px-4 py-6 lg:px-5 lg:py-8">
             <div className="flex items-center justify-center">
               <BrandMark />
             </div>
@@ -400,17 +498,17 @@ export default function Dashboard() {
             </LayoutGroup>
           </aside>
 
-          <section className="p-5 lg:p-7">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
+          <section className="p-4 sm:p-5 lg:p-7">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 sm:gap-6">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <div className="text-[28px] font-bold tracking-tight">Nova</div>
-                    <div className="text-base font-medium text-[rgba(var(--muted),0.85)]">Your personal wealth dashboard</div>
+                    <div className="text-[24px] sm:text-[28px] font-bold tracking-tight">Nova</div>
+                    <div className="text-sm sm:text-base font-medium text-[rgba(var(--muted),0.85)]">Your personal wealth dashboard</div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="glass rounded-[18px] px-4 py-3 flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="glass rounded-[16px] sm:rounded-[18px] px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                       <span className="font-semibold tracking-widest">**** 7291</span>
                       <span className="w-1.5 h-1.5 rounded-full bg-white/70 dark:bg-white/35" />
                       <span className="text-[rgba(var(--muted),0.95)]">08/27</span>
@@ -451,63 +549,63 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="glass rounded-[32px] p-5 sm:p-6 lg:p-7 relative overflow-hidden">
+                <div className="glass rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] p-4 sm:p-5 lg:p-7 relative overflow-hidden">
                   <div className="pointer-events-none absolute -left-10 top-12 w-[560px] h-[260px] rounded-full blur-3xl opacity-70 animate-floaty" style={{ background: "radial-gradient(circle at 30% 30%, rgba(121,113,249,0.55), rgba(104,155,251,0.35) 55%, transparent 72%)" }} />
 
-                  <div className="relative flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 lg:gap-8">
+                  <div className="relative flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-6 lg:gap-8">
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="text-sm text-[rgba(var(--muted),0.95)]">Net worth</div>
-                          <div className="mt-1 text-[28px] sm:text-[36px] lg:text-[40px] leading-none font-semibold tracking-tight">$128,450</div>
+                          <div className="text-xs sm:text-sm text-[rgba(var(--muted),0.95)]">Net worth</div>
+                          <div className="mt-1 text-[32px] sm:text-[36px] lg:text-[40px] leading-none font-semibold tracking-tight">$128,450</div>
                         </div>
                         <div className="flex gap-2 lg:hidden">
                           <M.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            className="focus-ring shimmer rounded-full w-10 h-10 flex items-center justify-center bg-white/70 dark:bg-white/20 border border-white/60 dark:border-white/30 shadow-sm cursor-pointer"
+                            className="focus-ring shimmer rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-white/70 dark:bg-white/20 border border-white/60 dark:border-white/30 shadow-sm cursor-pointer"
                           >
-                            <ArrowDownLeft size={16} />
+                            <ArrowDownLeft size={15} />
                           </M.button>
                           <M.button
                             whileHover={{ scale: 1.1, boxShadow: "0 8px 24px rgba(104,155,251,0.5)" }}
                             whileTap={{ scale: 0.9 }}
-                            className="focus-ring shimmer rounded-full w-10 h-10 flex items-center justify-center text-white cursor-pointer"
+                            className="focus-ring shimmer rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-white cursor-pointer"
                             style={{ background: "linear-gradient(135deg, rgba(104,155,251,1) 0%, rgba(121,113,249,1) 100%)", border: "1px solid rgba(255,255,255,0.3)" }}
                           >
-                            <ArrowUpRight size={16} />
+                            <ArrowUpRight size={15} />
                           </M.button>
                         </div>
                       </div>
 
-                      <div className="mt-5 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+                      <div className="mt-4 sm:mt-5 lg:mt-6 grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                         <M.button
                           whileHover={{ scale: 1.03, y: -4 }}
                           whileTap={{ scale: 0.97 }}
-                          className="focus-ring glass rounded-[20px] sm:rounded-[28px] p-3 sm:p-4 text-center cursor-pointer"
+                          className="focus-ring glass rounded-[16px] sm:rounded-[20px] lg:rounded-[28px] p-2.5 sm:p-3 lg:p-4 text-center cursor-pointer"
                         >
-                          <div className="text-[14px] sm:text-[18px] font-semibold">$24.1k</div>
-                          <div className="text-[10px] sm:text-xs text-[rgba(var(--muted),0.95)]">Checking</div>
+                          <div className="text-[13px] sm:text-[14px] lg:text-[18px] font-semibold">$24.1k</div>
+                          <div className="text-[9px] sm:text-[10px] lg:text-xs text-[rgba(var(--muted),0.95)]">Checking</div>
                         </M.button>
 
                         <M.button
                           whileHover={{ scale: 1.03, y: -4, boxShadow: "0 20px 56px rgba(104,155,251,0.35)" }}
                           whileTap={{ scale: 0.97 }}
-                          className="focus-ring relative rounded-[20px] sm:rounded-[28px] p-3 sm:p-4 text-center cursor-pointer overflow-hidden"
+                          className="focus-ring relative rounded-[16px] sm:rounded-[20px] lg:rounded-[28px] p-2.5 sm:p-3 lg:p-4 text-center cursor-pointer overflow-hidden"
                           style={{ border: "1px solid rgba(255,255,255,0.30)", background: "radial-gradient(160px 160px at 30% 30%, rgba(121,113,249,0.85), rgba(104,155,251,0.65) 60%, rgba(255,255,255,0.22))", boxShadow: "0 16px 48px rgba(104,155,251,0.20)" }}
                         >
                           <div className="absolute inset-0 opacity-45 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),transparent_60%)]" />
-                          <div className="relative text-[14px] sm:text-[18px] font-semibold text-white drop-shadow">$67.8k</div>
-                          <div className="relative text-[10px] sm:text-xs text-white/85">Invest</div>
+                          <div className="relative text-[13px] sm:text-[14px] lg:text-[18px] font-semibold text-white drop-shadow">$67.8k</div>
+                          <div className="relative text-[9px] sm:text-[10px] lg:text-xs text-white/85">Invest</div>
                         </M.button>
 
                         <M.button
                           whileHover={{ scale: 1.03, y: -4 }}
                           whileTap={{ scale: 0.97 }}
-                          className="focus-ring glass rounded-[20px] sm:rounded-[28px] p-3 sm:p-4 text-center cursor-pointer"
+                          className="focus-ring glass rounded-[16px] sm:rounded-[20px] lg:rounded-[28px] p-2.5 sm:p-3 lg:p-4 text-center cursor-pointer"
                         >
-                          <div className="text-[14px] sm:text-[18px] font-semibold">$36.4k</div>
-                          <div className="text-[10px] sm:text-xs text-[rgba(var(--muted),0.95)]">Savings</div>
+                          <div className="text-[13px] sm:text-[14px] lg:text-[18px] font-semibold">$36.4k</div>
+                          <div className="text-[9px] sm:text-[10px] lg:text-xs text-[rgba(var(--muted),0.95)]">Savings</div>
                         </M.button>
                       </div>
                     </div>
@@ -548,14 +646,14 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="glass rounded-[32px] p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
                     <div className="flex items-center justify-between">
-                      <div className="font-semibold">Monthly spending</div>
-                      <span className="pill">2025</span>
+                      <div className="text-sm sm:text-base font-semibold">Monthly spending</div>
+                      <span className="pill text-[10px] sm:text-xs">2025</span>
                     </div>
 
-                    <div className="mt-12 flex items-end gap-4 h-36">
+                    <div className="mt-6 sm:mt-8 lg:mt-12 flex items-end gap-2 sm:gap-3 lg:gap-4 h-28 sm:h-32 lg:h-36">
                       {[
                         { m: "SEP", h: 52, amt: "$3.2k" },
                         { m: "OCT", h: 68, amt: "$4.1k" },
@@ -581,12 +679,12 @@ export default function Dashboard() {
                   <M.div
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.99 }}
-                    className="relative rounded-[32px] p-6 overflow-hidden cursor-pointer"
+                    className="relative rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6 overflow-hidden cursor-pointer"
                     style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.45) 0%, rgba(121,113,249,0.35) 100%)", border: "1px solid rgba(255,255,255,0.35)" }}
                   >
                     <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(400px 300px at 30% 20%, rgba(255,255,255,0.25), transparent 70%)" }} />
                     <div className="relative flex items-center justify-between">
-                      <div className="font-semibold text-[rgb(var(--text))]">Portfolio growth</div>
+                      <div className="text-sm sm:text-base font-semibold text-[rgb(var(--text))]">Portfolio growth</div>
                       <M.button
                         whileHover={{ scale: 1.1, x: 2 }}
                         whileTap={{ scale: 0.9 }}
@@ -596,12 +694,12 @@ export default function Dashboard() {
                       </M.button>
                     </div>
 
-                    <div className="relative mt-6">
-                      <div className="text-4xl font-semibold text-[rgb(var(--text))]">+12.4%</div>
-                      <div className="text-sm text-[rgba(var(--text),0.7)]">year to date returns</div>
+                    <div className="relative mt-4 sm:mt-5 lg:mt-6">
+                      <div className="text-[28px] sm:text-[32px] lg:text-4xl font-semibold text-[rgb(var(--text))]">+12.4%</div>
+                      <div className="text-xs sm:text-sm text-[rgba(var(--text),0.7)]">year to date returns</div>
                     </div>
 
-                    <div className="relative mt-5 h-28">
+                    <div className="relative mt-4 sm:mt-5 h-24 sm:h-28">
                       <svg className="w-full h-full" viewBox="0 0 360 130" fill="none" preserveAspectRatio="none">
                         <defs>
                           <linearGradient id="healthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -675,9 +773,9 @@ export default function Dashboard() {
                   </M.div>
                 </div>
 
-                <div className="glass rounded-[32px] p-6">
+                <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
                   <div className="flex items-center justify-between">
-                    <div className="font-semibold">Scheduled bills</div>
+                    <div className="text-sm sm:text-base font-semibold">Scheduled bills</div>
                     <M.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -687,7 +785,7 @@ export default function Dashboard() {
                     </M.button>
                   </div>
 
-                  <div className="mt-5 space-y-3">
+                  <div className="mt-4 sm:mt-5 space-y-2 sm:space-y-3">
                     {[
                       { left: "Rent Payment", rightTitle: "Monthly", amt: "$2,400", badge: "Due Today", icon: "R" },
                       { left: "Car Insurance", rightTitle: "Quarterly", amt: "$380", sub: "Feb 15", icon: "C" },
@@ -697,13 +795,13 @@ export default function Dashboard() {
                         key={p.left}
                         whileHover={{ scale: 1.01, x: 4 }}
                         whileTap={{ scale: 0.99 }}
-                        className="focus-ring w-full text-left flex items-center justify-between rounded-[18px] glass px-4 py-3.5 cursor-pointer">
-                        <div className="flex items-center gap-3">
-                          <div className="w-11 h-11 rounded-[16px] bg-white/30 dark:bg-white/10 border border-white/40 dark:border-white/15 grid place-items-center font-semibold text-base">
+                        className="focus-ring w-full text-left flex items-center justify-between rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] glass px-3 sm:px-4 py-2.5 sm:py-3 lg:py-3.5 cursor-pointer">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-[14px] sm:rounded-[16px] bg-white/30 dark:bg-white/10 border border-white/40 dark:border-white/15 grid place-items-center font-semibold text-sm sm:text-base">
                             {p.icon}
                           </div>
                           <div>
-                            <div className="font-medium text-sm">{p.left}</div>
+                            <div className="font-medium text-xs sm:text-sm">{p.left}</div>
                             <div className="text-xs text-[rgba(var(--muted),0.75)] mt-0.5">
                               {p.badge ? (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold" style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.25)", color: "rgb(var(--accent))" }}>
@@ -715,9 +813,9 @@ export default function Dashboard() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
-                          <div className="hidden md:block text-xs text-[rgba(var(--muted),0.70)]">{p.rightTitle}</div>
-                          <div className="w-20 font-semibold text-sm text-right">{p.amt}</div>
+                        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+                          <div className="hidden md:block text-[10px] sm:text-xs text-[rgba(var(--muted),0.70)]">{p.rightTitle}</div>
+                          <div className="w-16 sm:w-20 font-semibold text-xs sm:text-sm text-right">{p.amt}</div>
                         </div>
                       </M.button>
                     ))}
@@ -725,35 +823,35 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="space-y-6">
-                <div className="glass rounded-[32px] p-6">
-                  <div className="flex items-start justify-between">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-[20px] font-semibold tracking-tight">Activity</div>
-                      <div className="text-sm text-[rgba(var(--muted),0.95)]">Recent transactions</div>
+                      <div className="text-[16px] sm:text-[18px] lg:text-[20px] font-semibold tracking-tight">Activity</div>
+                      <div className="text-xs sm:text-sm text-[rgba(var(--muted),0.95)]">Recent transactions</div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <M.button
                         onClick={() => setSearchOpen(true)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="icon-tile focus-ring cursor-pointer"
+                        className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] glass grid place-items-center focus-ring cursor-pointer flex-shrink-0"
                         aria-label="Search"
                       >
-                        <Search size={18} />
+                        <Search size={16} className="sm:w-[18px] sm:h-[18px]" />
                       </M.button>
                       <M.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
-                        className="btn-primary focus-ring text-xs h-9 px-4 cursor-pointer"
+                        className="btn-primary focus-ring text-[10px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 cursor-pointer whitespace-nowrap"
                       >
                         View All
                       </M.button>
                     </div>
                   </div>
 
-                  <div className="mt-5 space-y-2">
+                  <div className="mt-4 sm:mt-5 space-y-1.5 sm:space-y-2">
                     {transactions.map((tx, idx) => (
                       <M.button
                         key={tx.id}
@@ -762,21 +860,21 @@ export default function Dashboard() {
                         transition={{ delay: idx * 0.05 }}
                         whileHover={{ scale: 1.01, x: 4 }}
                         whileTap={{ scale: 0.99 }}
-                        className="focus-ring w-full text-left flex items-center justify-between rounded-[18px] px-4 py-3 glass cursor-pointer"
+                        className="focus-ring w-full text-left flex items-center justify-between rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] px-3 sm:px-4 py-2.5 sm:py-3 glass cursor-pointer"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-white/30 dark:bg-white/10 grid place-items-center">
-                            <ArrowUpRight size={14} />
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/30 dark:bg-white/10 grid place-items-center flex-shrink-0">
+                            <ArrowUpRight size={13} className="sm:w-[14px] sm:h-[14px]" />
                           </div>
-                          <div>
-                            <div className="font-medium text-sm">{tx.name}</div>
-                            <div className="text-xs text-[rgba(var(--muted),0.75)]">{tx.date}</div>
+                          <div className="min-w-0">
+                            <div className="font-medium text-xs sm:text-sm truncate">{tx.name}</div>
+                            <div className="text-[10px] sm:text-xs text-[rgba(var(--muted),0.75)]">{tx.date}</div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                           <StatusPill status={tx.status} />
-                          <div className="w-16 text-right font-semibold text-sm">{tx.amount}</div>
+                          <div className="w-14 sm:w-16 text-right font-semibold text-xs sm:text-sm">{tx.amount}</div>
                         </div>
                       </M.button>
                     ))}
@@ -784,30 +882,30 @@ export default function Dashboard() {
 
                   <M.div
                     whileHover={{ scale: 1.02, y: -2 }}
-                    className="mt-5 rounded-[18px] px-4 py-4 glass relative overflow-hidden cursor-pointer"
+                    className="mt-4 sm:mt-5 rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] px-3 sm:px-4 py-3 sm:py-4 glass relative overflow-hidden cursor-pointer"
                   >
                     <M.div
-                      className="absolute right-4 top-4 text-[rgb(var(--accent))]"
+                      className="absolute right-3 sm:right-4 top-3 sm:top-4 text-[rgb(var(--accent))]"
                       animate={{ rotate: [0, 15, -15, 0] }}
                       transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                     >
-                      <Sparkles size={18} />
+                      <Sparkles size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </M.div>
-                    <div className="font-semibold">Maximize your returns with AI</div>
-                    <div className="mt-1 text-sm text-[rgba(var(--muted),0.95)]">Get personalized investment recommendations.</div>
+                    <div className="text-sm sm:text-base font-semibold pr-8">Maximize your returns with AI</div>
+                    <div className="mt-1 text-xs sm:text-sm text-[rgba(var(--muted),0.95)]">Get personalized investment recommendations.</div>
                     <M.button
                       whileHover={{ x: 4 }}
                       whileTap={{ scale: 0.95 }}
-                      className="mt-2 text-sm font-semibold underline underline-offset-4 focus-ring cursor-pointer"
+                      className="mt-2 text-xs sm:text-sm font-semibold underline underline-offset-4 focus-ring cursor-pointer"
                     >
                       Explore insights
                     </M.button>
                   </M.div>
                 </div>
 
-                <div className="glass rounded-[32px] p-6 pb-8 overflow-hidden">
-                  <div className="flex items-center justify-between">
-                    <div className="font-semibold">Send money</div>
+                <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6 pb-6 sm:pb-7 lg:pb-8 overflow-hidden">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm sm:text-base font-semibold">Send money</div>
                     <PillToggle
                       options={["Recent", "Favorites"]}
                       active={sendMoneyTab}
@@ -815,8 +913,15 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className="mt-5 flex items-center gap-3">
-                    <PlusButton onClick={() => {}} />
+                  <div className="mt-4 sm:mt-5 flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-4 sm:-mx-5 lg:-mx-6 px-4 sm:px-5 lg:px-6">
+                    <M.button
+                      onClick={() => {}}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="focus-ring w-10 h-10 sm:w-11 sm:h-11 rounded-full glass cursor-pointer grid place-items-center flex-shrink-0"
+                    >
+                      <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    </M.button>
 
                     {[
                       { name: "Maya", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=96&h=96&fit=crop&crop=face" },
@@ -828,22 +933,22 @@ export default function Dashboard() {
                         key={a.name}
                         whileHover={{ scale: 1.1, y: -4 }}
                         whileTap={{ scale: 0.95 }}
-                        className="focus-ring flex flex-col items-center gap-1.5 rounded-xl p-1.5 cursor-pointer"
+                        className="focus-ring flex flex-col items-center gap-1 rounded-xl p-1.5 cursor-pointer flex-shrink-0"
                       >
-                        <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white/50 dark:border-white/20 shadow-md">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-white/50 dark:border-white/20 shadow-md">
                           <img src={a.img} alt={a.name} className="w-full h-full object-cover" />
                         </div>
-                        <div className="text-[11px] font-medium text-[rgba(var(--muted),0.95)]">{a.name}</div>
+                        <div className="text-[10px] sm:text-[11px] font-medium text-[rgba(var(--muted),0.95)] whitespace-nowrap">{a.name}</div>
                       </M.button>
                     ))}
                   </div>
 
-                  <div className="mt-6 flex items-end justify-between">
-                    <div className="text-[40px] leading-none font-semibold tracking-tight">$250.00</div>
+                  <div className="mt-4 sm:mt-5 lg:mt-6 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 sm:gap-4">
+                    <div className="text-[28px] sm:text-[32px] lg:text-[40px] leading-none font-semibold tracking-tight">$250.00</div>
                     <M.button
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className="btn-primary focus-ring px-10 shimmer cursor-pointer"
+                      className="btn-primary focus-ring px-8 sm:px-10 h-10 sm:h-11 text-sm sm:text-base shimmer cursor-pointer w-full sm:w-auto"
                     >
                       Transfer
                     </M.button>
@@ -852,7 +957,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="h-3" />
+            <div className="h-2 sm:h-3" />
           </section>
         </div>
       </MDiv>
