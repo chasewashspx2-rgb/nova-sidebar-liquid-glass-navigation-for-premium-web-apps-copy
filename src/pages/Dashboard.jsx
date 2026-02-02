@@ -38,7 +38,7 @@ function BrandMark() {
 function StatusPill({ status }) {
   const pending = status === "Pending";
   return (
-    <span className={cn("pill", pending ? "bg-[rgba(var(--accent),0.18)] border-[rgba(var(--accent),0.18)]" : "bg-transparent border-transparent")}>
+    <span className={cn("text-xs font-medium px-2.5 py-1 rounded-full", pending ? "bg-[rgba(var(--accent),0.15)] border border-[rgba(var(--accent),0.25)] text-[rgb(var(--accent))]" : "bg-transparent text-[rgba(var(--muted),0.75)]")}>
       {status}
     </span>
   );
@@ -513,10 +513,11 @@ export default function Dashboard() {
                     </div>
 
                     <div className="hidden lg:flex flex-1 items-center justify-between gap-6">
-                      <div className="relative w-full max-w-[430px] h-[170px] rounded-[34px] overflow-hidden glass">
-                        <div className="absolute inset-0" style={{ background: "radial-gradient(240px 200px at 30% 50%, rgba(121,113,249,0.45), rgba(255,255,255,0.08) 60%), radial-gradient(220px 170px at 70% 50%, rgba(104,155,251,0.26), transparent 65%), linear-gradient(120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.10))" }} />
-                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none">
-                          <path d="M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110" stroke="rgba(255,255,255,0.78)" strokeWidth="4" strokeLinecap="round" />
+                      <div className="relative w-full max-w-[200px] h-[170px] rounded-[28px] overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.35) 0%, rgba(121,113,249,0.25) 100%)", border: "1px solid rgba(255,255,255,0.3)" }}>
+                        <div className="absolute inset-0 backdrop-blur-sm" style={{ background: "radial-gradient(160px 140px at 40% 40%, rgba(255,255,255,0.25), transparent 65%)" }} />
+                        <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 200 170" fill="none" preserveAspectRatio="none">
+                          <path d="M0 140 Q 35 90, 70 110 T 140 80 L200 70 L200 170 L0 170 Z" fill="rgba(255,255,255,0.15)" />
+                          <path d="M0 140 Q 35 90, 70 110 T 140 80 L200 70" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
                         </svg>
                       </div>
 
@@ -580,10 +581,10 @@ export default function Dashboard() {
                   <M.div
                     whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.99 }}
-                    className="relative rounded-[32px] p-6 overflow-hidden border border-white/40 dark:border-white/15 cursor-pointer"
-                    style={{ background: "radial-gradient(900px 320px at 25% 0%, rgba(104,155,251,0.78), rgba(121,113,249,0.22) 55%, rgba(255,255,255,0.10)), linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.08))" }}
+                    className="relative rounded-[32px] p-6 overflow-hidden cursor-pointer"
+                    style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.45) 0%, rgba(121,113,249,0.35) 100%)", border: "1px solid rgba(255,255,255,0.35)" }}
                   >
-                    <div className="absolute inset-0 backdrop-blur-[22px]" />
+                    <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(400px 300px at 30% 20%, rgba(255,255,255,0.25), transparent 70%)" }} />
                     <div className="relative flex items-center justify-between">
                       <div className="font-semibold text-[rgb(var(--text))]">Portfolio growth</div>
                       <M.button
@@ -696,17 +697,17 @@ export default function Dashboard() {
                         key={p.left}
                         whileHover={{ scale: 1.01, x: 4 }}
                         whileTap={{ scale: 0.99 }}
-                        className="focus-ring w-full text-left flex items-center justify-between rounded-[22px] glass px-4 py-3 cursor-pointer">
+                        className="focus-ring w-full text-left flex items-center justify-between rounded-[18px] glass px-4 py-3.5 cursor-pointer">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-[16px] bg-white/25 dark:bg-white/6 border border-white/30 dark:border-white/10 grid place-items-center font-semibold text-sm">
+                          <div className="w-11 h-11 rounded-[16px] bg-white/30 dark:bg-white/10 border border-white/40 dark:border-white/15 grid place-items-center font-semibold text-base">
                             {p.icon}
                           </div>
                           <div>
-                            <div className="font-medium">{p.left}</div>
-                            <div className="text-xs text-[rgba(var(--muted),0.95)] mt-0.5">
+                            <div className="font-medium text-sm">{p.left}</div>
+                            <div className="text-xs text-[rgba(var(--muted),0.75)] mt-0.5">
                               {p.badge ? (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase" style={{ background: "linear-gradient(135deg, rgba(77,124,255,0.2), rgba(138,92,255,0.15))", border: "1px solid rgba(104,155,251,0.3)", color: "rgb(var(--accent))" }}>
-                                  <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold" style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.25)", color: "rgb(var(--accent))" }}>
+                                  <span className="w-1 h-1 rounded-full bg-current animate-pulse" />
                                   {p.badge}
                                 </span>
                               ) : p.sub}
@@ -714,9 +715,9 @@ export default function Dashboard() {
                           </div>
                         </div>
 
-                        <div className="flex items-center">
-                          <div className="hidden md:block w-24 text-sm text-[rgba(var(--muted),0.95)] text-left">{p.rightTitle}</div>
-                          <div className="w-20 font-semibold text-right">{p.amt}</div>
+                        <div className="flex items-center gap-4">
+                          <div className="hidden md:block text-xs text-[rgba(var(--muted),0.70)]">{p.rightTitle}</div>
+                          <div className="w-20 font-semibold text-sm text-right">{p.amt}</div>
                         </div>
                       </M.button>
                     ))}
@@ -761,21 +762,21 @@ export default function Dashboard() {
                         transition={{ delay: idx * 0.05 }}
                         whileHover={{ scale: 1.01, x: 4 }}
                         whileTap={{ scale: 0.99 }}
-                        className="focus-ring w-full text-left flex items-center justify-between rounded-[22px] px-3 py-3 glass cursor-pointer"
+                        className="focus-ring w-full text-left flex items-center justify-between rounded-[18px] px-4 py-3 glass cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-[18px] grid place-items-center">
-                            <ArrowUpRight size={16} />
+                          <div className="w-9 h-9 rounded-full bg-white/30 dark:bg-white/10 grid place-items-center">
+                            <ArrowUpRight size={14} />
                           </div>
                           <div>
-                            <div className="font-medium">{tx.name}</div>
-                            <div className="text-xs text-[rgba(var(--muted),0.95)]">{tx.date}</div>
+                            <div className="font-medium text-sm">{tx.name}</div>
+                            <div className="text-xs text-[rgba(var(--muted),0.75)]">{tx.date}</div>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3">
                           <StatusPill status={tx.status} />
-                          <div className="w-16 text-right font-semibold">{tx.amount}</div>
+                          <div className="w-16 text-right font-semibold text-sm">{tx.amount}</div>
                         </div>
                       </M.button>
                     ))}
@@ -783,7 +784,7 @@ export default function Dashboard() {
 
                   <M.div
                     whileHover={{ scale: 1.02, y: -2 }}
-                    className="mt-5 rounded-[22px] px-4 py-4 glass relative overflow-hidden cursor-pointer"
+                    className="mt-5 rounded-[18px] px-4 py-4 glass relative overflow-hidden cursor-pointer"
                   >
                     <M.div
                       className="absolute right-4 top-4 text-[rgb(var(--accent))]"
