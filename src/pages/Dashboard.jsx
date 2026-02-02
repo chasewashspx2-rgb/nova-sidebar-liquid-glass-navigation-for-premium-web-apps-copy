@@ -642,9 +642,9 @@ export default function Dashboard() {
                         />                                                                                                                  
                                                                                                                                 
                         {/* SVG line graph */}                                                                                              
-                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none" preserveAspectRatio="none">
+                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none">
                           <M.path                                                                                                             
-                            d="M0 150 C 120 80, 200 190, 320 120 C 440 65, 520 145, 600 100"                                                
+                            d="M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110"                                                
                             stroke="rgba(255,255,255,0.78)"                                                                                 
                             strokeWidth="4"                                                                                                 
                             strokeLinecap="round"
@@ -668,7 +668,7 @@ export default function Dashboard() {
                               delay: 0.6
                             }}
                             style={{
-                              offsetPath: "path('M0 150 C 120 80, 200 190, 320 120 C 440 65, 520 145, 600 100')"
+                              offsetPath: "path('M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110')"
                             }}
                           >
                             <animate
@@ -778,7 +778,7 @@ export default function Dashboard() {
                         <line x1="0" y1="70" x2="360" y2="70" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
 
                         <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 T 360 25 L360 130 L0 130 Z"
+                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28 L360 130 L0 130 Z"
                           fill="url(#healthGradient)"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -786,7 +786,7 @@ export default function Dashboard() {
                         />
 
                         <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 T 360 25"
+                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28"
                           fill="none"
                           stroke="url(#lineGradient)"
                           strokeWidth="3"
@@ -801,7 +801,6 @@ export default function Dashboard() {
                           { x: 80, y: 75 },
                           { x: 160, y: 60 },
                           { x: 240, y: 45 },
-                          { x: 320, y: 30 },
                         ].map((point, i) => (
                           <MCircle
                             key={i}
@@ -819,18 +818,18 @@ export default function Dashboard() {
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{ delay: 0.9, type: "spring", stiffness: 300, damping: 15 }}
-                          style={{ transformOrigin: "360px 25px" }}
+                          style={{ transformOrigin: "320px 30px" }}
                         >
-                          <circle cx="360" cy="25" r="10" fill="rgba(104,155,251,0.2)" className="animate-pulse" />
-                          <circle cx="360" cy="25" r="5" fill="rgb(104,155,251)" />
+                          <circle cx="320" cy="30" r="10" fill="rgba(104,155,251,0.2)" className="animate-pulse" />
+                          <circle cx="320" cy="30" r="5" fill="rgb(104,155,251)" />
                         </MG>
 
                         <MG initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-                          <text x="350" y="15" fontSize="11" fontWeight="600" fill="rgb(var(--text))" textAnchor="end">$68.2k</text>
+                          <text x="320" y="20" fontSize="11" fontWeight="600" fill="rgb(var(--text))" textAnchor="middle">$68.2k</text>
                         </MG>
                         <text x="8" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Feb</text>
                         <text x="170" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jul</text>
-                        <text x="350" y="122" fontSize="10" fill="rgba(var(--text),0.5)" textAnchor="end">Jan</text>
+                        <text x="340" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jan</text>
                       </svg>
                     </div>
                   </M.div>
