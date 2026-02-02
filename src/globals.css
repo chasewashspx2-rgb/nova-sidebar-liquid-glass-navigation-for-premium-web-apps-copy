@@ -79,18 +79,18 @@ body{
     border: 1px solid rgba(255,255,255, var(--strokeA));
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-    box-shadow: theme("boxShadow.card");
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.11);
   }
-  .dark .glass{ box-shadow: theme("boxShadow.cardDark"); }
+  .dark .glass{ box-shadow: 0 20px 64px rgba(0,0,0,0.50); }
 
   .glass-strong{
     background: rgba(var(--glass), var(--glassA2));
     border: 1px solid rgba(255,255,255, calc(var(--strokeA) + 0.05));
     backdrop-filter: blur(26px);
     -webkit-backdrop-filter: blur(26px);
-    box-shadow: theme("boxShadow.shell");
+    box-shadow: 0 30px 92px rgba(15, 23, 42, 0.18);
   }
-  .dark .glass-strong{ box-shadow: theme("boxShadow.shellDark"); }
+  .dark .glass-strong{ box-shadow: 0 34px 110px rgba(0,0,0,0.62); }
 
   .pill{
     @apply rounded-full px-3 py-1 text-xs font-medium;
@@ -115,8 +115,8 @@ body{
   .hover-lift{
     transition: transform 220ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 220ms cubic-bezier(0.2,0.8,0.2,1), background 220ms cubic-bezier(0.2,0.8,0.2,1), border-color 220ms cubic-bezier(0.2,0.8,0.2,1);
   }
-  .hover-lift:hover{ transform: translateY(-2px); box-shadow: theme("boxShadow.lift"); }
-  .dark .hover-lift:hover{ box-shadow: theme("boxShadow.liftDark"); }
+  .hover-lift:hover{ transform: translateY(-2px); box-shadow: 0 22px 56px rgba(15, 23, 42, 0.16); }
+  .dark .hover-lift:hover{ box-shadow: 0 26px 72px rgba(0,0,0,0.62); }
 
   .pressable{ transition: transform 120ms cubic-bezier(0.2,0.8,0.2,1); }
   .pressable:active{ transform: scale(0.99); }
@@ -145,8 +145,8 @@ body{
     transition: transform 120ms cubic-bezier(0.2,0.8,0.2,1), background 220ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 220ms cubic-bezier(0.2,0.8,0.2,1);
   }
   .dark .btn-secondary{ background: rgba(var(--glass), 0.14); border-color: rgba(255,255,255, 0.18); }
-  .btn-secondary:hover{ background: rgba(var(--glass), 0.62); box-shadow: theme("boxShadow.glow"); }
-  .dark .btn-secondary:hover{ background: rgba(var(--glass), 0.22); box-shadow: theme("boxShadow.glow2"); }
+  .btn-secondary:hover{ background: rgba(var(--glass), 0.62); box-shadow: 0 18px 64px rgba(104,155,251,0.24); }
+  .dark .btn-secondary:hover{ background: rgba(var(--glass), 0.22); box-shadow: 0 18px 64px rgba(121,113,249,0.20); }
   .btn-secondary:active{ transform: scale(0.99); }
 
   .grain{ position: relative; }
