@@ -642,9 +642,9 @@ export default function Dashboard() {
                         />                                                                                                                  
                                                                                                                                 
                         {/* SVG line graph */}                                                                                              
-                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none" preserveAspectRatio="none">
+                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none">
                           <M.path                                                                                                             
-                            d="M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110 L 610 110"                                                
+                            d="M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110"                                                
                             stroke="rgba(255,255,255,0.78)"                                                                                 
                             strokeWidth="4"                                                                                                 
                             strokeLinecap="round"
@@ -668,7 +668,7 @@ export default function Dashboard() {
                               delay: 0.6
                             }}
                             style={{
-                              offsetPath: "path('M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110 L 610 110')"
+                              offsetPath: "path('M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110')"
                             }}
                           >
                             <animate
@@ -778,7 +778,7 @@ export default function Dashboard() {
                         <line x1="0" y1="70" x2="360" y2="70" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
 
                         <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 T 360 28 L360 130 L0 130 Z"
+                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28 L360 130 L0 130 Z"
                           fill="url(#healthGradient)"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -786,7 +786,7 @@ export default function Dashboard() {
                         />
 
                         <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 T 360 28"
+                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28"
                           fill="none"
                           stroke="url(#lineGradient)"
                           strokeWidth="3"
