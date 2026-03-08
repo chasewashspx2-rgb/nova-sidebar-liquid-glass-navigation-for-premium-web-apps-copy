@@ -47,7 +47,7 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
         }}>
           <div className="flex flex-col items-center leading-none">
             <span className="text-[8px] font-bold uppercase tracking-widest mb-0.5 text-emerald-300">LV</span>
-            <span className="text-emerald-300 text-2xl font-black leading-none">{stage.level}</span>
+            <span className="text-emerald-400 text-2xl font-black leading-none">{stage.level}</span>
           </div>
         </div>
 
