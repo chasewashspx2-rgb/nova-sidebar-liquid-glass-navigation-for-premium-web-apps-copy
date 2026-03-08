@@ -77,9 +77,21 @@ function ChatBubble({ msg, personality }) {
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
       className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
-        <div className="w-8 h-8 rounded-full grid place-items-center text-base flex-shrink-0 mr-2 mt-0.5"
+        <div className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0 mr-2 mt-0.5"
           style={{ background: p.gradFrom, border: `1px solid ${p.border}` }}>
-          {p.emoji}
+          {personality === "yin" ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11" fill="black" stroke="black" strokeWidth="0.5"/>
+              <circle cx="12" cy="7" r="3.5" fill="white"/>
+              <circle cx="12" cy="17" r="3.5" fill="black"/>
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11" fill="white" stroke="white" strokeWidth="0.5"/>
+              <circle cx="12" cy="7" r="3.5" fill="white"/>
+              <circle cx="12" cy="17" r="3.5" fill="black"/>
+            </svg>
+          )}
         </div>
       )}
       <div className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed`}
