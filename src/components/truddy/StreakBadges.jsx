@@ -1,10 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { BookOpen, Brain, ShieldCheck } from "lucide-react";
 
 const STREAK_CONFIG = [
-  { key: "journal",  label: "Journal",  emoji: "📓", color: "rgba(104,155,251,0.9)",  bg: "rgba(104,155,251,0.12)", border: "rgba(104,155,251,0.3)" },
-  { key: "mood",     label: "Mood",     emoji: "🧠", color: "rgba(121,113,249,0.9)",  bg: "rgba(121,113,249,0.12)", border: "rgba(121,113,249,0.3)" },
-  { key: "pretrade", label: "Discipline",emoji: "🛡️", color: "rgba(72,199,142,0.9)",  bg: "rgba(72,199,142,0.12)", border: "rgba(72,199,142,0.3)"  },
+  { key: "journal",   label: "Journal",    Icon: BookOpen,    color: "rgba(104,155,251,0.9)", iconColor: "rgba(55,100,210,0.85)",  bg: "rgba(104,155,251,0.18)", border: "rgba(104,155,251,0.3)" },
+  { key: "mood",      label: "Mood",       Icon: Brain,       color: "rgba(121,113,249,0.9)", iconColor: "rgba(80,65,210,0.85)",   bg: "rgba(121,113,249,0.18)", border: "rgba(121,113,249,0.3)" },
+  { key: "pretrade",  label: "Discipline", Icon: ShieldCheck, color: "rgba(52,180,120,0.9)",  iconColor: "rgba(20,120,75,0.85)",   bg: "rgba(72,199,142,0.18)", border: "rgba(72,199,142,0.3)"  },
 ];
 
 function flameColor(streak) {
