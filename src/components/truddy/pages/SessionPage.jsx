@@ -6,17 +6,7 @@ import { SectionHeader } from "@/components/truddy/SectionHeader";
 import LiveSessionRecorder from "@/components/truddy/session/LiveSessionRecorder";
 import { format, formatDistanceStrict } from "date-fns";
 
-const emotionScore = { confident: 9, focused: 8, excited: 7, neutral: 5, tired: 4, anxious: 3, fomo: 2, angry: 1 };
 
-function ScorePill({ score }) {
-  const color = score >= 7 ? "rgba(72,199,142,0.9)" : score >= 5 ? "rgba(255,180,80,0.9)" : "rgba(255,100,80,0.9)";
-  const bg = score >= 7 ? "rgba(72,199,142,0.12)" : score >= 5 ? "rgba(255,180,80,0.12)" : "rgba(255,100,80,0.12)";
-  return (
-    <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ color, background: bg, border: `1px solid ${color}` }}>
-      {score.toFixed(1)} / 10
-    </span>
-  );
-}
 
 export default function SessionPage() {
   const [showRecorder, setShowRecorder] = useState(false);
