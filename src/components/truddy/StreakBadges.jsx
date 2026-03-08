@@ -31,9 +31,8 @@ export default function StreakBadges({ streaks = {} }) {
             style={{ background: "rgba(var(--glass),0.22)", border: "1px solid rgba(255,255,255,0.2)" }}>
 
             <div className="relative">
-              <div className="rounded-[14px] w-12 h-12 grid place-items-center"
-              style={{ background: count > 0 ? s.tileBg : "rgba(200,205,215,0.25)" }}>
-                <s.Icon size={20} style={{ color: count > 0 ? s.iconColor : "rgba(var(--muted),0.3)" }} />
+              <div className="rounded-[14px] w-12 h-12 grid place-items-center" style={{ background: count > 0 ? s.tileBg : "#e8eef5", border: `2px solid ${count > 0 ? s.iconColor : "#ccc"}` }}>
+                <s.Icon size={22} strokeWidth={1.5} style={{ color: count > 0 ? s.iconColor : "#999" }} />
               </div>
               {fire &&
               <motion.span
