@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 
 export const STAGES = [
-  { level: 1, name: "Beginner",     minXp: 0,    maxXp: 200,  emoji: "🌱", color: "rgba(160,172,195,0.9)",  glow: "rgba(160,172,195,0.2)",  grad: ["rgba(160,172,195,0.22)", "rgba(160,172,195,0.1)"],  arc: "#a0acb3" },
-  { level: 2, name: "Developing",   minXp: 200,  maxXp: 600,  emoji: "📈", color: "rgba(104,155,251,0.9)",  glow: "rgba(104,155,251,0.25)", grad: ["rgba(104,155,251,0.22)", "rgba(121,113,249,0.14)"], arc: "#689bfb" },
-  { level: 3, name: "Intermediate", minXp: 600,  maxXp: 1400, emoji: "🔥", color: "rgba(250,180,60,0.9)",   glow: "rgba(250,180,60,0.22)",  grad: ["rgba(250,180,60,0.2)",  "rgba(250,150,40,0.1)"],   arc: "#fab43c" },
-  { level: 4, name: "Advanced",     minXp: 1400, maxXp: 3000, emoji: "⚡", color: "rgba(121,113,249,0.95)", glow: "rgba(121,113,249,0.28)", grad: ["rgba(121,113,249,0.25)", "rgba(104,155,251,0.16)"], arc: "#7971f9" },
-  { level: 5, name: "Elite",        minXp: 3000, maxXp: 9999, emoji: "🏆", color: "rgba(255,200,50,0.95)",  glow: "rgba(255,200,50,0.3)",   grad: ["rgba(255,200,50,0.22)", "rgba(255,160,30,0.12)"],  arc: "#ffc832" },
+  { level: 1, name: "Beginner",     minXp: 0,    maxXp: 200,  color: "rgba(160,172,195,0.9)",  glow: "rgba(160,172,195,0.2)",  grad: ["rgba(160,172,195,0.22)", "rgba(160,172,195,0.1)"],  arc: "#a0acb3" },
+  { level: 2, name: "Developing",   minXp: 200,  maxXp: 600,  color: "rgba(104,155,251,0.9)",  glow: "rgba(104,155,251,0.25)", grad: ["rgba(104,155,251,0.22)", "rgba(121,113,249,0.14)"], arc: "#689bfb" },
+  { level: 3, name: "Intermediate", minXp: 600,  maxXp: 1400, color: "rgba(250,180,60,0.9)",   glow: "rgba(250,180,60,0.22)",  grad: ["rgba(250,180,60,0.2)",  "rgba(250,150,40,0.1)"],   arc: "#fab43c" },
+  { level: 4, name: "Advanced",     minXp: 1400, maxXp: 3000, color: "rgba(121,113,249,0.95)", glow: "rgba(121,113,249,0.28)", grad: ["rgba(121,113,249,0.25)", "rgba(104,155,251,0.16)"], arc: "#7971f9" },
+  { level: 5, name: "Elite",        minXp: 3000, maxXp: 9999, color: "rgba(255,200,50,0.95)",  glow: "rgba(255,200,50,0.3)",   grad: ["rgba(255,200,50,0.22)", "rgba(255,160,30,0.12)"],  arc: "#ffc832" },
 ];
 
 export function getStage(xp) {
