@@ -18,6 +18,7 @@ import InsightsPage from "@/components/truddy/pages/InsightsPage";
 import PreTradePage from "@/components/truddy/pages/PreTradePage";
 import CoachPage from "@/components/truddy/pages/CoachPage";
 import SessionPage from "@/components/truddy/pages/SessionPage";
+import CommunityPage from "@/components/truddy/pages/CommunityPage";
 
 const sidebar = [
   { key: "home", label: "Home", icon: <Home size={18} /> },
@@ -27,6 +28,7 @@ const sidebar = [
   { key: "rules", label: "My Rules", icon: <Shield size={18} /> },
   { key: "insights", label: "Insights", icon: <BarChart2 size={18} /> },
   { key: "session", label: "Live Session", icon: <Radio size={18} /> },
+  { key: "community", label: "Community", icon: <Users size={18} /> },
   { key: "coach", label: "AI Coach", icon: <MessageCircle size={18} /> },
   { key: "settings", label: "Settings", icon: <Settings size={18} /> },
 ];
