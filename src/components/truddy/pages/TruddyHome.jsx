@@ -39,10 +39,24 @@ export default function TruddyHome({ onNavigate }) {
   const rulesViolated = trades.filter((t) => t.followed_rules === "no" || t.followed_rules === "partially").length;
   const disciplineRate = total > 0 ? Math.round(((total - rulesViolated) / total) * 100) : 0;
 
+  // Consecutive loss streak
+  const lossStreak = (() => {
+    let count = 0;
+    for (const t of trades) { if (t.outcome === "loss") count++; else break; }
+    return count;
+  })();
+
+  // Discipline streak: consecutive trades that followed rules
+  const disciplineStreak = (() => {
+    let count = 0;
+    for (const t of trades) { if (t.followed_rules === "yes") count++; else break; }
+    return count;
+  })();
+
   const quickActions = [
-    { icon: <BookOpen size={18} />, label: "Log a Trade", sub: "Record your latest trade", page: "journal", accent: true },
+    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "Run before every trade", page: "pretrade", accent: true },
     { icon: <Brain size={18} />, label: "Mood Check-In", sub: "How are you feeling?", page: "mood" },
-    { icon: <Shield size={18} />, label: "My Rules", sub: "Review your playbook", page: "rules" },
+    { icon: <BookOpen size={18} />, label: "Log a Trade", sub: "Record your latest trade", page: "journal" },
     { icon: <BarChart2 size={18} />, label: "Insights", sub: "Patterns & psychology", page: "insights" },
   ];
 
