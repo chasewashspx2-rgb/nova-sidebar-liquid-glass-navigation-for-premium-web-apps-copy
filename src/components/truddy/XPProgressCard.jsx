@@ -76,6 +76,7 @@ function ArcRing({ pct, color, glow, size = 180 }) {
 
 export default function XPProgressCard({ xp = 0, onNavigate }) {
   const stage = getStage(xp);
+  const StageIcon = STAGE_ICONS[stage.level - 1];
   const nextStage = STAGES.find(s => s.minXp > stage.minXp) || stage;
   const isMax = stage.level === 5;
   const xpInLevel = xp - stage.minXp;
