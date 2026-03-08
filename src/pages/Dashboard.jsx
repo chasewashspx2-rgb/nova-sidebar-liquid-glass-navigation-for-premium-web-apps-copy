@@ -16,7 +16,7 @@ import RulesPage from "@/components/truddy/pages/RulesPage";
 import InsightsPage from "@/components/truddy/pages/InsightsPage";
 import PreTradePage from "@/components/truddy/pages/PreTradePage";
 import CoachPage from "@/components/truddy/pages/CoachPage";
-import VoiceSessionWrapper from "@/components/truddy/session/VoiceSessionWrapper";
+import SessionPage from "@/components/truddy/pages/SessionPage";
 import CommunityPage from "@/components/truddy/pages/CommunityPage";
 
 const sidebar = [
