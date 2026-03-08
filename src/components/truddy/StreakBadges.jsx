@@ -1,10 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Brain, ShieldCheck } from "lucide-react";
+import { BookOpen, ShieldCheck } from "lucide-react";
 
 const STREAK_CONFIG = [
 { key: "journal",  label: "Journal",    Icon: BookOpen,    color: "#3b6fd4", iconColor: "#3b6fd4", tileBg: "#deeaff", border: "rgba(104,155,251,0.2)" },
-{ key: "mood",     label: "Mood",       Icon: Brain,       color: "#7c5ce0", iconColor: "#7c5ce0", tileBg: "#ece8ff", border: "rgba(121,113,249,0.2)" },
 { key: "pretrade", label: "Discipline", Icon: ShieldCheck, color: "#1e9e65", iconColor: "#1e9e65", tileBg: "#d4f5e5", border: "rgba(72,199,142,0.2)" }];
 
 
@@ -17,7 +16,7 @@ function flameColor(streak) {
 
 export default function StreakBadges({ streaks = {} }) {
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-2 gap-3">
       {STREAK_CONFIG.map((s, i) => {
         const count = streaks[s.key] || 0;
         const fire = flameColor(count);
