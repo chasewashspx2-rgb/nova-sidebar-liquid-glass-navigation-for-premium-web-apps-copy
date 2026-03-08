@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
+import { Zap, Shield, TrendingUp, Flame, Star, Award } from "lucide-react";
 
 export const STAGES = [
   { level: 1, name: "Beginner",     minXp: 0,    maxXp: 200,  color: "rgba(160,172,195,0.9)",  glow: "rgba(160,172,195,0.2)",  grad: ["rgba(160,172,195,0.22)", "rgba(160,172,195,0.1)"],  arc: "#a0acb3" },
