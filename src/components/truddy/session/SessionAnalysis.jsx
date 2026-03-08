@@ -35,6 +35,29 @@ export default function SessionAnalysis({ session }) {
         <p className="text-sm leading-relaxed opacity-85">{session.summary}</p>
       </motion.div>
 
+      {/* Audio Player */}
+      {session.audio_file_uri && (
+        <motion.div variants={itemVariants} className="rounded-[20px] p-5"
+          style={{ background: "rgba(var(--glass),0.28)", border: "1px solid rgba(255,255,255,0.25)" }}>
+          <h3 className="font-semibold text-sm mb-3">Session Recording</h3>
+          <audio controls className="w-full" style={{ accentColor: "rgb(104, 155, 251)" }}>
+            <source src={session.audio_file_uri} type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </motion.div>
+      )}
+
+      {/* Full Transcript */}
+      {session.full_transcript && (
+        <motion.div variants={itemVariants} className="rounded-[20px] p-5"
+          style={{ background: "rgba(var(--glass),0.28)", border: "1px solid rgba(255,255,255,0.25)" }}>
+          <h3 className="font-semibold text-sm mb-3">Full Transcript</h3>
+          <div className="max-h-96 overflow-y-auto text-sm leading-relaxed opacity-85 whitespace-pre-wrap">
+            {session.full_transcript}
+          </div>
+        </motion.div>
+      )}
+
       {/* Overall Score */}
       {session.overall_score && (
         <motion.div variants={itemVariants} className="rounded-[20px] p-5"
