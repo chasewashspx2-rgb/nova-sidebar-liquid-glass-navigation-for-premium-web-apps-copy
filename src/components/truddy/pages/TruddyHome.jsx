@@ -106,9 +106,23 @@ export default function TruddyHome({ onNavigate }) {
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="text-[24px] sm:text-[28px] font-bold tracking-tight">Truddy</div>
-        <div className="text-sm sm:text-base font-medium text-[rgba(var(--muted),0.85)]">Your trading psychology co-pilot</div>
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+        className="flex items-start justify-between">
+        <div>
+          <div className="text-[24px] sm:text-[28px] font-bold tracking-tight">
+            Hello, {user?.full_name?.split(" ")[0] || "Trader"} 👋
+          </div>
+          <div className="text-sm sm:text-base font-medium text-[rgba(var(--muted),0.85)]">Your trading psychology co-pilot</div>
+        </div>
+        {unreadCount > 0 && (
+          <motion.button onClick={() => onNavigate("community")} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+            className="relative flex items-center gap-2 px-3 py-2 rounded-[14px] text-xs font-semibold"
+            style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.3)" }}>
+            <Bell size={14} />
+            <span>{unreadCount} unread</span>
+            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[rgb(var(--accent))]" />
+          </motion.button>
+        )}
       </motion.div>
 
       {/* XP Progress Card — replaces Today's Check-In */}
