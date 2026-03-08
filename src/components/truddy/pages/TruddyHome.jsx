@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, BookOpen, Shield, BarChart2, TrendingUp, TrendingDown, Sparkles, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Brain, BookOpen, Shield, BarChart2, TrendingUp, Sparkles, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Target } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { MoodBadge } from "@/components/truddy/MoodBadge";
 import { StatCard } from "@/components/truddy/StatCard";
+import { CircuitBreaker } from "@/components/truddy/CircuitBreaker";
 
 export default function TruddyHome({ onNavigate }) {
   const [trades, setTrades] = useState([]);
