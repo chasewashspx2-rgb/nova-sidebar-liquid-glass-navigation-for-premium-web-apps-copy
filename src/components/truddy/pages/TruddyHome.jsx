@@ -159,46 +159,10 @@ export default function TruddyHome({ onNavigate }) {
       {/* Consistency Grid */}
       <ConsistencyGrid trades={trades} moodChecks={moodChecks} sessions={sessions} />
 
-      {/* Recent Trades + Truddy Insight */}
+      {/* Community + Truddy Insight */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 sm:gap-5">
-        {/* Recent Trades */}
-        <div className="glass rounded-[20px] sm:rounded-[24px] p-4 sm:p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="font-semibold">Recent Trades</div>
-            <motion.button onClick={() => onNavigate("journal")} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="pill cursor-pointer text-xs">View All</motion.button>
-          </div>
-          {recentTrades.length === 0 ? (
-            <div className="text-center py-8 text-[rgba(var(--muted),0.6)] text-sm">
-              <BookOpen size={32} className="mx-auto mb-2 opacity-30" />
-              No trades logged yet. Start journaling to earn XP!
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {recentTrades.map((trade, idx) => (
-                <motion.div key={trade.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="flex items-center justify-between rounded-[14px] px-3 py-2.5 glass">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full grid place-items-center text-sm flex-shrink-0 font-bold ${trade.outcome === "win" ? "bg-green-400/20 text-green-500" : trade.outcome === "loss" ? "bg-red-400/20 text-red-500" : "bg-gray-400/20 text-gray-500"}`}>
-                      {trade.outcome === "win" ? "W" : trade.outcome === "loss" ? "L" : "B"}
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">{trade.symbol || "Unknown"}</div>
-                      <div className="text-xs text-[rgba(var(--muted),0.7)]">{trade.direction || "—"} · {new Date(trade.created_date).toLocaleDateString()}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <MoodBadge emotion={trade.pre_emotion || "neutral"} />
-                    <div className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                      style={{ background: "rgba(104,155,251,0.15)", color: "rgba(104,155,251,0.9)" }}>
-                      +20 XP
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Community Widget */}
+        <CommunityWidget xp={xp} trades={trades} onNavigate={onNavigate} />
 
         {/* Truddy AI Insight */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
