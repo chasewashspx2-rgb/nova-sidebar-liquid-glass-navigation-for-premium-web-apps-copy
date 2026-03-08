@@ -19,10 +19,8 @@ function ScorePill({ score }) {
 }
 
 export default function SessionPage() {
-  const [view, setView] = useState("idle"); // idle | active | report | generating
+  const [showRecorder, setShowRecorder] = useState(false);
   const [sessions, setSessions] = useState([]);
-  const [currentSession, setCurrentSession] = useState(null);
-  const [loadingEntry, setLoadingEntry] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
