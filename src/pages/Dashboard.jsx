@@ -25,6 +25,7 @@ const sidebar = [
   { key: "mood", label: "Mood Check-In", icon: <Brain size={18} /> },
   { key: "rules", label: "My Rules", icon: <Shield size={18} /> },
   { key: "insights", label: "Insights", icon: <BarChart2 size={18} /> },
+  { key: "coach", label: "AI Coach", icon: <MessageCircle size={18} /> },
   { key: "settings", label: "Settings", icon: <Settings size={18} /> },
 ];
 
@@ -87,6 +88,7 @@ const pageComponents = {
   mood: MoodPage,
   rules: RulesPage,
   insights: InsightsPage,
+  coach: CoachPage,
   settings: () => (
     <div className="flex items-center justify-center h-64 text-[rgba(var(--muted),0.6)] text-sm">
       Settings coming soon
