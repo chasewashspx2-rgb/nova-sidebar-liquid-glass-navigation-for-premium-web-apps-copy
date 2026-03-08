@@ -62,7 +62,7 @@ export default function ActiveSession({ session, onAddEntry, onEndSession, loadi
           <Clock size={13} /> {formatElapsed(elapsed)}
         </div>
         <motion.button onClick={onEndSession} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}
-          className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer"
           style={{ background: "rgba(255,100,80,0.18)", border: "1px solid rgba(255,100,80,0.4)" }}>
           <Square size={12} fill="currentColor" /> End Session
         </motion.button>
