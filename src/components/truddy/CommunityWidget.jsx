@@ -4,28 +4,9 @@ import { Heart, RefreshCw, Lightbulb, ArrowRight, MessageCircle } from "lucide-r
 import { base44 } from "@/api/base44Client";
 import { getStage } from "@/components/truddy/XPProgressCard";
 
-const STAGE_KEY_MAP = {
-  1: "beginner",
-  2: "developing",
-  3: "intermediate",
-  4: "advanced",
-  5: "elite",
-};
-
-const CHALLENGE_META = {
-  fomo:            { label: "FOMO",            emoji: "😤", color: "rgba(255,100,80,0.9)" },
-  revenge_trading: { label: "Revenge Trading", emoji: "🔄", color: "rgba(220,60,60,0.9)"  },
-  overtrading:     { label: "Overtrading",     emoji: "⚠️", color: "rgba(250,180,60,0.9)" },
-  fear:            { label: "Fear",            emoji: "😰", color: "rgba(130,100,220,0.9)"},
-  discipline:      { label: "Discipline",      emoji: "🛡️", color: "rgba(72,199,142,0.9)"  },
-};
-
-const STAGE_META = {
-  beginner:     { label: "Beginner",     emoji: "🌱", color: "rgba(160,172,195,0.9)" },
-  developing:   { label: "Developing",   emoji: "📈", color: "rgba(104,155,251,0.9)" },
-  intermediate: { label: "Intermediate", emoji: "🔥", color: "rgba(250,180,60,0.9)"  },
-  advanced:     { label: "Advanced",     emoji: "⚡", color: "rgba(121,113,249,0.9)" },
-  elite:        { label: "Elite",        emoji: "🏆", color: "rgba(255,200,50,0.9)"  },
+const ROOM_META = {
+  level: { label: "Your Level", emoji: "📊", color: "rgba(104,155,251,0.9)" },
+  issue: { label: "Shared Issues", emoji: "🤝", color: "rgba(220,100,100,0.9)" },
 };
 
 function isNew(dateStr) {
@@ -80,35 +61,19 @@ function PostRow({ post, roomMeta, isNewPost }) {
   );
 }
 
-export default function CommunityWidget({ xp = 0, trades = [], onNavigate }) {
+export default function CommunityWidget({ onNavigate }) {
   const [posts, setPosts]   = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const stage = getStage(xp);
-  const stageRoomKey = STAGE_KEY_MAP[stage.level] || "beginner";
-
-  // Infer most-relevant challenge room from recent trades
-  const challengeRoomKey = (() => {
-    const recent = trades.slice(0, 10);
-    const fomoCount     = recent.filter(t => t.pre_emotion === "fomo" || t.pre_emotion === "excited").length;
-    const revengeCount  = recent.filter(t => t.pre_emotion === "angry" && t.outcome === "loss").length;
-    const fearCount     = recent.filter(t => t.pre_emotion === "anxious" || t.pre_emotion === "tired").length;
-    const disciplineCount = recent.filter(t => t.followed_rules === "no").length;
-    const overtradeCount  = recent.filter(t => t.outcome === "loss").length;
-
-    const scores = { fomo: fomoCount, revenge_trading: revengeCount, fear: fearCount, discipline: disciplineCount, overtrading: overtradeCount };
-    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] || "discipline";
-  })();
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const [stagePosts, challengePosts] = await Promise.all([
-        base44.entities.CommunityPost.filter({ room_key: stageRoomKey }, "-created_date", 4),
-        base44.entities.CommunityPost.filter({ room_key: challengeRoomKey }, "-created_date", 3),
+      const [levelPosts, issuePosts] = await Promise.all([
+        base44.entities.CommunityPost.filter({ room_key: "level" }, "-created_date", 4),
+        base44.entities.CommunityPost.filter({ room_key: "issue" }, "-created_date", 3),
       ]);
       // Merge, dedupe, sort by date
-      const merged = [...stagePosts, ...challengePosts]
+      const merged = [...levelPosts, ...issuePosts]
         .filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i)
         .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
         .slice(0, 6);
@@ -116,11 +81,9 @@ export default function CommunityWidget({ xp = 0, trades = [], onNavigate }) {
       setLoading(false);
     }
     load();
-  }, [stageRoomKey, challengeRoomKey]);
+  }, []);
 
   const newCount = posts.filter(p => isNew(p.created_date)).length;
-  const stageMeta = STAGE_META[stageRoomKey];
-  const challengeMeta = CHALLENGE_META[challengeRoomKey];
 
   return (
     <div className="glass rounded-[20px] sm:rounded-[24px] p-4 sm:p-5">
@@ -145,12 +108,12 @@ export default function CommunityWidget({ xp = 0, trades = [], onNavigate }) {
       {/* Active rooms */}
       <div className="flex items-center gap-2 mb-3">
         <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium"
-          style={{ background: stageMeta?.color?.replace("0.9","0.1"), border: `1px solid ${stageMeta?.color?.replace("0.9","0.25")}`, color: stageMeta?.color }}>
-          {stageMeta?.emoji} {stageMeta?.label}
+          style={{ background: ROOM_META.level.color.replace("0.9","0.1"), border: `1px solid ${ROOM_META.level.color.replace("0.9","0.25")}`, color: ROOM_META.level.color }}>
+          {ROOM_META.level.emoji} {ROOM_META.level.label}
         </div>
         <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium"
-          style={{ background: challengeMeta?.color?.replace("0.9","0.1"), border: `1px solid ${challengeMeta?.color?.replace("0.9","0.25")}`, color: challengeMeta?.color }}>
-          {challengeMeta?.emoji} {challengeMeta?.label}
+          style={{ background: ROOM_META.issue.color.replace("0.9","0.1"), border: `1px solid ${ROOM_META.issue.color.replace("0.9","0.25")}`, color: ROOM_META.issue.color }}>
+          {ROOM_META.issue.emoji} {ROOM_META.issue.label}
         </div>
       </div>
 
@@ -180,15 +143,15 @@ export default function CommunityWidget({ xp = 0, trades = [], onNavigate }) {
         </div>
       ) : (
         <div>
-          {posts.map((post, i) => {
-            const meta = STAGE_META[post.room_key] || CHALLENGE_META[post.room_key];
-            return (
-              <motion.div key={post.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                <PostRow post={post} roomMeta={meta} isNewPost={isNew(post.created_date)} />
-              </motion.div>
-            );
-          })}
-        </div>
+           {posts.map((post, i) => {
+             const meta = ROOM_META[post.room_key];
+             return (
+               <motion.div key={post.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                 <PostRow post={post} roomMeta={meta} isNewPost={isNew(post.created_date)} />
+               </motion.div>
+             );
+           })}
+         </div>
       )}
     </div>
   );
