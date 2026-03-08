@@ -40,16 +40,24 @@ export default function TruddyHome({ onNavigate }) {
   const [moodChecks, setMoodChecks] = useState([]);
   const [sessions, setSessions]   = useState([]);
   const [loading, setLoading]     = useState(true);
+  const [user, setUser]           = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     Promise.all([
       base44.entities.TradeJournal.list("-created_date", 50),
       base44.entities.MoodCheck.list("-created_date", 30),
       base44.entities.TradingSession.list("-created_date", 30),
-    ]).then(([t, m, s]) => {
+      base44.auth.me(),
+      base44.entities.CommunityPost.list("-created_date", 20),
+    ]).then(([t, m, s, u, posts]) => {
       setTrades(t);
       setMoodChecks(m);
       setSessions(s);
+      setUser(u);
+      // Count posts not created by current user as "unread" (simple approximation)
+      const unread = posts.filter(p => p.created_by !== u?.email).length;
+      setUnreadCount(unread);
       setLoading(false);
     });
   }, []);
