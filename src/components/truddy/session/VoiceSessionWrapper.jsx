@@ -29,7 +29,7 @@ export default function VoiceSessionWrapper({ onNavigate }) {
         ended_at: new Date().toISOString(),
         status: "analyzing",
       });
-      onNavigate("home");
+      onNavigate?.("home");
     } catch (err) {
       console.error("Failed to end session:", err);
     } finally {
