@@ -203,7 +203,13 @@ export default function CoachPage() {
               border: `1px solid ${personality === key ? val.border : "rgba(255,255,255,0.25)"}`,
               boxShadow: personality === key ? `0 8px 32px ${val.glow}` : "none",
             }}>
-            {key === "yin" ? <Yin size={24} style={{ color: val.color }} /> : <span className="text-2xl">{val.emoji}</span>}
+            {key === "yin" ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: val.color }}>
+                <circle cx="12" cy="12" r="11" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+                <circle cx="12" cy="6" r="4" fill="white"/>
+                <circle cx="12" cy="18" r="4" fill="black"/>
+              </svg>
+            ) : <span className="text-2xl">{val.emoji}</span>}
             <div>
               <div className="font-bold text-sm">{val.name} <span className="font-normal opacity-70">— {val.title}</span></div>
               <div className="text-[11px] opacity-60 mt-0.5">{val.tagline}</div>
