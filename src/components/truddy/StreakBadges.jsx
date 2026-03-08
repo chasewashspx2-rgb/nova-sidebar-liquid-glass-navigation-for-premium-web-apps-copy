@@ -43,7 +43,7 @@ export default function StreakBadges({ streaks = {} }) {
                 🔥</motion.span>
               }
             </div>
-            <div className="font-bold text-xl leading-none" style={{ color: count > 0 ? s.color : "rgba(var(--muted),0.4)" }}>
+            <div className="font-bold text-xl leading-none" style={{ color: count > 0 ? s.iconColor : "rgba(var(--muted),0.4)" }}>
               {count}
             </div>
             <div className="text-[10px] font-semibold text-center" style={{ color: count > 0 ? s.color : "rgba(var(--muted),0.35)" }}>
