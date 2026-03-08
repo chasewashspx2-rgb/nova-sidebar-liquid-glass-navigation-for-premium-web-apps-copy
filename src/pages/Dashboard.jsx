@@ -89,7 +89,7 @@ const pageComponents = {
   journal: JournalPage,
   rules: RulesPage,
   insights: InsightsPage,
-  session: VoiceSessionWrapper,
+  session: SessionPage,
   community: CommunityPage,
   coach: CoachPage,
   settings: () =>
