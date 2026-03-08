@@ -203,7 +203,7 @@ export default function CoachPage() {
               border: `1px solid ${personality === key ? val.border : "rgba(255,255,255,0.25)"}`,
               boxShadow: personality === key ? `0 8px 32px ${val.glow}` : "none",
             }}>
-            <span className="text-2xl">{val.emoji}</span>
+            {key === "yin" ? <Yin size={24} style={{ color: val.color }} /> : <span className="text-2xl">{val.emoji}</span>}
             <div>
               <div className="font-bold text-sm">{val.name} <span className="font-normal opacity-70">— {val.title}</span></div>
               <div className="text-[11px] opacity-60 mt-0.5">{val.tagline}</div>
