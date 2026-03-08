@@ -46,8 +46,8 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
           boxShadow: `0 0 16px ${stage.arc}30, inset 0 1px 0 rgba(255,255,255,0.18)`
         }}>
           <div className="flex flex-col items-center leading-none">
-            <span className="text-[8px] font-bold uppercase tracking-widest mb-0.5 text-emerald-300">LV</span>
-            <span className="text-emerald-300 text-2xl font-black leading-none">{stage.level}</span>
+            <span className="text-slate-950 mb-0.5 font-bold uppercase tracking-widest" style={{ color: `${stage.arc}99` }}>LV</span>
+            <span className="text-slate-950 text-base font-black leading-none" style={{ color: stage.arc }}>{stage.level}</span>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
               <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.45)] uppercase tracking-wide">XP</span>
             </div>
             <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-[11px] font-semibold text-emerald-400">{stage.name}</span>
+              <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.5)]">{stage.name}</span>
               
 
 
