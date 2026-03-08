@@ -41,7 +41,7 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
         {/* Icon */}
         <div className="w-9 h-9 rounded-[11px] grid place-items-center flex-shrink-0"
           style={{ background: `${stage.arc}1a`, border: `1px solid ${stage.arc}40` }}>
-          <span className="text-sm font-black leading-none" style={{ color: stage.arc }}>{stage.level}</span>
+          <span className="text-[11px] font-black leading-none" style={{ color: stage.arc }}>{stage.level}<span className="opacity-50">/{STAGES.length}</span></span>
         </div>
 
         {/* Main content */}
