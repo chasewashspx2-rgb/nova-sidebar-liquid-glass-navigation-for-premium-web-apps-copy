@@ -93,6 +93,7 @@ const pageComponents = {
   rules: RulesPage,
   insights: InsightsPage,
   session: SessionPage,
+  community: CommunityPage,
   coach: CoachPage,
   settings: () => (
     <div className="flex items-center justify-center h-64 text-[rgba(var(--muted),0.6)] text-sm">
