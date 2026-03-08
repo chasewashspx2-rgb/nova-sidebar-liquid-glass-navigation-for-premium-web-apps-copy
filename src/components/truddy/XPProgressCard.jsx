@@ -10,6 +10,8 @@ export const STAGES = [
   { level: 5, name: "Elite",        minXp: 3000, maxXp: 9999, color: "rgba(255,200,50,0.95)",  glow: "rgba(255,200,50,0.3)",   grad: ["rgba(255,200,50,0.22)", "rgba(255,160,30,0.12)"],  arc: "#ffc832" },
 ];
 
+const STAGE_ICONS = [Shield, TrendingUp, Flame, Zap, Award];
+
 export function getStage(xp) {
   return [...STAGES].reverse().find(s => xp >= s.minXp) || STAGES[0];
 }
