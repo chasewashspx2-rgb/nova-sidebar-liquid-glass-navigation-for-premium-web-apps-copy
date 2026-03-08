@@ -12,7 +12,6 @@ import { MDiv } from "@/components/motion";
 // Pages
 import TruddyHome from "@/components/truddy/pages/TruddyHome";
 import JournalPage from "@/components/truddy/pages/JournalPage";
-import MoodPage from "@/components/truddy/pages/MoodPage";
 import RulesPage from "@/components/truddy/pages/RulesPage";
 import InsightsPage from "@/components/truddy/pages/InsightsPage";
 import PreTradePage from "@/components/truddy/pages/PreTradePage";
@@ -24,7 +23,6 @@ const sidebar = [
 { key: "home", label: "Home", icon: <Home size={18} /> },
 { key: "pretrade", label: "Pre-Trade Gate", icon: <ShieldCheck size={18} /> },
 { key: "journal", label: "Trade Journal", icon: <BookOpen size={18} /> },
-{ key: "mood", label: "Mood Check-In", icon: <Brain size={18} /> },
 { key: "rules", label: "My Rules", icon: <Shield size={18} /> },
 { key: "insights", label: "Insights", icon: <BarChart2 size={18} /> },
 { key: "session", label: "Live Session", icon: <Radio size={18} /> },
@@ -89,7 +87,6 @@ const pageComponents = {
   home: TruddyHome,
   pretrade: PreTradePage,
   journal: JournalPage,
-  mood: MoodPage,
   rules: RulesPage,
   insights: InsightsPage,
   session: SessionPage,

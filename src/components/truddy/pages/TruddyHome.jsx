@@ -11,12 +11,11 @@ import CommunityWidget from "@/components/truddy/CommunityWidget";
 import RotatingQuote from "@/components/truddy/RotatingQuote";
 
 // Compute streaks from activity data
-function computeStreaks(trades, moodChecks) {
+function computeStreaks(trades) {
   const today = new Date();
   const fmt = (d) => d.toISOString().split("T")[0];
 
   const journalDays = new Set(trades.map(t => (t.date || t.created_date || "").slice(0, 10)));
-  const moodDays    = new Set(moodChecks.map(m => (m.date || "").slice(0, 10)));
   const ruleDays    = new Set(trades.filter(t => t.followed_rules === "yes").map(t => (t.date || t.created_date || "").slice(0, 10)));
 
   const streak = (daySet) => {
@@ -31,7 +30,6 @@ function computeStreaks(trades, moodChecks) {
 
   return {
     journal:  streak(journalDays),
-    mood:     streak(moodDays),
     pretrade: streak(ruleDays),
   };
 }
@@ -47,13 +45,11 @@ export default function TruddyHome({ onNavigate }) {
   useEffect(() => {
     Promise.all([
       base44.entities.TradeJournal.list("-created_date", 50),
-      base44.entities.MoodCheck.list("-created_date", 30),
       base44.entities.TradingSession.list("-created_date", 30),
       base44.auth.me(),
       base44.entities.CommunityPost.list("-created_date", 20),
-    ]).then(([t, m, s, u, posts]) => {
+    ]).then(([t, s, u, posts]) => {
       setTrades(t);
-      setMoodChecks(m);
       setSessions(s);
       setUser(u);
       // Count posts not created by current user as "unread" (simple approximation)
@@ -63,8 +59,6 @@ export default function TruddyHome({ onNavigate }) {
     });
   }, []);
 
-  const today      = new Date().toISOString().split("T")[0];
-  const todayMood  = moodChecks.find(m => m.date === today);
   const recentTrades = trades.slice(0, 5);
   const total      = trades.length;
   const wins       = trades.filter(t => t.outcome === "win").length;
@@ -82,7 +76,7 @@ export default function TruddyHome({ onNavigate }) {
   });
 
   // Streaks
-  const streaks = computeStreaks(trades, moodChecks);
+  const streaks = computeStreaks(trades);
 
   // Loss streak for circuit breaker
   const lossStreak = (() => {
@@ -180,7 +174,7 @@ export default function TruddyHome({ onNavigate }) {
       </div>
 
       {/* Consistency Grid */}
-      <ConsistencyGrid trades={trades} moodChecks={moodChecks} sessions={sessions} />
+      <ConsistencyGrid trades={trades} sessions={sessions} />
 
       {/* Community + Truddy Insight */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 sm:gap-5">
@@ -225,12 +219,7 @@ export default function TruddyHome({ onNavigate }) {
                     <div className="text-sm text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
                   </div>
                 )}
-                {!todayMood && (
-                  <div className="flex items-start gap-2">
-                    <AlertCircle size={14} className="text-yellow-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">No mood check-in today — that's 10 XP on the table. Emotional awareness is your first line of defense.</div>
-                  </div>
-                )}
+
               </div>
             )}
             <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 4 }} whileTap={{ scale: 0.95 }}
