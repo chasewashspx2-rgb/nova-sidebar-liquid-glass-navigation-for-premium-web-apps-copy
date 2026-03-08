@@ -8,7 +8,7 @@ const PERSONALITIES = {
   yin: {
     name: "Yin",
     title: "The Motivator",
-    emoji: "☯️",
+    emoji: "☯︎",
     tagline: "Warm • Supportive • Rebuilding",
     color: "rgba(104,155,251,0.85)",
     gradFrom: "rgba(104,155,251,0.18)",
@@ -34,7 +34,7 @@ You are talking to an active trader who may be struggling with losses, fear, dou
   yang: {
     name: "Yang",
     title: "The Critic",
-    emoji: "⚡",
+    emoji: "☯︎",
     tagline: "Direct • Honest • Accountable",
     color: "rgba(255,100,80,0.9)",
     gradFrom: "rgba(255,100,80,0.15)",
