@@ -209,7 +209,13 @@ export default function CoachPage() {
                 <circle cx="12" cy="7" r="3.5" fill="white"/>
                 <circle cx="12" cy="17" r="3.5" fill="black"/>
               </svg>
-            ) : <span className="text-2xl">{val.emoji}</span>}
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="11" fill="white" stroke="white" strokeWidth="0.5"/>
+                <circle cx="12" cy="7" r="3.5" fill="white"/>
+                <circle cx="12" cy="17" r="3.5" fill="black"/>
+              </svg>
+            )}
             <div>
               <div className="font-bold text-sm">{val.name} <span className="font-normal opacity-70">— {val.title}</span></div>
               <div className="text-[11px] opacity-60 mt-0.5">{val.tagline}</div>
