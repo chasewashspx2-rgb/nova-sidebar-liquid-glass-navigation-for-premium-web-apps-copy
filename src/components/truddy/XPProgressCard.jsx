@@ -32,80 +32,53 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.05 }}
-      className="glass rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 relative overflow-hidden"
+      transition={{ duration: 0.4 }}
+      className="glass rounded-[20px] px-5 py-4 relative overflow-hidden"
     >
-      {/* Subtle background glow */}
-      <div className="pointer-events-none absolute inset-0 rounded-[inherit]"
-        style={{ background: `radial-gradient(ellipse at 80% 20%, ${stage.glow}, transparent 60%)` }} />
+      <div className="relative flex items-center gap-4">
+        {/* Icon */}
+        <div className="w-9 h-9 rounded-[11px] grid place-items-center flex-shrink-0"
+          style={{ background: `${stage.arc}1a`, border: `1px solid ${stage.arc}40` }}>
+          <StageIcon size={16} style={{ color: stage.arc }} />
+        </div>
 
-      <div className="relative">
-        {/* Top row — level badge + earn chips */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[10px] grid place-items-center flex-shrink-0"
-              style={{ background: `${stage.arc}22`, border: `1.5px solid ${stage.arc}44` }}>
-              <StageIcon size={15} style={{ color: stage.arc }} />
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {/* Top line */}
+          <div className="flex items-baseline justify-between gap-2 mb-2">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-black tracking-tight leading-none" style={{ color: stage.arc }}>
+                {xp.toLocaleString()}
+              </span>
+              <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.45)] uppercase tracking-wide">XP</span>
             </div>
-            <div className="px-3 py-1 rounded-full text-[11px] font-bold"
-              style={{ background: `${stage.arc}18`, border: `1px solid ${stage.arc}44`, color: stage.arc }}>
-              Lv.{stage.level} · {stage.name}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.5)]">{stage.name}</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold"
+                style={{ background: `${stage.arc}18`, color: stage.arc, border: `1px solid ${stage.arc}35` }}>
+                Lv.{stage.level}
+              </span>
             </div>
           </div>
 
-          {/* Quick earn chips */}
-          <div className="flex items-center gap-1.5">
-            {[
-              { label: "Journal", xp: "+20", page: "journal" },
-              { label: "Session", xp: "+30", page: "session" },
-            ].map(h => (
-              <motion.button key={h.page} onClick={() => onNavigate?.(h.page)}
-                whileTap={{ scale: 0.94 }} whileHover={{ y: -1 }}
-                className="px-2.5 py-1 rounded-full text-[10px] font-bold cursor-pointer flex items-center gap-1"
-                style={{ background: `${stage.arc}14`, border: `1px solid ${stage.arc}35`, color: stage.arc }}>
-                <Zap size={8} />{h.xp}
-              </motion.button>
-            ))}
+          {/* Progress bar */}
+          <div className="h-[5px] rounded-full overflow-hidden mb-1.5"
+            style={{ background: "rgba(180,200,240,0.18)" }}>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${pct}%` }}
+              transition={{ duration: 1.2, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+              className="h-full rounded-full"
+              style={{ background: "linear-gradient(90deg, #b8d4f8, #5b9af6, #2563eb)" }}
+            />
           </div>
-        </div>
 
-        {/* Big XP number */}
-        <div className="mb-1">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="text-5xl font-black tracking-tight leading-none"
-            style={{ color: stage.arc }}
-          >
-            {xp.toLocaleString()}
-          </motion.div>
-          <div className="text-xs font-semibold text-[rgba(var(--muted),0.5)] mt-1 uppercase tracking-widest">Total XP</div>
-        </div>
-
-        {/* Stage name */}
-        <div className="text-lg font-bold text-[rgba(var(--text),0.8)] mb-4">{stage.name} Trader</div>
-
-        {/* Progress bar */}
-        <div className="h-1.5 rounded-full overflow-hidden mb-2"
-          style={{ background: "rgba(var(--glass),0.35)", border: "1px solid rgba(255,255,255,0.15)" }}>
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${pct}%` }}
-            transition={{ duration: 1.3, delay: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
-            className="h-full rounded-full"
-            style={{ background: `linear-gradient(90deg, ${stage.arc}77, ${stage.arc})`, boxShadow: `0 0 8px ${stage.glow}` }}
-          />
-        </div>
-
-        {/* Bar labels */}
-        <div className="flex justify-between text-[11px] text-[rgba(var(--muted),0.5)]">
-          <span>{xpInLevel.toLocaleString()} / {xpNeeded.toLocaleString()} XP this level</span>
-          <span style={{ color: stage.arc }} className="font-semibold">
-            {isMax ? "Max level" : `${xpToNext.toLocaleString()} to ${nextStage.name}`}
-          </span>
+          {/* Sub label */}
+          <div className="text-[10px] text-[rgba(var(--muted),0.45)]">
+            {isMax ? "Max level reached" : `${xpToNext.toLocaleString()} XP to ${nextStage.name}`}
+          </div>
         </div>
       </div>
     </motion.div>
