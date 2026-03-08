@@ -49,8 +49,7 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
           {/* Top line */}
           <div className="flex items-baseline justify-between gap-2 mb-2">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black tracking-tight leading-none"
-                style={{ background: "linear-gradient(90deg, #b8d4f8, #2563eb)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span className="text-2xl font-black tracking-tight leading-none" style={{ color: "#4a90d9" }}>
                 {xp.toLocaleString()}
               </span>
               <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.45)] uppercase tracking-wide">XP</span>
