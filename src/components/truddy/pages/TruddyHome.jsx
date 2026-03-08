@@ -7,6 +7,7 @@ import { CircuitBreaker } from "@/components/truddy/CircuitBreaker";
 import XPProgressCard, { calcXpFromActivity, getStage } from "@/components/truddy/XPProgressCard";
 import StreakBadges from "@/components/truddy/StreakBadges";
 import ConsistencyGrid from "@/components/truddy/ConsistencyGrid";
+import CommunityWidget from "@/components/truddy/CommunityWidget";
 
 // Compute streaks from activity data
 function computeStreaks(trades, moodChecks) {
