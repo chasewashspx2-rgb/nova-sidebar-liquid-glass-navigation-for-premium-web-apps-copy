@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, BookOpen, Shield, BarChart2, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Sparkles, Radio, Zap, Bell } from "lucide-react";
+import { Brain, BookOpen, Shield, BarChart2, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Sparkles, Radio, Bell } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { MoodBadge } from "@/components/truddy/MoodBadge";
 import { CircuitBreaker } from "@/components/truddy/CircuitBreaker";
@@ -9,6 +9,7 @@ import StreakBadges from "@/components/truddy/StreakBadges";
 import ConsistencyGrid from "@/components/truddy/ConsistencyGrid";
 import CommunityWidget from "@/components/truddy/CommunityWidget";
 import RotatingQuote from "@/components/truddy/RotatingQuote";
+import YinYangIcon from "@/components/YinYangIcon";
 
 // Compute streaks from activity data
 function computeStreaks(trades) {
@@ -93,7 +94,7 @@ export default function TruddyHome({ onNavigate }) {
 
   const quickActions = [
     { icon: <Radio size={18} />,         label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: true },
-    { icon: <Zap size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach" },
+    { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach" },
     { icon: <BookOpen size={18} />,      label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal" },
     { icon: <ShieldCheck size={18} />,   label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade" },
   ];
