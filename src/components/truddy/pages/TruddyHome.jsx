@@ -107,6 +107,23 @@ export default function TruddyHome({ onNavigate }) {
         </div>
       </motion.div>
 
+      {/* Circuit Breaker */}
+      {lossStreak >= 2 && (
+        <CircuitBreaker trades={trades} maxLosses={2} />
+      )}
+
+      {/* Discipline Streak */}
+      {disciplineStreak >= 3 && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-[18px] p-4 border flex items-center gap-3"
+          style={{ background: "rgba(255,180,50,0.12)", borderColor: "rgba(255,180,50,0.35)" }}>
+          <Flame size={18} className="text-yellow-500 flex-shrink-0" />
+          <div>
+            <span className="font-semibold text-sm text-yellow-500">🔥 {disciplineStreak}-trade discipline streak!</span>
+            <div className="text-xs text-[rgba(var(--muted),0.8)] mt-0.5">You've followed your rules {disciplineStreak} trades in a row. This is how consistency is built.</div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard label="Win Rate" value={`${winRate}%`} sub={`${wins} of ${total} trades`} accent delay={0.1} icon={<TrendingUp size={14} className="text-[rgb(var(--accent))]" />} />
