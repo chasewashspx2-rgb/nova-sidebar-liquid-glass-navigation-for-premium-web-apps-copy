@@ -1,7 +1,7 @@
 import * as React from "react";
 import { AnimatePresence, LayoutGroup, motion, useMotionValue, useSpring, useTransform, animate } from "framer-motion";
 import { SidebarNav } from "@/components/sidebar-nav";
-import { Bell, ChevronRight, LayoutGrid, Moon, Search, Settings, Sun, X, Brain, BookOpen, Shield, BarChart2, Sparkles, Home, ShieldCheck, MessageCircle, Radio } from "lucide-react";
+import { Bell, ChevronRight, LayoutGrid, Moon, Search, Settings, Sun, X, Brain, BookOpen, Shield, BarChart2, Sparkles, Home, ShieldCheck, MessageCircle, Radio, Users } from "lucide-react";
 import { cn } from "@/components/cn";
 import { useTheme } from "@/components/theme";
 import { Tooltip } from "@/components/tooltip";
