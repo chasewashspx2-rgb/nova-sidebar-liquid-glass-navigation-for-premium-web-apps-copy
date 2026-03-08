@@ -62,7 +62,7 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
               <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.45)] uppercase tracking-wide">XP</span>
             </div>
             <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.5)]">{stage.name}</span>
+              <span className="text-[11px] font-semibold text-emerald-400">{stage.name}</span>
               
 
 
