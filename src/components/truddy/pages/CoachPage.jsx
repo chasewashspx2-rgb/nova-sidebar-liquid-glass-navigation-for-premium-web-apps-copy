@@ -204,10 +204,10 @@ export default function CoachPage() {
               boxShadow: personality === key ? `0 8px 32px ${val.glow}` : "none",
             }}>
             {key === "yin" ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: val.color }}>
-                <circle cx="12" cy="12" r="11" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
-                <circle cx="12" cy="6" r="4" fill="white"/>
-                <circle cx="12" cy="18" r="4" fill="black"/>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="11" fill="black" stroke="black" strokeWidth="0.5"/>
+                <circle cx="12" cy="7" r="3.5" fill="white"/>
+                <circle cx="12" cy="17" r="3.5" fill="black"/>
               </svg>
             ) : <span className="text-2xl">{val.emoji}</span>}
             <div>
