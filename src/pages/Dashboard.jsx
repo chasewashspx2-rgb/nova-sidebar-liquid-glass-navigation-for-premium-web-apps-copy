@@ -1,91 +1,46 @@
 import * as React from "react";
 import { AnimatePresence, LayoutGroup, motion, useMotionValue, useSpring, useTransform, animate } from "framer-motion";
 import { SidebarNav } from "@/components/sidebar-nav";
-import { Bell, ChevronRight, ChevronLeft, CreditCard, LayoutGrid, LineChart, Moon, Search, Settings, Sun, Users, ArrowUpRight, Sparkles, ArrowDownLeft, Wallet, Home, X, Plus } from "lucide-react";
+import { Bell, ChevronRight, LayoutGrid, Moon, Search, Settings, Sun, X, Brain, BookOpen, Shield, BarChart2, Sparkles, Home } from "lucide-react";
 import { cn } from "@/components/cn";
 import { useTheme } from "@/components/theme";
 import { Tooltip } from "@/components/tooltip";
 import { CursorGlow } from "@/components/cursor-glow";
 import { PremiumCursor } from "@/components/cursor";
-import { MDiv, MPath, MCircle, MG } from "@/components/motion";
+import { MDiv } from "@/components/motion";
 
-const transactions = [
-  { id: "t1", name: "Spotify", date: "Jan 28", status: "Pending", amount: "-$14.99" },
-  { id: "t2", name: "Alex Rivera", date: "Jan 27", status: "Done", amount: "-$340" },
-  { id: "t3", name: "Freelance Pay", date: "Jan 25", status: "Done", amount: "+$2,850" },
-  { id: "t4", name: "Amazon Order", date: "Jan 22", status: "Done", amount: "-$89" },
-  { id: "t5", name: "Electric Bill", date: "Jan 20", status: "Done", amount: "-$142" },
-  { id: "t6", name: "Transfer In", date: "Jan 18", status: "Done", amount: "+$500" },
-];
+// Pages
+import TruddyHome from "@/components/truddy/pages/TruddyHome";
+import JournalPage from "@/components/truddy/pages/JournalPage";
+import MoodPage from "@/components/truddy/pages/MoodPage";
+import RulesPage from "@/components/truddy/pages/RulesPage";
+import InsightsPage from "@/components/truddy/pages/InsightsPage";
 
 const sidebar = [
-  { key: "overview", label: "Overview", icon: <Home size={18} /> },
-  { key: "analytics", label: "Analytics", icon: <LineChart size={18} /> },
-  { key: "cards", label: "Cards", icon: <CreditCard size={18} /> },
-  { key: "wallet", label: "Wallet", icon: <Wallet size={18} /> },
-  { key: "apps", label: "Apps", icon: <LayoutGrid size={18} /> },
+  { key: "home", label: "Home", icon: <Home size={18} /> },
+  { key: "journal", label: "Trade Journal", icon: <BookOpen size={18} /> },
+  { key: "mood", label: "Mood Check-In", icon: <Brain size={18} /> },
+  { key: "rules", label: "My Rules", icon: <Shield size={18} /> },
+  { key: "insights", label: "Insights", icon: <BarChart2 size={18} /> },
   { key: "settings", label: "Settings", icon: <Settings size={18} /> },
 ];
 
 function BrandMark() {
   return (
-    <div className="w-9 h-9 rounded-full bg-[rgb(var(--text))] dark:bg-white grid place-items-center shadow-lg">
-      <div className="w-4 h-4 rounded-full border-2 border-white dark:border-[#689BFB]" />
+    <div className="w-9 h-9 rounded-full grid place-items-center shadow-lg flex-shrink-0"
+      style={{ background: "linear-gradient(135deg, rgba(104,155,251,1) 0%, rgba(121,113,249,1) 100%)" }}>
+      <Brain size={16} className="text-white" />
     </div>
-  );
-}
-
-function StatusPill({ status }) {
-  const pending = status === "Pending";
-  return (
-    <span className={cn("text-xs font-medium px-2.5 py-1 rounded-full", pending ? "bg-[rgba(var(--accent),0.15)] border border-[rgba(var(--accent),0.25)] text-[rgb(var(--accent))]" : "bg-transparent text-[rgba(var(--muted),0.75)]")}>
-      {status}
-    </span>
-  );
-}
-
-const M = motion;
-
-function PillToggle({ options, active, onChange }) {
-  return (
-    <LayoutGroup id="pill-toggle">
-      <div className="flex items-center gap-1 p-1 rounded-full glass">
-        {options.map((option) => (
-          <button
-            key={option}
-            onClick={() => onChange(option)}
-            className="relative px-3 py-1.5 text-xs font-medium rounded-full transition-colors cursor-pointer"
-          >
-            {active === option && (
-              <M.div
-                layoutId="pillIndicator"
-                className="absolute inset-0 rounded-full bg-white dark:bg-white/20 shadow-sm"
-                transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              />
-            )}
-            <span className={cn("relative z-10 transition-colors", active === option ? "text-[rgb(var(--text))]" : "text-[rgba(var(--muted),0.8)]")}>
-              {option}
-            </span>
-          </button>
-        ))}
-      </div>
-    </LayoutGroup>
   );
 }
 
 function SearchModal({ isOpen, onClose }) {
   const inputRef = React.useRef(null);
-
   React.useEffect(() => {
-    if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
+    if (isOpen && inputRef.current) setTimeout(() => inputRef.current?.focus(), 100);
   }, [isOpen]);
-
   React.useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
-    };
+    const handleEsc = (e) => { if (e.key === "Escape") onClose(); };
     if (isOpen) window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, onClose]);
@@ -94,119 +49,61 @@ function SearchModal({ isOpen, onClose }) {
     <AnimatePresence>
       {isOpen && (
         <>
-          <M.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-black/20 backdrop-blur-md"
-            onClick={onClose}
-          />
-          <M.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className="fixed top-[15%] left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-4"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 z-50 bg-black/20 backdrop-blur-md" onClick={onClose} />
+          <motion.div initial={{ opacity: 0, y: -20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} className="fixed top-[15%] left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-4">
             <div className="glass-strong rounded-[28px] p-2 shadow-2xl">
               <div className="flex items-center gap-3 px-4">
-                <M.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.1 }}
-                >
-                  <Search size={20} className="text-[rgba(var(--muted),0.7)]" />
-                </M.div>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="Search transactions, contacts, or actions..."
-                  className="flex-1 bg-transparent py-4 text-base outline-none placeholder:text-[rgba(var(--muted),0.5)]"
-                />
-                <M.button
-                  onClick={onClose}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-8 h-8 rounded-full bg-white/30 dark:bg-white/10 grid place-items-center cursor-pointer"
-                >
+                <Search size={20} className="text-[rgba(var(--muted),0.7)]" />
+                <input ref={inputRef} type="text" placeholder="Search trades, emotions, rules..." className="flex-1 bg-transparent py-4 text-base outline-none placeholder:text-[rgba(var(--muted),0.5)]" />
+                <motion.button onClick={onClose} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="w-8 h-8 rounded-full bg-white/30 dark:bg-white/10 grid place-items-center cursor-pointer">
                   <X size={16} />
-                </M.button>
+                </motion.button>
               </div>
-              <M.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="mt-2 px-4 pb-4"
-              >
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-2 px-4 pb-4">
                 <div className="text-xs text-[rgba(var(--muted),0.6)] mb-2">Quick actions</div>
                 <div className="flex flex-wrap gap-2">
-                  {["Send money", "View statements", "Add contact", "Export data"].map((action, i) => (
-                    <M.button
-                      key={action}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.2 + i * 0.05 }}
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-3 py-1.5 rounded-full text-xs font-medium bg-white/40 dark:bg-white/10 border border-white/30 dark:border-white/15 cursor-pointer"
-                    >
+                  {["Log a trade", "Check-in mood", "Review rules", "View insights"].map((action, i) => (
+                    <motion.button key={action} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 + i * 0.05 }} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} className="px-3 py-1.5 rounded-full text-xs font-medium bg-white/40 dark:bg-white/10 border border-white/30 dark:border-white/15 cursor-pointer">
                       {action}
-                    </M.button>
+                    </motion.button>
                   ))}
                 </div>
-              </M.div>
+              </motion.div>
             </div>
-          </M.div>
+          </motion.div>
         </>
       )}
     </AnimatePresence>
   );
 }
 
-function PlusButton({ onClick }) {
-  return (
-    <M.button
-      onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="focus-ring w-11 h-11 rounded-full glass cursor-pointer grid place-items-center flex-shrink-0"
-    >
-      <Plus size={18} />
-    </M.button>
-  );
-}
-
-function ArrowButton({ direction, onClick }) {
-  return (
-    <M.button
-      onClick={onClick}
-      whileHover={{ scale: 1.1, x: direction === "right" ? 2 : -2 }}
-      whileTap={{ scale: 0.9 }}
-      className="w-9 h-9 rounded-full glass grid place-items-center focus-ring cursor-pointer flex-shrink-0"
-    >
-      {direction === "right" ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-    </M.button>
-  );
-}
+const pageComponents = {
+  home: TruddyHome,
+  journal: JournalPage,
+  mood: MoodPage,
+  rules: RulesPage,
+  insights: InsightsPage,
+  settings: () => (
+    <div className="flex items-center justify-center h-64 text-[rgba(var(--muted),0.6)] text-sm">
+      Settings coming soon
+    </div>
+  ),
+};
 
 export default function Dashboard() {
   const { theme, toggle } = useTheme();
-  const [active, setActive] = React.useState("analytics");
+  const [active, setActive] = React.useState("home");
   const [bottomActive, setBottomActive] = React.useState(null);
   const [prevBottomActive, setPrevBottomActive] = React.useState(null);
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const [sendMoneyTab, setSendMoneyTab] = React.useState("Recent");
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const bottomScale = useMotionValue(1);
   const smoothBottomScale = useSpring(bottomScale, { stiffness: 400, damping: 15, mass: 0.8 });
-
   const bottomItems = ["notifications", "profile"];
   const bottomActiveIndex = bottomActive ? bottomItems.indexOf(bottomActive) : -1;
   const prevBottomIndex = prevBottomActive ? bottomItems.indexOf(prevBottomActive) : -1;
   const bottomDirection = bottomActiveIndex > prevBottomIndex ? 1 : -1;
-
   const bottomSkewY = useTransform(smoothBottomScale, [0.85, 1, 1.12], [bottomDirection * -8, 0, bottomDirection * 6]);
   const bottomScaleX = useTransform(smoothBottomScale, [0.85, 1, 1.12], [1.15, 1, 0.92]);
   const bottomScaleY = useTransform(smoothBottomScale, [0.85, 1, 1.12], [0.88, 1, 1.1]);
@@ -223,807 +120,115 @@ export default function Dashboard() {
     setPrevBottomActive(bottomActive);
   }, [bottomActive, prevBottomActive, bottomScale]);
 
+  const ActivePage = pageComponents[active] || pageComponents.home;
+
   return (
     <main className="min-h-screen p-3 sm:p-6 lg:p-10">
       <PremiumCursor />
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Mobile Menu Button */}
-      <M.button
-        onClick={() => setMobileMenuOpen(true)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full glass-strong shadow-2xl grid place-items-center cursor-pointer"
-        style={{ boxShadow: "0 12px 40px rgba(104,155,251,0.3)" }}
-      >
+      <motion.button onClick={() => setMobileMenuOpen(true)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full glass-strong shadow-2xl grid place-items-center cursor-pointer" style={{ boxShadow: "0 12px 40px rgba(104,155,251,0.3)" }}>
         <LayoutGrid size={22} />
-      </M.button>
+      </motion.button>
 
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            <M.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
-            />
-            <M.div
-              initial={{ x: -300, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -300, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 p-6"
-              style={{ 
-                background: "linear-gradient(135deg, rgba(104,155,251,0.22) 0%, rgba(121,113,249,0.18) 100%)",
-                border: "1px solid rgba(255,255,255,0.35)",
-                backdropFilter: "blur(26px)",
-                WebkitBackdropFilter: "blur(26px)",
-                boxShadow: "0 30px 92px rgba(15, 23, 42, 0.18)"
-              }}
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMobileMenuOpen(false)} className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm" />
+            <motion.div initial={{ x: -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} className="lg:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 p-6" style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.22) 0%, rgba(121,113,249,0.18) 100%)", border: "1px solid rgba(255,255,255,0.35)", backdropFilter: "blur(26px)", WebkitBackdropFilter: "blur(26px)", boxShadow: "0 30px 92px rgba(15, 23, 42, 0.18)" }}>
               <div className="flex items-center justify-between mb-8">
-                <BrandMark />
-                <M.button
-                  onClick={() => setMobileMenuOpen(false)}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-10 h-10 rounded-full glass grid place-items-center cursor-pointer"
-                >
+                <div className="flex items-center gap-3">
+                  <BrandMark />
+                  <div>
+                    <div className="font-bold text-base">Truddy</div>
+                    <div className="text-[10px] text-[rgba(var(--muted),0.75)]">Trading Psychology Co-Pilot</div>
+                  </div>
+                </div>
+                <motion.button onClick={() => setMobileMenuOpen(false)} whileTap={{ scale: 0.9 }} className="w-10 h-10 rounded-full glass grid place-items-center cursor-pointer">
                   <X size={18} />
-                </M.button>
+                </motion.button>
               </div>
-
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {sidebar.map((item) => (
-                  <M.button
-                    key={item.key}
-                    onClick={() => {
-                      setActive(item.key);
-                      setBottomActive(null);
-                      setMobileMenuOpen(false);
-                    }}
-                    whileHover={{ x: 4 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all cursor-pointer",
-                      active === item.key && !bottomActive
-                        ? "glass-strong font-semibold"
-                        : "hover:glass"
-                    )}
-                  >
+                  <motion.button key={item.key} onClick={() => { setActive(item.key); setBottomActive(null); setMobileMenuOpen(false); }} whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }} className={cn("w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all cursor-pointer", active === item.key && !bottomActive ? "glass-strong font-semibold" : "hover:glass")}>
                     {item.icon}
                     <span className="text-sm">{item.label}</span>
-                  </M.button>
+                  </motion.button>
                 ))}
               </div>
-
-              <div className="absolute bottom-6 left-6 right-6 space-y-3">
-                <M.button
-                  onClick={() => {
-                    setBottomActive("notifications");
-                    setMobileMenuOpen(false);
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all",
-                    bottomActive === "notifications" ? "glass-strong font-semibold" : "hover:glass"
-                  )}
-                >
-                  <Bell size={18} />
-                  <span className="text-sm">Notifications</span>
-                </M.button>
-                <M.button
-                  onClick={() => {
-                    setBottomActive("profile");
-                    setMobileMenuOpen(false);
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all",
-                    bottomActive === "profile" ? "glass-strong font-semibold" : "hover:glass"
-                  )}
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=face"
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <span className="text-sm">Profile</span>
-                </M.button>
+              <div className="absolute bottom-6 left-6 right-6 space-y-2">
+                <motion.button onClick={() => { setBottomActive("notifications"); setMobileMenuOpen(false); }} whileTap={{ scale: 0.98 }} className={cn("w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all", bottomActive === "notifications" ? "glass-strong font-semibold" : "hover:glass")}>
+                  <Bell size={18} /><span className="text-sm">Notifications</span>
+                </motion.button>
               </div>
-            </M.div>
+            </motion.div>
           </>
         )}
       </AnimatePresence>
 
       <MDiv initial={{ opacity: 0, y: 12, scale: 0.995 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }} className="relative mx-auto max-w-[1280px] rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] glass-strong overflow-hidden grain">
         <CursorGlow />
-
         <div className="relative grid grid-cols-1 lg:grid-cols-[98px_1fr]">
+          {/* Sidebar */}
           <aside className="hidden lg:block relative z-10 px-4 py-6 lg:px-5 lg:py-8">
             <div className="flex items-center justify-center">
               <BrandMark />
             </div>
-
             <SidebarNav
               items={sidebar}
               active={bottomActive ? "" : active}
-              onChange={(key) => {
-                setActive(key);
-                setBottomActive(null);
-              }}
+              onChange={(key) => { setActive(key); setBottomActive(null); }}
             />
-
             <LayoutGroup id="bottom-nav">
               <div className="mt-auto pt-16 flex flex-col items-center gap-3">
-                <Tooltip label="Notifications">
-                  <button
-                    onClick={() => {
-                      if (bottomActive === "notifications") {
-                        setBottomActive(null);
-                        setActive("analytics");
-                      } else {
-                        setBottomActive("notifications");
-                      }
-                    }}
-                    className={cn(
-                      "relative focus-ring pressable cursor-pointer w-11 h-11 rounded-[16px] grid place-items-center",
-                      "transition-[opacity] duration-200 ease-premium",
-                      bottomActive === "notifications" ? "opacity-100" : "opacity-70 hover:opacity-100"
-                    )}
-                  >
-                    {bottomActive === "notifications" && (
-                      <>
-                        <M.div
-                          layoutId="bottomActiveIndicator"
-                          className="absolute inset-0 rounded-[16px]"
-                          style={{
-                            scaleX: bottomScaleX,
-                            scaleY: bottomScaleY,
-                            skewY: bottomSkewY,
-                            background: "linear-gradient(135deg, rgba(104,155,251,0.55) 0%, rgba(121,113,249,0.45) 100%)",
-                            border: "1px solid rgba(255,255,255,0.45)",
-                            boxShadow: "0 6px 24px rgba(104,155,251,0.30), inset 0 1px 0 rgba(255,255,255,0.25)",
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 350,
-                            damping: 22,
-                            mass: 0.8,
-                            layout: {
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 18,
-                              mass: 1,
-                            }
-                          }}
-                        >
-                          <M.div
-                            className="absolute inset-0 rounded-[16px] overflow-hidden"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.1, duration: 0.2 }}
-                          >
-                            <div
-                              className="absolute inset-0"
-                              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 50%)" }}
-                            />
-                          </M.div>
-                        </M.div>
-                        <M.div
-                          className="absolute inset-1 rounded-[12px]"
-                          initial={{ opacity: 0, scale: 1.2 }}
-                          animate={{ opacity: [0, 0.4, 0], scale: [1.2, 1, 0.95] }}
-                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                          style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.3) 0%, rgba(121,113,249,0.2) 100%)" }}
-                        />
-                      </>
-                    )}
-                    <M.span
-                      className="relative z-10"
-                      animate={bottomActive === "notifications" ? { scale: [1, 1.15, 0.95, 1.02, 1] } : { scale: 1 }}
-                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], times: [0, 0.2, 0.5, 0.8, 1] }}
-                    >
-                      <Bell size={18} />
-                    </M.span>
+                <Tooltip label="Search">
+                  <button onClick={() => setSearchOpen(true)} className="relative focus-ring pressable cursor-pointer w-11 h-11 rounded-[16px] grid place-items-center opacity-70 hover:opacity-100 transition-[opacity] duration-200">
+                    <Search size={18} />
                   </button>
                 </Tooltip>
-
-                <Tooltip label="Profile">
-                  <button
-                    onClick={() => {
-                      if (bottomActive === "profile") {
-                        setBottomActive(null);
-                        setActive("analytics");
-                      } else {
-                        setBottomActive("profile");
-                      }
-                    }}
-                    className={cn(
-                      "relative focus-ring pressable w-11 h-11 rounded-full cursor-pointer grid place-items-center",
-                      "transition-[opacity] duration-200 ease-premium",
-                      bottomActive === "profile" ? "opacity-100" : "opacity-70 hover:opacity-100"
+                <Tooltip label="Notifications">
+                  <button onClick={() => { bottomActive === "notifications" ? (setBottomActive(null), setActive("home")) : setBottomActive("notifications"); }} className={cn("relative focus-ring pressable cursor-pointer w-11 h-11 rounded-[16px] grid place-items-center", "transition-[opacity] duration-200 ease-premium", bottomActive === "notifications" ? "opacity-100" : "opacity-70 hover:opacity-100")}>
+                    {bottomActive === "notifications" && (
+                      <motion.div layoutId="bottomActiveIndicator" className="absolute inset-0 rounded-[16px]" style={{ scaleX: bottomScaleX, scaleY: bottomScaleY, skewY: bottomSkewY, background: "linear-gradient(135deg, rgba(104,155,251,0.55) 0%, rgba(121,113,249,0.45) 100%)", border: "1px solid rgba(255,255,255,0.45)", boxShadow: "0 6px 24px rgba(104,155,251,0.30), inset 0 1px 0 rgba(255,255,255,0.25)" }} transition={{ type: "spring", stiffness: 350, damping: 22, mass: 0.8 }} />
                     )}
-                  >
-                    {bottomActive === "profile" && (
-                      <>
-                        <M.div
-                          layoutId="bottomActiveIndicator"
-                          className="absolute inset-0 rounded-full"
-                          style={{
-                            scaleX: bottomScaleX,
-                            scaleY: bottomScaleY,
-                            skewY: bottomSkewY,
-                            background: "linear-gradient(135deg, rgba(104,155,251,0.55) 0%, rgba(121,113,249,0.45) 100%)",
-                            border: "1px solid rgba(255,255,255,0.45)",
-                            boxShadow: "0 6px 24px rgba(104,155,251,0.30), inset 0 1px 0 rgba(255,255,255,0.25)",
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 350,
-                            damping: 22,
-                            mass: 0.8,
-                            layout: {
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 18,
-                              mass: 1,
-                            }
-                          }}
-                        >
-                          <M.div
-                            className="absolute inset-0 rounded-full overflow-hidden"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.1, duration: 0.2 }}
-                          >
-                            <div
-                              className="absolute inset-0"
-                              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 50%)" }}
-                            />
-                          </M.div>
-                        </M.div>
-                        <M.div
-                          className="absolute inset-1 rounded-full"
-                          initial={{ opacity: 0, scale: 1.2 }}
-                          animate={{ opacity: [0, 0.4, 0], scale: [1.2, 1, 0.95] }}
-                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                          style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.3) 0%, rgba(121,113,249,0.2) 100%)" }}
-                        />
-                      </>
-                    )}
-                    <M.div
-                      className="relative z-10"
-                      animate={bottomActive === "profile" ? { scale: [1, 1.1, 0.95, 1.02, 1] } : { scale: 1 }}
-                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], times: [0, 0.2, 0.5, 0.8, 1] }}
-                    >
-                      <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=face"
-                        alt="Profile"
-                        className="w-9 h-9 rounded-full object-cover border-2 border-white/40"
-                      />
-                    </M.div>
+                    <motion.span className="relative z-10" animate={bottomActive === "notifications" ? { scale: [1, 1.15, 0.95, 1.02, 1] } : { scale: 1 }} transition={{ duration: 0.5 }}>
+                      <Bell size={18} />
+                    </motion.span>
                   </button>
+                </Tooltip>
+                <Tooltip label="Toggle theme">
+                  <motion.button onClick={toggle} whileHover={{ scale: 1.08, rotate: 15 }} whileTap={{ scale: 0.92, rotate: -15 }} className="icon-tile focus-ring cursor-pointer opacity-70 hover:opacity-100">
+                    <AnimatePresence mode="wait" initial={false}>
+                      {theme === "dark" ? (
+                        <motion.span key="sun" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}><Sun size={18} /></motion.span>
+                      ) : (
+                        <motion.span key="moon" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}><Moon size={18} /></motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
                 </Tooltip>
               </div>
             </LayoutGroup>
           </aside>
 
-          <section className="p-4 sm:p-5 lg:p-7">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 sm:gap-6">
-              <div className="space-y-4 sm:space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="text-[24px] sm:text-[28px] font-bold tracking-tight">Nova</div>
-                    <div className="text-sm sm:text-base font-medium text-[rgba(var(--muted),0.85)]">Your personal wealth dashboard</div>
-                  </div>
-
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="glass rounded-[16px] sm:rounded-[18px] px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <span className="font-semibold tracking-widest">**** 7291</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/70 dark:bg-white/35" />
-                      <span className="text-[rgba(var(--muted),0.95)]">08/27</span>
-                    </div>
-
-                    <M.button
-                      onClick={toggle}
-                      whileHover={{ scale: 1.08, rotate: 15 }}
-                      whileTap={{ scale: 0.92, rotate: -15 }}
-                      className="icon-tile focus-ring cursor-pointer"
-                      aria-label="Toggle theme"
-                      title="Toggle theme"
-                    >
-                      <AnimatePresence mode="wait" initial={false}>
-                        {theme === "dark" ? (
-                          <M.span
-                            key="sun"
-                            initial={{ rotate: -90, opacity: 0 }}
-                            animate={{ rotate: 0, opacity: 1 }}
-                            exit={{ rotate: 90, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Sun size={18} />
-                          </M.span>
-                        ) : (
-                          <M.span
-                            key="moon"
-                            initial={{ rotate: 90, opacity: 0 }}
-                            animate={{ rotate: 0, opacity: 1 }}
-                            exit={{ rotate: -90, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Moon size={18} />
-                          </M.span>
-                        )}
-                      </AnimatePresence>
-                    </M.button>
-                  </div>
-                </div>
-
-                <div className="glass rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] p-4 sm:p-5 lg:p-7 relative overflow-hidden">
-                  <div className="pointer-events-none absolute -left-10 top-12 w-[560px] h-[260px] rounded-full blur-3xl opacity-70 animate-floaty" style={{ background: "radial-gradient(circle at 30% 30%, rgba(121,113,249,0.55), rgba(104,155,251,0.35) 55%, transparent 72%)" }} />
-
-                  <div className="relative flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-6 lg:gap-8">
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="text-xs sm:text-sm text-[rgba(var(--muted),0.95)]">Net worth</div>
-                          <div className="mt-1 text-[32px] sm:text-[36px] lg:text-[40px] leading-none font-semibold tracking-tight">$128,450</div>
-                        </div>
-                        <div className="flex gap-2 lg:hidden">
-                          <M.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="focus-ring shimmer rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-white/70 dark:bg-white/20 border border-white/60 dark:border-white/30 shadow-sm cursor-pointer"
-                          >
-                            <ArrowDownLeft size={15} />
-                          </M.button>
-                          <M.button
-                            whileHover={{ scale: 1.1, boxShadow: "0 8px 24px rgba(104,155,251,0.5)" }}
-                            whileTap={{ scale: 0.9 }}
-                            className="focus-ring shimmer rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-white cursor-pointer"
-                            style={{ background: "linear-gradient(135deg, rgba(104,155,251,1) 0%, rgba(121,113,249,1) 100%)", border: "1px solid rgba(255,255,255,0.3)" }}
-                          >
-                            <ArrowUpRight size={15} />
-                          </M.button>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 sm:mt-5 lg:mt-6 grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
-                        <M.button
-                          whileHover={{ scale: 1.03, y: -4 }}
-                          whileTap={{ scale: 0.97 }}
-                          className="focus-ring glass rounded-[16px] sm:rounded-[20px] lg:rounded-[28px] p-2.5 sm:p-3 lg:p-4 text-center cursor-pointer"
-                        >
-                          <div className="text-[13px] sm:text-[14px] lg:text-[18px] font-semibold">$24.1k</div>
-                          <div className="text-[9px] sm:text-[10px] lg:text-xs text-[rgba(var(--muted),0.95)]">Checking</div>
-                        </M.button>
-
-                        <M.button
-                          whileHover={{ scale: 1.03, y: -4, boxShadow: "0 20px 56px rgba(104,155,251,0.35)" }}
-                          whileTap={{ scale: 0.97 }}
-                          className="focus-ring relative rounded-[16px] sm:rounded-[20px] lg:rounded-[28px] p-2.5 sm:p-3 lg:p-4 text-center cursor-pointer overflow-hidden"
-                          style={{ border: "1px solid rgba(255,255,255,0.30)", background: "radial-gradient(160px 160px at 30% 30%, rgba(121,113,249,0.85), rgba(104,155,251,0.65) 60%, rgba(255,255,255,0.22))", boxShadow: "0 16px 48px rgba(104,155,251,0.20)" }}
-                        >
-                          <div className="absolute inset-0 opacity-45 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),transparent_60%)]" />
-                          <div className="relative text-[13px] sm:text-[14px] lg:text-[18px] font-semibold text-white drop-shadow">$67.8k</div>
-                          <div className="relative text-[9px] sm:text-[10px] lg:text-xs text-white/85">Invest</div>
-                        </M.button>
-
-                        <M.button
-                          whileHover={{ scale: 1.03, y: -4 }}
-                          whileTap={{ scale: 0.97 }}
-                          className="focus-ring glass rounded-[16px] sm:rounded-[20px] lg:rounded-[28px] p-2.5 sm:p-3 lg:p-4 text-center cursor-pointer"
-                        >
-                          <div className="text-[13px] sm:text-[14px] lg:text-[18px] font-semibold">$36.4k</div>
-                          <div className="text-[9px] sm:text-[10px] lg:text-xs text-[rgba(var(--muted),0.95)]">Savings</div>
-                        </M.button>
-                      </div>
-                    </div>
-
-                    <div className="hidden lg:flex flex-1 items-center justify-between gap-6">
-                      <M.div 
-                        className="relative w-full max-w-[430px] h-[170px] rounded-[34px] overflow-hidden glass"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                      >                        
-                        {/* Gradient background */}                                                                                         
-                        <M.div                                                                                                                
-                          className="absolute inset-0"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.8 }}                                                                                                          
-                          style={{                                                                                                          
-                            background: "radial-gradient(240px 200px at 30% 50%, rgba(121,113,249,0.45), rgba(255,255,255,0.08) 60%), radial-gradient(220px 170px at 70% 50%, rgba(104,155,251,0.26), transparent 65%), linear-gradient(120deg, rgba(255,255,255,0.45), rgba(255,255,255,0.10))"                                                                      
-                          }}                                                                                                                
-                        />                                                                                                                  
-                                                                                                                                
-                        {/* SVG line graph */}                                                                                              
-                        <svg className="absolute inset-0 w-full h-full opacity-70" viewBox="0 0 600 220" fill="none">
-                          <M.path                                                                                                             
-                            d="M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110"                                                
-                            stroke="rgba(255,255,255,0.78)"                                                                                 
-                            strokeWidth="4"                                                                                                 
-                            strokeLinecap="round"
-                            initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{ pathLength: 1, opacity: 1 }}
-                            transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1], delay: 0.4 }}                                                                                           
-                          />
-                          {/* Animated glow effect */}
-                          <M.circle
-                            r="8"
-                            fill="rgba(255,255,255,0.6)"
-                            initial={{ offsetDistance: "0%", opacity: 0 }}
-                            animate={{ 
-                              offsetDistance: "100%",
-                              opacity: [0, 1, 1, 0]
-                            }}
-                            transition={{ 
-                              duration: 2.5,
-                              repeat: Infinity,
-                              ease: "linear",
-                              delay: 0.6
-                            }}
-                            style={{
-                              offsetPath: "path('M0 150 C 120 80, 200 190, 320 120 C 420 70, 480 160, 600 110')"
-                            }}
-                          >
-                            <animate
-                              attributeName="r"
-                              values="6;10;6"
-                              dur="1.5s"
-                              repeatCount="indefinite"
-                            />
-                          </M.circle>                                                                                                                
-                        </svg>                                                                                                              
-                      </M.div>
-
-                      <div className="flex flex-col gap-3 ml-auto relative z-10">
-                        <M.button
-                          whileHover={{ scale: 1.05, y: -2 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="focus-ring shimmer rounded-full px-5 h-10 flex items-center gap-2 font-semibold text-sm bg-white/70 dark:bg-white/20 border border-white/60 dark:border-white/30 shadow-sm cursor-pointer"
-                        >
-                          <M.span whileHover={{ x: -2 }}>
-                            <ArrowDownLeft size={16} />
-                          </M.span>
-                          <span>Receive</span>
-                        </M.button>
-                        <M.button
-                          whileHover={{ scale: 1.05, y: -2, boxShadow: "0 12px 32px rgba(104,155,251,0.5)" }}
-                          whileTap={{ scale: 0.95 }}
-                          className="focus-ring shimmer rounded-full px-5 h-10 flex items-center gap-2 font-semibold text-sm text-white cursor-pointer"
-                          style={{ background: "linear-gradient(135deg, rgba(104,155,251,1) 0%, rgba(121,113,249,1) 100%)", border: "1px solid rgba(255,255,255,0.3)", boxShadow: "0 8px 24px rgba(104,155,251,0.35)" }}
-                        >
-                          <M.span whileHover={{ x: 2, y: -2 }}>
-                            <ArrowUpRight size={16} />
-                          </M.span>
-                          <span>Send</span>
-                        </M.button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm sm:text-base font-semibold">Monthly spending</div>
-                      <span className="pill text-[10px] sm:text-xs">2025</span>
-                    </div>
-
-                    <div className="mt-6 sm:mt-8 lg:mt-12 flex items-end gap-2 sm:gap-3 lg:gap-4 h-28 sm:h-32 lg:h-36">
-                      {[
-                        { m: "SEP", h: 52, amt: "$3.2k" },
-                        { m: "OCT", h: 68, amt: "$4.1k" },
-                        { m: "NOV", h: 88, amt: "$5.4k", tag: true },
-                        { m: "DEC", h: 74, amt: "$4.5k" },
-                        { m: "JAN", h: 62, amt: "$3.8k" },
-                      ].map((b, idx) => (
-                        <div key={b.m} className="group flex-1 flex flex-col items-center gap-2">
-                          <div className="relative w-full">
-                            <div className="w-full h-28 rounded-[22px] bg-white/32 dark:bg-white/6 border border-white/35 dark:border-white/10" />
-                            <MDiv className="absolute bottom-0 left-0 right-0 rounded-[22px] shadow-glow cursor-pointer transition-all group-hover:brightness-110" initial={{ height: 0 }} animate={{ height: `${b.h}%` }} transition={{ duration: 0.75, delay: 0.12 + idx * 0.06, ease: [0.2, 0.8, 0.2, 1] }} style={{ background: "linear-gradient(180deg, rgba(104,155,251,0.88), rgba(121,113,249,0.55))" }} />
-                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                              <span className="px-2 py-1 rounded-lg text-xs font-semibold bg-[rgb(var(--text))] text-white dark:bg-[#1a2850] dark:text-white shadow-lg whitespace-nowrap">{b.amt}</span>
-                            </div>
-                            {b.tag ? <span className="absolute -top-3 right-1 pill bg-white text-[rgb(var(--text))] border border-[rgba(0,0,0,0.12)] dark:bg-[#1a2850] dark:text-white dark:border-white/20 text-[10px] px-2 shadow-md">{b.amt}</span> : null}
-                          </div>
-                          <div className="text-xs text-[rgba(var(--muted),0.95)]">{b.m}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <M.div
-                    whileHover={{ scale: 1.02, y: -4 }}
-                    whileTap={{ scale: 0.99 }}
-                    className="relative rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6 overflow-hidden cursor-pointer"
-                    style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.45) 0%, rgba(121,113,249,0.35) 100%)", border: "1px solid rgba(255,255,255,0.35)" }}
-                  >
-                    <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(400px 300px at 30% 20%, rgba(255,255,255,0.25), transparent 70%)" }} />
-                    <div className="relative flex items-center justify-between">
-                      <div className="text-sm sm:text-base font-semibold text-[rgb(var(--text))]">Portfolio growth</div>
-                      <M.button
-                        whileHover={{ scale: 1.1, x: 2 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="icon-tile focus-ring cursor-pointer bg-white/30 dark:bg-white/20 border-white/40 dark:border-white/25"
-                      >
-                        <ChevronRight size={18} className="text-[rgb(var(--text))]" />
-                      </M.button>
-                    </div>
-
-                    <div className="relative mt-4 sm:mt-5 lg:mt-6">
-                      <div className="text-[28px] sm:text-[32px] lg:text-4xl font-semibold text-[rgb(var(--text))]">+12.4%</div>
-                      <div className="text-xs sm:text-sm text-[rgba(var(--text),0.7)]">year to date returns</div>
-                    </div>
-
-                    <div className="relative mt-4 sm:mt-5 h-24 sm:h-28">
-                      <svg className="w-full h-full" viewBox="0 0 360 130" fill="none" preserveAspectRatio="none">
-                        <defs>
-                          <linearGradient id="healthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="rgba(104,155,251,0.35)" />
-                            <stop offset="100%" stopColor="rgba(104,155,251,0)" />
-                          </linearGradient>
-                          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="rgba(104,155,251,0.6)" />
-                            <stop offset="100%" stopColor="rgba(104,155,251,1)" />
-                          </linearGradient>
-                        </defs>
-
-                        <line x1="0" y1="40" x2="360" y2="40" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
-                        <line x1="0" y1="70" x2="360" y2="70" stroke="rgba(var(--text),0.1)" strokeWidth="1" strokeDasharray="4 4" />
-
-                        <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28 L360 130 L0 130 Z"
-                          fill="url(#healthGradient)"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.8, delay: 0.3 }}
-                        />
-
-                        <MPath
-                          d="M0 105 Q 40 95, 80 75 T 160 60 T 240 45 T 320 30 L360 28"
-                          fill="none"
-                          stroke="url(#lineGradient)"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 1.2, ease: [0.2, 0.8, 0.2, 1] }}
-                        />
-
-                        {[
-                          { x: 80, y: 75 },
-                          { x: 160, y: 60 },
-                          { x: 240, y: 45 },
-                        ].map((point, i) => (
-                          <MCircle
-                            key={i}
-                            cx={point.x}
-                            cy={point.y}
-                            r="4"
-                            fill="rgba(104,155,251,0.9)"
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.4 + i * 0.15, type: "spring", stiffness: 300, damping: 20 }}
-                          />
-                        ))}
-
-                        <MG
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.9, type: "spring", stiffness: 300, damping: 15 }}
-                          style={{ transformOrigin: "320px 30px" }}
-                        >
-                          <circle cx="320" cy="30" r="10" fill="rgba(104,155,251,0.2)" className="animate-pulse" />
-                          <circle cx="320" cy="30" r="5" fill="rgb(104,155,251)" />
-                        </MG>
-
-                        <MG initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-                          <text x="320" y="20" fontSize="11" fontWeight="600" fill="rgb(var(--text))" textAnchor="middle">$68.2k</text>
-                        </MG>
-                        <text x="8" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Feb</text>
-                        <text x="170" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jul</text>
-                        <text x="340" y="122" fontSize="10" fill="rgba(var(--text),0.5)">Jan</text>
-                      </svg>
-                    </div>
-                  </M.div>
-                </div>
-
-                <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm sm:text-base font-semibold">Scheduled bills</div>
-                    <M.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="pill focus-ring cursor-pointer"
-                    >
-                      View All
-                    </M.button>
-                  </div>
-
-                  <div className="mt-4 sm:mt-5 space-y-2 sm:space-y-3">
-                    {[
-                      { left: "Rent Payment", rightTitle: "Monthly", amt: "$2,400", badge: "Due Today", icon: "R" },
-                      { left: "Car Insurance", rightTitle: "Quarterly", amt: "$380", sub: "Feb 15", icon: "C" },
-                      { left: "Gym Membership", rightTitle: "Annual", amt: "$49", sub: "Feb 28", icon: "G" },
-                    ].map((p) => (
-                      <M.button
-                        key={p.left}
-                        whileHover={{ scale: 1.01, x: 4 }}
-                        whileTap={{ scale: 0.99 }}
-                        className="focus-ring w-full text-left flex items-center justify-between rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] glass px-3 sm:px-4 py-2.5 sm:py-3 lg:py-3.5 cursor-pointer">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                          <div className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-[14px] sm:rounded-[16px] bg-white/30 dark:bg-white/10 border border-white/40 dark:border-white/15 grid place-items-center font-semibold text-sm sm:text-base">
-                            {p.icon}
-                          </div>
-                          <div>
-                            <div className="font-medium text-xs sm:text-sm">{p.left}</div>
-                            <div className="text-xs text-[rgba(var(--muted),0.75)] mt-0.5">
-                              {p.badge ? (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold" style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.25)", color: "rgb(var(--accent))" }}>
-                                  <span className="w-1 h-1 rounded-full bg-current animate-pulse" />
-                                  {p.badge}
-                                </span>
-                              ) : p.sub}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
-                          <div className="hidden md:block text-[10px] sm:text-xs text-[rgba(var(--muted),0.70)]">{p.rightTitle}</div>
-                          <div className="w-16 sm:w-20 font-semibold text-xs sm:text-sm text-right">{p.amt}</div>
-                        </div>
-                      </M.button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 sm:space-y-6">
-                <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-[16px] sm:text-[18px] lg:text-[20px] font-semibold tracking-tight">Activity</div>
-                      <div className="text-xs sm:text-sm text-[rgba(var(--muted),0.95)]">Recent transactions</div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <M.button
-                        onClick={() => setSearchOpen(true)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] glass grid place-items-center focus-ring cursor-pointer flex-shrink-0"
-                        aria-label="Search"
-                      >
-                        <Search size={16} className="sm:w-[18px] sm:h-[18px]" />
-                      </M.button>
-                      <M.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="btn-primary focus-ring text-[10px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 cursor-pointer whitespace-nowrap"
-                      >
-                        View All
-                      </M.button>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 sm:mt-5 space-y-1.5 sm:space-y-2">
-                    {transactions.map((tx, idx) => (
-                      <M.button
-                        key={tx.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        whileHover={{ scale: 1.01, x: 4 }}
-                        whileTap={{ scale: 0.99 }}
-                        className="focus-ring w-full text-left flex items-center justify-between rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] px-3 sm:px-4 py-2.5 sm:py-3 glass cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2 sm:gap-3">
-                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/30 dark:bg-white/10 grid place-items-center flex-shrink-0">
-                            <ArrowUpRight size={13} className="sm:w-[14px] sm:h-[14px]" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="font-medium text-xs sm:text-sm truncate">{tx.name}</div>
-                            <div className="text-[10px] sm:text-xs text-[rgba(var(--muted),0.75)]">{tx.date}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                          <StatusPill status={tx.status} />
-                          <div className="w-14 sm:w-16 text-right font-semibold text-xs sm:text-sm">{tx.amount}</div>
-                        </div>
-                      </M.button>
-                    ))}
-                  </div>
-
-                  <M.div
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    className="mt-4 sm:mt-5 rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] px-3 sm:px-4 py-3 sm:py-4 glass relative overflow-hidden cursor-pointer"
-                  >
-                    <M.div
-                      className="absolute right-3 sm:right-4 top-3 sm:top-4 text-[rgb(var(--accent))]"
-                      animate={{ rotate: [0, 15, -15, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                    >
-                      <Sparkles size={16} className="sm:w-[18px] sm:h-[18px]" />
-                    </M.div>
-                    <div className="text-sm sm:text-base font-semibold pr-8">Maximize your returns with AI</div>
-                    <div className="mt-1 text-xs sm:text-sm text-[rgba(var(--muted),0.95)]">Get personalized investment recommendations.</div>
-                    <M.button
-                      whileHover={{ x: 4 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="mt-2 text-xs sm:text-sm font-semibold underline underline-offset-4 focus-ring cursor-pointer"
-                    >
-                      Explore insights
-                    </M.button>
-                  </M.div>
-                </div>
-
-                <div className="glass rounded-[20px] sm:rounded-[24px] lg:rounded-[32px] p-4 sm:p-5 lg:p-6 pb-6 sm:pb-7 lg:pb-8 overflow-hidden">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm sm:text-base font-semibold">Send money</div>
-                    <PillToggle
-                      options={["Recent", "Favorites"]}
-                      active={sendMoneyTab}
-                      onChange={setSendMoneyTab}
-                    />
-                  </div>
-
-                  <div className="mt-4 sm:mt-5 flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-4 sm:-mx-5 lg:-mx-6 px-4 sm:px-5 lg:px-6">
-                    <M.button
-                      onClick={() => {}}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="focus-ring w-10 h-10 sm:w-11 sm:h-11 rounded-full glass cursor-pointer grid place-items-center flex-shrink-0"
-                    >
-                      <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
-                    </M.button>
-
-                    {[
-                      { name: "Maya", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=96&h=96&fit=crop&crop=face" },
-                      { name: "David", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop&crop=face" },
-                      { name: "Sophie", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=96&h=96&fit=crop&crop=face" },
-                      { name: "Lucas", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=96&h=96&fit=crop&crop=face" },
-                    ].map((a) => (
-                      <M.button
-                        key={a.name}
-                        whileHover={{ scale: 1.1, y: -4 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="focus-ring flex flex-col items-center gap-1 rounded-xl p-1.5 cursor-pointer flex-shrink-0"
-                      >
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-white/50 dark:border-white/20 shadow-md">
-                          <img src={a.img} alt={a.name} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="text-[10px] sm:text-[11px] font-medium text-[rgba(var(--muted),0.95)] whitespace-nowrap">{a.name}</div>
-                      </M.button>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 sm:mt-5 lg:mt-6 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 sm:gap-4">
-                    <div className="text-[28px] sm:text-[32px] lg:text-[40px] leading-none font-semibold tracking-tight">$250.00</div>
-                    <M.button
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="btn-primary focus-ring px-8 sm:px-10 h-10 sm:h-11 text-sm sm:text-base shimmer cursor-pointer w-full sm:w-auto"
-                    >
-                      Transfer
-                    </M.button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="h-2 sm:h-3" />
+          {/* Main Content */}
+          <section className="p-4 sm:p-5 lg:p-7 min-h-[calc(100vh-80px)]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+              >
+                <ActivePage onNavigate={(page) => { setActive(page); setBottomActive(null); }} />
+              </motion.div>
+            </AnimatePresence>
           </section>
         </div>
       </MDiv>
-
     </main>
   );
 }
