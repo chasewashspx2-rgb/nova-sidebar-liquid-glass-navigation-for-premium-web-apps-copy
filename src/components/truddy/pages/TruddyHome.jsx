@@ -112,7 +112,7 @@ export default function TruddyHome({ onNavigate }) {
           <div className="text-[24px] sm:text-[28px] font-bold tracking-tight">
             Hello, {user?.full_name?.split(" ")[0] || "Trader"} 👋
           </div>
-          <div className="text-sm sm:text-base font-medium text-[rgba(var(--muted),0.85)]">Your trading psychology co-pilot</div>
+          <RotatingQuote />
         </div>
         {unreadCount > 0 && (
           <motion.button onClick={() => onNavigate("community")} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
