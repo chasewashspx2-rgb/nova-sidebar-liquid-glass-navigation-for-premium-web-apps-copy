@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Heart, RefreshCw, Lightbulb, ArrowRight, MessageCircle } from "lucide-react";
+import { Heart, RefreshCw, Lightbulb, ArrowRight, Users } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getStage } from "@/components/truddy/XPProgressCard";
 
@@ -91,9 +91,7 @@ export default function CommunityWidget({ onNavigate }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-5 pb-4 border-b border-white/8">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg grid place-items-center" style={{ background: "rgba(104,155,251,0.12)" }}>
-            <MessageCircle size={16} style={{ color: "rgba(104,155,251,0.8)" }} />
-          </div>
+          <Users className="h-8 w-8 mb-3 text-zinc-800 dark:text-zinc-300" />
           <div>
             <h3 className="font-semibold text-sm">Community</h3>
             <p className="text-[11px] text-[rgba(var(--muted),0.5)]">Latest discussions</p>
