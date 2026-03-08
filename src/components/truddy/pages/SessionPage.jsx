@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Clock, ChevronRight, Loader2, ArrowLeft } from "lucide-react";
+import { Play, ChevronRight, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { SectionHeader } from "@/components/truddy/SectionHeader";
-import ActiveSession from "@/components/truddy/session/ActiveSession";
-import SessionReport from "@/components/truddy/session/SessionReport";
+import LiveSessionRecorder from "@/components/truddy/session/LiveSessionRecorder";
 import { format, formatDistanceStrict } from "date-fns";
 
 const emotionScore = { confident: 9, focused: 8, excited: 7, neutral: 5, tired: 4, anxious: 3, fomo: 2, angry: 1 };
