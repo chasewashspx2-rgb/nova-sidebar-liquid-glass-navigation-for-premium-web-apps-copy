@@ -100,15 +100,16 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
           <ArcRing pct={pct} color={stage.arc} glow={stage.glow} size={180} />
           {/* Center content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: 20 }}>
-            <motion.span
-              className="text-4xl leading-none mb-1"
-              animate={{ scale: [1, 1.08, 1] }}
+            <motion.div
+              className="w-10 h-10 rounded-[14px] grid place-items-center mb-1"
+              style={{ background: `${stage.arc}22`, border: `1.5px solid ${stage.arc}55` }}
+              animate={{ scale: [1, 1.06, 1] }}
               transition={{ duration: 3, repeat: Infinity, repeatDelay: 3 }}
             >
-              {stage.emoji}
-            </motion.span>
-            <div className="text-[11px] uppercase tracking-widest font-bold text-[rgba(var(--muted),0.55)]">Lv.{stage.level}</div>
-            <div className="font-extrabold text-lg leading-tight mt-0.5" style={{ color: stage.arc }}>{stage.name}</div>
+              <StageIcon size={18} style={{ color: stage.arc }} />
+            </motion.div>
+            <div className="text-[10px] uppercase tracking-widest font-bold text-[rgba(var(--muted),0.45)]">Lv.{stage.level}</div>
+            <div className="font-extrabold text-base leading-tight mt-0.5" style={{ color: stage.arc }}>{stage.name}</div>
             <div className="flex items-center gap-1 mt-1">
               <Zap size={10} style={{ color: stage.arc }} />
               <span className="text-xs font-bold" style={{ color: stage.arc }}>{xp.toLocaleString()} XP</span>
