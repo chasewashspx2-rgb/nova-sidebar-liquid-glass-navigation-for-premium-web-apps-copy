@@ -95,7 +95,7 @@ const pageComponents = {
 
 export default function Dashboard() {
   const { theme, toggle } = useTheme();
-  const [active, setActive] = React.useState("home");
+  const [active, setActive] = React.useState("pretrade");
   const [bottomActive, setBottomActive] = React.useState(null);
   const [prevBottomActive, setPrevBottomActive] = React.useState(null);
   const [searchOpen, setSearchOpen] = React.useState(false);
