@@ -16,7 +16,7 @@ import RulesPage from "@/components/truddy/pages/RulesPage";
 import InsightsPage from "@/components/truddy/pages/InsightsPage";
 import PreTradePage from "@/components/truddy/pages/PreTradePage";
 import CoachPage from "@/components/truddy/pages/CoachPage";
-import SessionPage from "@/components/truddy/pages/SessionPage";
+import VoiceSession from "@/components/truddy/session/VoiceSession";
 import CommunityPage from "@/components/truddy/pages/CommunityPage";
 
 const sidebar = [
@@ -89,7 +89,7 @@ const pageComponents = {
   journal: JournalPage,
   rules: RulesPage,
   insights: InsightsPage,
-  session: SessionPage,
+  session: VoiceSession,
   community: CommunityPage,
   coach: CoachPage,
   settings: () =>
