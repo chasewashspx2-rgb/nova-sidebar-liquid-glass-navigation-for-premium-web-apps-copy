@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, BookOpen, Shield, BarChart2, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Sparkles, Radio } from "lucide-react";
+import { Brain, BookOpen, Shield, BarChart2, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Sparkles, Radio, MessageCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { MoodBadge } from "@/components/truddy/MoodBadge";
 import { CircuitBreaker } from "@/components/truddy/CircuitBreaker";
@@ -89,10 +89,10 @@ export default function TruddyHome({ onNavigate }) {
   })();
 
   const quickActions = [
-    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "+15 XP per completion", page: "pretrade", accent: true },
-    { icon: <Brain size={18} />,       label: "Mood Check-In",  sub: "+10 XP per check-in",  page: "mood" },
-    { icon: <BookOpen size={18} />,    label: "Log a Trade",    sub: "+20 XP per entry",      page: "journal" },
-    { icon: <Radio size={18} />,       label: "Live Session",   sub: "+30 XP per session",    page: "session" },
+    { icon: <Radio size={18} />,         label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: true },
+    { icon: <MessageCircle size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach" },
+    { icon: <BookOpen size={18} />,      label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal" },
+    { icon: <ShieldCheck size={18} />,   label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade" },
   ];
 
   return (
@@ -132,7 +132,7 @@ export default function TruddyHome({ onNavigate }) {
 
         {/* Quick Actions */}
         <div className="flex flex-col gap-2 sm:min-w-[200px]">
-          <div className="text-sm font-semibold text-[rgba(var(--muted),0.85)] mb-1">Earn XP</div>
+          <div className="text-sm font-semibold text-[rgba(var(--muted),0.85)] mb-1">Quick Access</div>
           {quickActions.map((action, i) => (
             <motion.button key={action.page} onClick={() => onNavigate(action.page)}
               initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
