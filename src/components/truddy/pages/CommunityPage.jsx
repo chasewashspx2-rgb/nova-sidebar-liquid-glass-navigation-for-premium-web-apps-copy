@@ -245,14 +245,24 @@ export default function CommunityPage() {
           )}
         </AnimatePresence>
 
-        {/* Chat Info */}
-        <div className="flex items-center gap-2 text-sm text-[rgba(var(--muted),0.75)] px-1">
-          <MessageCircle size={14} />
-          {activeChat === "level" 
-            ? `Traders in Levels ${levelRange} (${posts.length} posts)`
-            : `${ISSUES.find(i => i.key === selectedIssue)?.label} Challenge (${posts.length} posts)`
-          }
+        {/* User Level Display */}
+      {activeChat === "level" && (
+        <div className="glass rounded-[16px] p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold">Your Level</span>
+            <span className="text-xs text-[rgba(var(--muted),0.6)]">{userLevel} ({levelRange})</span>
+          </div>
         </div>
+      )}
+
+      {/* Chat Info */}
+      <div className="flex items-center gap-2 text-sm text-[rgba(var(--muted),0.75)] px-1">
+        <MessageCircle size={14} />
+        {activeChat === "level" 
+          ? `Traders in Levels ${levelRange} (${posts.length} posts)`
+          : `${ISSUES.find(i => i.key === selectedIssue)?.label} Challenge (${posts.length} posts)`
+        }
+      </div>
 
         {/* Posts */}
         {loading ? (
