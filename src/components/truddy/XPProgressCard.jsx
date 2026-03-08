@@ -38,10 +38,17 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
       className="glass rounded-[20px] px-5 py-4 relative overflow-hidden"
     >
       <div className="relative flex items-center gap-4">
-        {/* Icon */}
-        <div className="w-9 h-9 rounded-[11px] grid place-items-center flex-shrink-0"
-          style={{ background: `${stage.arc}1a`, border: `1px solid ${stage.arc}40` }}>
-          <span className="text-sm font-black leading-none" style={{ color: stage.arc }}>{stage.level}</span>
+        {/* Level Badge */}
+        <div className="flex-shrink-0 w-11 h-11 rounded-[14px] grid place-items-center relative overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, ${stage.arc}33, ${stage.arc}18)`,
+            border: `1.5px solid ${stage.arc}55`,
+            boxShadow: `0 0 16px ${stage.arc}30, inset 0 1px 0 rgba(255,255,255,0.18)`
+          }}>
+          <div className="flex flex-col items-center leading-none">
+            <span className="text-[8px] font-bold uppercase tracking-widest mb-0.5" style={{ color: `${stage.arc}99` }}>LV</span>
+            <span className="text-base font-black leading-none" style={{ color: stage.arc }}>{stage.level}</span>
+          </div>
         </div>
 
         {/* Main content */}
