@@ -129,14 +129,14 @@ export default function CommunityPage() {
       {/* Mode Selector */}
       <div className="flex gap-2">
         <motion.button
-          onClick={() => setMode("level")}
+          onClick={() => setMode("motivation")}
           whileTap={{ scale: 0.97 }}
           className="flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
-          style={mode === "level"
+          style={mode === "motivation"
             ? { background: "linear-gradient(135deg, rgba(104,155,251,0.3), rgba(121,113,249,0.22))", border: "1px solid rgba(104,155,251,0.4)" }
             : { background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.2)" }}
         >
-          <Users size={14} /> Your Level
+          <Users size={14} /> Motivation
         </motion.button>
         <motion.button
           onClick={() => setMode("issues")}
