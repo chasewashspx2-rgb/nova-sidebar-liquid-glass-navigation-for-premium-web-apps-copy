@@ -33,17 +33,14 @@ function MessageRow({ message }) {
 }
 
 export default function CommunityPage() {
-  const [activeChat, setActiveChat] = useState("level");
+  const [mode, setMode] = useState("level");
   const [selectedIssue, setSelectedIssue] = useState("fomo");
-  const [posts, setPosts] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [posting, setPosting] = useState(false);
-  const [draft, setDraft] = useState("");
+  const [joining, setJoining] = useState(false);
   const [user, setUser] = useState(null);
-  const [showCompose, setShowCompose] = useState(false);
   const [userLevel, setUserLevel] = useState(1);
 
-  // Fetch user and calculate level from real activity data
   useEffect(() => {
     Promise.all([
       base44.auth.me(),
@@ -63,69 +60,43 @@ export default function CommunityPage() {
     }).catch(() => {});
   }, []);
 
-  // Load posts based on active chat
   useEffect(() => {
-    loadPosts();
-  }, [activeChat, selectedIssue]);
+    loadMessages();
+  }, [mode, selectedIssue]);
 
-  async function loadPosts() {
+  async function loadMessages() {
     setLoading(true);
-    let query = {};
-
-    if (activeChat === "level") {
-      // Get level range (e.g., level 15 -> 11-20)
-      const minLevel = Math.max(1, Math.floor((userLevel - 1) / 10) * 10 + 1);
-      const maxLevel = minLevel + 9;
-      query = { room_key: "level", author_level: { $gte: minLevel, $lte: maxLevel } };
-    } else {
-      query = { room_key: "issue", issue_type: selectedIssue };
+    try {
+      const response = await base44.functions.invoke('getDiscordMessages', {});
+      const allMessages = response.data || [];
+      
+      if (mode === "level") {
+        const levelRange = Math.floor((userLevel - 1) / 10) * 10 + 1;
+        const filtered = allMessages.filter(m => m.channel.startsWith(`level-${levelRange}`));
+        setMessages(filtered);
+      } else {
+        const filtered = allMessages.filter(m => m.channel === `issue-${selectedIssue}`);
+        setMessages(filtered);
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
     }
-
-    const data = await base44.entities.CommunityPost.filter(query, "-created_date", 40);
-    setPosts(data);
     setLoading(false);
   }
 
-  async function handlePost() {
-    if (!draft.trim()) return;
-    setPosting(true);
-
-    const postData = {
-      room_key: activeChat === "level" ? "level" : "issue",
-      author_name: user?.full_name || "Anonymous",
-      author_level: userLevel,
-      content: draft.trim(),
-      reactions: { support: 0, relate: 0, helpful: 0 },
-      reacted_by: [],
-    };
-
-    if (activeChat === "issues") {
-      postData.issue_type = selectedIssue;
+  async function handleJoinChannel() {
+    setJoining(true);
+    try {
+      await base44.functions.invoke('joinDiscordIssueChannel', { issueType: selectedIssue });
+      alert(`Joined #issue-${selectedIssue} on Discord!`);
+    } catch (error) {
+      console.error('Error joining channel:', error);
+      alert('Could not join channel. Please try again.');
     }
-
-    await base44.entities.CommunityPost.create(postData);
-    setDraft("");
-    setShowCompose(false);
-    setPosting(false);
-    loadPosts();
+    setJoining(false);
   }
 
-  async function handleReact(postId, reactionKey) {
-    if (!user) return;
-    const post = posts.find(p => p.id === postId);
-    if (!post || (post.reacted_by || []).includes(user.email)) return;
-
-    const updatedReactions = { ...(post.reactions || {}), [reactionKey]: ((post.reactions || {})[reactionKey] || 0) + 1 };
-    await base44.entities.CommunityPost.update(postId, {
-      reactions: updatedReactions,
-      reacted_by: [...(post.reacted_by || []), user.email],
-    });
-    setPosts(prev => prev.map(p => p.id === postId ? { ...p, reactions: updatedReactions, reacted_by: [...(p.reacted_by || []), user.email] } : p));
-  }
-
-  const levelRange = activeChat === "level"
-    ? `${Math.max(1, Math.floor((userLevel - 1) / 10) * 10 + 1)}-${Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)}`
-    : null;
+  const levelRange = `${Math.max(1, Math.floor((userLevel - 1) / 10) * 10 + 1)}-${Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)}`;
 
   return (
     <div className="space-y-4">
