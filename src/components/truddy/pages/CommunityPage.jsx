@@ -165,12 +165,13 @@ export default function CommunityPage() {
               <div>
                 <h3 className="font-semibold text-base mb-1">{issue.label}</h3>
                 <p className="text-xs text-[rgba(var(--muted),0.6)]">
-                  {issue.key === "fomo" && "Fear of missing out on trades"}
-                  {issue.key === "revenge_trading" && "Trading to recover losses"}
-                  {issue.key === "overtrading" && "Taking too many trades"}
-                  {issue.key === "fear" && "Analysis paralysis and hesitation"}
-                  {issue.key === "discipline" && "Following your trading rules"}
-                </p>
+                    {issue.key === "fomo" && "Fear of missing out on trades"}
+                    {issue.key === "revenge_trading" && "Trading to recover losses"}
+                    {issue.key === "overtrading" && "Taking too many trades"}
+                    {issue.key === "fear" && "Analysis paralysis and hesitation"}
+                    {issue.key === "discipline" && "Following your trading rules"}
+                    {issue.key === "motivation" && "Stay inspired and motivated"}
+                  </p>
               </div>
               <motion.button
                 onClick={() => handleJoinIssue(issue.key)}
