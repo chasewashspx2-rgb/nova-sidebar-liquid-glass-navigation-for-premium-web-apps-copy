@@ -100,8 +100,8 @@ export default function TruddyHome({ onNavigate }) {
       btnStyle: { background: "rgba(185,155,255,0.2)", border: "1px solid rgba(185,155,255,0.38)" } },
     { icon: <BookOpen size={18} />,    label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal", iconColor: { icon: "#7eb8f7", bg: "rgba(126,184,247,0.18)", border: "rgba(126,184,247,0.35)" },
       btnStyle: { background: "rgba(126,184,247,0.14)", border: "1px solid rgba(126,184,247,0.3)" } },
-    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade", iconColor: { icon: "#7dd9b0", bg: "rgba(125,217,176,0.18)", border: "rgba(125,217,176,0.35)" },
-      btnStyle: { background: "rgba(125,217,176,0.14)", border: "1px solid rgba(125,217,176,0.3)" } },
+    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade", iconColor: { icon: "#e8c84a", bg: "rgba(232,200,74,0.18)", border: "rgba(232,200,74,0.35)" },
+      btnStyle: { background: "rgba(232,200,74,0.14)", border: "1px solid rgba(232,200,74,0.3)" } },
   ];
 
   return (
