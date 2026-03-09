@@ -6,7 +6,7 @@ export function calcLevel(xp) {
   return Math.min(100, Math.floor(xp / 100) + 1);
 }
 
-// Kept for backward compatibility
+// Kept for backward compatibility (used by CommunityWidget)
 export function getStage(xp) {
   return { level: calcLevel(xp), arc: "#5b9af6" };
 }
@@ -16,33 +16,32 @@ export function calcXpFromActivity({ journals = 0, pretrades = 0, sessions = 0, 
 }
 
 export default function XPProgressCard({ xp = 0, onNavigate }) {
-  const stage = getStage(xp);
-  const StageIcon = STAGE_ICONS[stage.level - 1];
-  const nextStage = STAGES.find((s) => s.minXp > stage.minXp) || stage;
-  const isMax = stage.level === 5;
-  const xpInLevel = xp - stage.minXp;
-  const xpNeeded = (isMax ? stage.maxXp : nextStage.minXp) - stage.minXp;
-  const pct = Math.min(xpInLevel / xpNeeded * 100, 100);
-  const xpToNext = xpNeeded - xpInLevel;
+  const level = calcLevel(xp);
+  const isMax = level === 100;
+  const xpInLevel = xp % 100;
+  const pct = isMax ? 100 : xpInLevel;
+  const xpToNext = isMax ? 0 : 100 - xpInLevel;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass rounded-[20px] px-5 py-4 relative overflow-hidden">
-
+      className="glass rounded-[20px] px-5 py-4 relative overflow-hidden"
+    >
       <div className="relative flex items-center gap-4">
         {/* Level Badge */}
-        <div className="flex-shrink-0 w-11 h-11 rounded-[14px] grid place-items-center relative overflow-hidden"
-        style={{
-          background: `linear-gradient(135deg, ${stage.arc}33, ${stage.arc}18)`,
-          border: `1.5px solid ${stage.arc}55`,
-          boxShadow: `0 0 16px ${stage.arc}30, inset 0 1px 0 rgba(255,255,255,0.18)`
-        }}>
+        <div
+          className="flex-shrink-0 w-11 h-11 rounded-[14px] grid place-items-center relative overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, rgba(91,154,246,0.2), rgba(91,154,246,0.1))",
+            border: "1.5px solid rgba(91,154,246,0.35)",
+            boxShadow: "0 0 16px rgba(91,154,246,0.18), inset 0 1px 0 rgba(255,255,255,0.18)",
+          }}
+        >
           <div className="flex flex-col items-center leading-none">
             <span className="text-[8px] font-bold uppercase tracking-widest mb-0.5 text-emerald-400">LV</span>
-            <span className="text-emerald-400 text-2xl font-black leading-none">{stage.level}</span>
+            <span className="text-emerald-400 text-2xl font-black leading-none">{level}</span>
           </div>
         </div>
 
@@ -56,33 +55,28 @@ export default function XPProgressCard({ xp = 0, onNavigate }) {
               </span>
               <span className="text-[11px] font-semibold text-[rgba(var(--muted),0.45)] uppercase tracking-wide">XP</span>
             </div>
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-[11px] font-semibold text-emerald-400">{stage.name}</span>
-              
-
-
-
+            <div className="text-[11px] font-semibold text-emerald-400">
+              Level {level} / 100
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="h-[5px] rounded-full overflow-hidden mb-1.5"
-          style={{ background: "rgba(180,200,240,0.18)" }}>
+          <div className="h-[5px] rounded-full overflow-hidden mb-1.5" style={{ background: "rgba(180,200,240,0.18)" }}>
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
               transition={{ duration: 1.2, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
               className="h-full rounded-full"
-              style={{ background: "linear-gradient(90deg, #b8d4f8, #5b9af6, #2563eb)" }} />
-
+              style={{ background: "linear-gradient(90deg, #b8d4f8, #5b9af6, #2563eb)" }}
+            />
           </div>
 
           {/* Sub label */}
           <div className="text-[10px] text-[rgba(var(--muted),0.45)]">
-            {isMax ? "Max level reached" : `${xpToNext.toLocaleString()} XP to ${nextStage.name}`}
+            {isMax ? "Max level reached — 100/100" : `${xpToNext} XP to Level ${level + 1}`}
           </div>
         </div>
       </div>
-    </motion.div>);
-
+    </motion.div>
+  );
 }
