@@ -1,7 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { BookOpen, ShieldCheck, TrendingUp, Flame, Zap } from "lucide-react";
-import { AreaChart, Area, ResponsiveContainer, Tooltip } from "recharts";
+import { BookOpen, ShieldCheck, TrendingUp, Flame } from "lucide-react";
 
 function buildXpHistory(trades) {
   if (!trades.length) return [];
