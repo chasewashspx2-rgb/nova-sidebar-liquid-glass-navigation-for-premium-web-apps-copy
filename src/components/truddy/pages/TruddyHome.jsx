@@ -94,10 +94,10 @@ export default function TruddyHome({ onNavigate }) {
   })();
 
   const quickActions = [
-    { icon: <Radio size={18} />,         label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: true },
-    { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach" },
-    { icon: <BookOpen size={18} />,      label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal" },
-    { icon: <ShieldCheck size={18} />,   label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade" },
+    { icon: <Radio size={18} />,       label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: true, iconColor: null },
+    { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach",   iconColor: null },
+    { icon: <BookOpen size={18} />,    label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal", iconColor: { icon: "#7eb8f7", bg: "rgba(126,184,247,0.18)", border: "rgba(126,184,247,0.35)" } },
+    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade", iconColor: { icon: "#7dd9b0", bg: "rgba(125,217,176,0.18)", border: "rgba(125,217,176,0.35)" } },
   ];
 
   return (
