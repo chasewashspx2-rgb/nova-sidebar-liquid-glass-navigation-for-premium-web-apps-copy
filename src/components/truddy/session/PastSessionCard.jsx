@@ -2,6 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, AlertTriangle, Lightbulb, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import MentalStateIndicator from "@/components/truddy/session/MentalStateIndicator";
 
 export default function PastSessionCard({ session, isExpanded, onToggle, onDelete }) {
   const date = new Date(session.created_date || session.started_at);
