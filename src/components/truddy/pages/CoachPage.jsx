@@ -239,8 +239,16 @@ export default function CoachPage() {
         ))}
       </div>
 
-      {/* Reset Button */}
-      <div className="flex justify-end mb-3">
+      {/* Controls */}
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <motion.button onClick={() => { setVoiceOutput(v => !v); if (voiceOutput) stopSpeaking(); }} whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer"
+          style={{
+            background: voiceOutput ? `${p.gradFrom}` : "rgba(var(--glass),0.3)",
+            border: `1px solid ${voiceOutput ? p.border : "rgba(255,255,255,0.25)"}`,
+          }}>
+          <Volume2 size={12} /> Voice {voiceOutput ? "On" : "Off"}
+        </motion.button>
         <motion.button onClick={() => {
           const greetings = { yin: "Hey, I'm Yin. I'm here with you — no judgment, just support. What's on your mind today?", yang: "Yang here. Let's skip the small talk. What happened, and what are you going to do about it?" };
           setMessages([{ role: "assistant", content: greetings[personality] }]);
