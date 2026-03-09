@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, MessageCircle, AlertCircle, ExternalLink, Users, Zap } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { calcXpFromActivity, calcLevel } from "@/components/truddy/XPProgressCard";
+import CommunityMessageInput from "@/components/truddy/CommunityMessageInput";
+import CommunityGuidelines from "@/components/truddy/CommunityGuidelines";
 
 const ISSUES = [
   { key: "fomo", label: "FOMO" },
