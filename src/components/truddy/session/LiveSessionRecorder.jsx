@@ -150,7 +150,7 @@ export default function LiveSessionRecorder({ onClose }) {
         <div className="px-6 py-5 space-y-5">
           {/* Phase selector */}
           <div className="space-y-2">
-            <div className="text-[#faf9f6] font-semibold uppercase tracking-wider">Where are you in the trade?</div>
+            <div className="text-[11px] text-[#faf9f6] font-light uppercase tracking-wider opacity-70">Where are you in the trade?</div>
             <div className="flex gap-1.5 flex-wrap">
               {PHASES.map((p, i) =>
               <button key={p.label} onClick={() => setActivePhase(i)}
