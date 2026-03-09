@@ -95,7 +95,7 @@ export default function TruddyHome({ onNavigate }) {
 
   const quickActions = [
     { icon: <Radio size={18} />,       label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: true, iconColor: null,
-      btnStyle: { background: "linear-gradient(135deg, rgba(104,155,251,0.25), rgba(121,113,249,0.18))", border: "1px solid rgba(104,155,251,0.35)" } },
+      btnStyle: { background: "rgba(255,160,130,0.18)", border: "1px solid rgba(255,140,110,0.35)" } },
     { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach",   iconColor: null,
       btnStyle: { background: "rgba(185,155,255,0.2)", border: "1px solid rgba(185,155,255,0.38)" } },
     { icon: <BookOpen size={18} />,    label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal", iconColor: { icon: "#7eb8f7", bg: "rgba(126,184,247,0.18)", border: "rgba(126,184,247,0.35)" },
