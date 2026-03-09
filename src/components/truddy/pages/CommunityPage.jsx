@@ -10,6 +10,7 @@ const ISSUES = [
   { key: "overtrading", label: "Overtrading" },
   { key: "fear", label: "Fear" },
   { key: "discipline", label: "Discipline" },
+  { key: "motivation", label: "Motivation" },
 ];
 
 function MessageRow({ message }) {
