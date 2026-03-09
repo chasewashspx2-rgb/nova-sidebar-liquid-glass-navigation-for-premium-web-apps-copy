@@ -239,36 +239,12 @@ export default function CoachPage() {
         ))}
       </div>
 
-      {/* Voice Controls */}
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-xs text-[rgba(var(--muted),0.6)] mr-1">Voice:</span>
-        <motion.button onClick={() => setVoiceInput(v => !v)} whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer"
-          style={{
-            background: voiceInput ? `${p.gradFrom}` : "rgba(var(--glass),0.3)",
-            border: `1px solid ${voiceInput ? p.border : "rgba(255,255,255,0.25)"}`,
-          }}>
-          <Mic size={12} /> Input {voiceInput ? "On" : "Off"}
-        </motion.button>
-        <motion.button onClick={() => { setVoiceOutput(v => !v); if (voiceOutput) stopSpeaking(); }} whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer"
-          style={{
-            background: voiceOutput ? `${p.gradFrom}` : "rgba(var(--glass),0.3)",
-            border: `1px solid ${voiceOutput ? p.border : "rgba(255,255,255,0.25)"}`,
-          }}>
-          <Volume2 size={12} /> Output {voiceOutput ? "On" : "Off"}
-        </motion.button>
-        {speaking && (
-          <motion.button onClick={stopSpeaking} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer"
-            style={{ background: "rgba(255,100,80,0.15)", border: "1px solid rgba(255,100,80,0.35)" }}>
-            <VolumeX size={12} /> Stop
-          </motion.button>
-        )}
+      {/* Reset Button */}
+      <div className="flex justify-end mb-3">
         <motion.button onClick={() => {
           const greetings = { yin: "Hey, I'm Yin. I'm here with you — no judgment, just support. What's on your mind today?", yang: "Yang here. Let's skip the small talk. What happened, and what are you going to do about it?" };
           setMessages([{ role: "assistant", content: greetings[personality] }]);
-        }} whileTap={{ scale: 0.95 }} className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+        }} whileTap={{ scale: 0.95 }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
           style={{ background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.25)" }}>
           <RotateCcw size={11} /> Reset
         </motion.button>
