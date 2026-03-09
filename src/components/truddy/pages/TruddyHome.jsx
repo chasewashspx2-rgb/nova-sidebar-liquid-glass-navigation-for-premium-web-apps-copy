@@ -154,12 +154,12 @@ export default function TruddyHome({ onNavigate }) {
               initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.35, delay: 0.08 + i * 0.06 }}
               whileHover={{ x: 3 }} whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-3 px-4 py-3 rounded-[18px] cursor-pointer text-left"
-              style={action.btnStyle || { background: "rgba(var(--glass),0.38)", border: "1px solid rgba(255,255,255,0.28)" }}>
+              className="flex items-center gap-3 px-4 py-3 rounded-[18px] cursor-pointer text-left glass"
+              style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
               <div className="w-8 h-8 rounded-[11px] grid place-items-center flex-shrink-0"
                 style={{
-                  background: action.accent ? "rgba(104,155,251,0.2)" : action.iconColor ? action.iconColor.bg : "rgba(255,255,255,0.28)",
-                  border: `1px solid ${action.accent ? "rgba(104,155,251,0.4)" : action.iconColor ? action.iconColor.border : "rgba(255,255,255,0.35)"}`,
+                  background: action.iconColor ? action.iconColor.bg : "rgba(255,255,255,0.15)",
+                  border: `1px solid ${action.iconColor ? action.iconColor.border : "rgba(255,255,255,0.2)"}`,
                   color: action.iconColor ? action.iconColor.icon : undefined,
                 }}>
                 {action.icon}
