@@ -67,33 +67,33 @@ function TradeForm({ onSubmit, onCancel, initial }) {
         {/* Pre emotion */}
         <div>
           <label className="text-xs text-[rgba(var(--muted),0.75)] mb-1 block">Emotion Before</label>
-          <div className="flex flex-wrap gap-1.5">
+          <select
+            value={form.pre_emotion}
+            onChange={(e) => set("pre_emotion", e.target.value)}
+            className="w-full glass rounded-[14px] px-3 py-2.5 text-sm bg-transparent outline-none cursor-pointer"
+            style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)", color: "inherit" }}
+          >
             {EMOTIONS.map((e) => {
               const cfg = emotionConfig[e];
-              return (
-                <button key={e} onClick={() => set("pre_emotion", e)} className={`px-2 py-1 rounded-full text-xs cursor-pointer transition-all border`}
-                  style={form.pre_emotion === e ? { background: cfg.color, borderColor: cfg.border } : { background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>
-                  {cfg.emoji} {cfg.label}
-                </button>
-              );
+              return <option key={e} value={e}>{cfg.emoji} {cfg.label}</option>;
             })}
-          </div>
+          </select>
         </div>
 
         {/* Post emotion */}
         <div>
           <label className="text-xs text-[rgba(var(--muted),0.75)] mb-1 block">Emotion After</label>
-          <div className="flex flex-wrap gap-1.5">
+          <select
+            value={form.post_emotion}
+            onChange={(e) => set("post_emotion", e.target.value)}
+            className="w-full glass rounded-[14px] px-3 py-2.5 text-sm bg-transparent outline-none cursor-pointer"
+            style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)", color: "inherit" }}
+          >
             {POST_EMOTIONS.map((e) => {
               const cfg = emotionConfig[e];
-              return (
-                <button key={e} onClick={() => set("post_emotion", e)} className={`px-2 py-1 rounded-full text-xs cursor-pointer transition-all border`}
-                  style={form.post_emotion === e ? { background: cfg.color, borderColor: cfg.border } : { background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>
-                  {cfg.emoji} {cfg.label}
-                </button>
-              );
+              return <option key={e} value={e}>{cfg.emoji} {cfg.label}</option>;
             })}
-          </div>
+          </select>
         </div>
 
         {/* Followed rules */}
