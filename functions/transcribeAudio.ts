@@ -11,15 +11,24 @@ Deno.serve(async (req) => {
 
     const formData = await req.formData();
     const audioFile = formData.get('audio');
-    const transcript = formData.get('transcript');
     const elapsed = parseInt(formData.get('elapsed') || '0');
     const sessionTitle = formData.get('sessionTitle') || '';
 
-    if (!audioFile || !transcript) {
-      return Response.json({ error: 'Missing audio or transcript' }, { status: 400 });
+    if (!audioFile) {
+      return Response.json({ error: 'Missing audio file' }, { status: 400 });
     }
 
-    // Analyze the transcript using LLM
+    // Upload the audio file to Base44 storage
+    const uploadRes = await base44.integrations.Core.UploadFile({ file: audioFile });
+
+    // Transcribe the audio using the file URL
+    const transcript = await base44.integrations.Core.InvokeLLM({
+      prompt: "Transcribe the following audio file. Return only the transcribed text, nothing else.",
+      file_urls: [uploadRes.file_url],
+      model: "gemini_3_flash",
+    });
+
+    // Analyze the transcript using LLM with structured output
     const analysis = await base44.integrations.Core.InvokeLLM({
       prompt: `You are an elite trading psychology coach deeply versed in Mark Douglas's principles of trading discipline, emotional control, and the psychology of consistent trading success.
 
@@ -61,6 +70,7 @@ Respond in JSON with all fields.`,
       started_at: new Date(Date.now() - elapsed * 1000).toISOString(),
       ended_at: new Date().toISOString(),
       status: "completed",
+      audio_file_uri: uploadRes.file_url,
       full_transcript: transcript,
       problem_identified: analysis.problem_identified,
       proposed_solution: analysis.proposed_solution,
