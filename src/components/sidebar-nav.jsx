@@ -70,9 +70,9 @@ function SidebarButton({ label, icon, active, onClick, smoothScale, direction })
                 scaleX,
                 scaleY,
                 skewY,
-                background: "linear-gradient(135deg, rgba(104,155,251,0.55) 0%, rgba(121,113,249,0.45) 100%)",
-                border: "1px solid rgba(255,255,255,0.45)",
-                boxShadow: "0 6px 24px rgba(104,155,251,0.30), inset 0 1px 0 rgba(255,255,255,0.25)",
+                background: "rgba(250, 249, 246, 0.9)",
+                border: "1px solid rgba(250, 249, 246, 0.6)",
+                boxShadow: "0 6px 24px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
               transition={{
                 type: "spring",
