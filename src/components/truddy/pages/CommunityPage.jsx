@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, RefreshCw, Lightbulb, Send, MessageCircle, AlertCircle } from "lucide-react";
+import { Send, MessageCircle, AlertCircle, ExternalLink, Users, Zap } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { calcXpFromActivity, calcLevel } from "@/components/truddy/XPProgressCard";
-
-// Chat types
-const CHATS = [
-  { key: "level", label: "Your Level", description: "Chat with traders in your level range" },
-  { key: "issues", label: "Shared Issues", description: "Connect over common trading challenges" },
-];
 
 const ISSUES = [
   { key: "fomo", label: "FOMO" },
@@ -18,59 +12,22 @@ const ISSUES = [
   { key: "discipline", label: "Discipline" },
 ];
 
-const REACTIONS = [
-  { key: "support", label: "Support", icon: "👍" },
-  { key: "relate", label: "Relate", icon: "🔄" },
-  { key: "helpful", label: "Helpful", icon: "💡" },
-];
-
-function PostCard({ post, onReact, currentUserEmail }) {
-  const hasReacted = (post.reacted_by || []).includes(currentUserEmail);
-  const reactions = post.reactions || {};
-
+function MessageRow({ message }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="glass rounded-[16px] p-4"
     >
-      {/* Author info */}
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between mb-2">
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-sm">{post.author_name || "Anonymous"}</div>
-          {post.author_level && (
-            <div className="text-xs text-[rgba(var(--muted),0.6)]">Level {post.author_level}</div>
-          )}
+          <div className="font-semibold text-sm">{message.author || "Unknown User"}</div>
         </div>
         <div className="text-xs text-[rgba(var(--muted),0.5)] flex-shrink-0 ml-2">
-          {post.created_date ? new Date(post.created_date).toLocaleDateString() : ""}
+          {new Date(message.timestamp).toLocaleDateString()}
         </div>
       </div>
-
-      {/* Content */}
-      <p className="text-sm leading-relaxed text-[rgba(var(--text),0.88)] mb-3">{post.content}</p>
-
-      {/* Reactions */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {REACTIONS.map(r => (
-          <motion.button
-            key={r.key}
-            onClick={() => !hasReacted && onReact(post.id, r.key)}
-            whileTap={!hasReacted ? { scale: 0.9 } : {}}
-            disabled={hasReacted}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all"
-            style={{
-              background: (reactions[r.key] || 0) > 0 ? "rgba(104,155,251,0.15)" : "rgba(var(--glass),0.3)",
-              border: `1px solid ${(reactions[r.key] || 0) > 0 ? "rgba(104,155,251,0.3)" : "rgba(255,255,255,0.2)"}`,
-              cursor: hasReacted ? "default" : "pointer",
-              opacity: hasReacted ? 0.6 : 1,
-            }}
-          >
-            <span>{r.icon}</span>
-            {(reactions[r.key] || 0) > 0 && <span className="text-[10px]">{reactions[r.key]}</span>}
-          </motion.button>
-        ))}
-      </div>
+      <p className="text-sm leading-relaxed text-[rgba(var(--text),0.88)]">{message.content}</p>
     </motion.div>
   );
 }
