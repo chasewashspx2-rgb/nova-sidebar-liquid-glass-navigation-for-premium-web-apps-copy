@@ -203,7 +203,7 @@ export default function CommunityPage() {
 
       {/* Messages Feed - Only show for level mode */}
       {mode === "level" && (
-      <div className="space-y-3">
+      <div className="space-y-4">
         {/* Level Info */}
         <div className="glass rounded-[16px] p-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -232,14 +232,22 @@ export default function CommunityPage() {
              Join Level {Math.floor((userLevel - 1) / 10) * 10 + 1}-{Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)} Channel
            </motion.button>
          ) : (
-          <AnimatePresence>
-            {messages.map((msg, i) => (
-              <motion.div key={msg.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                <MessageRow message={msg} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <div className="space-y-3">
+            <AnimatePresence>
+              {messages.map((msg, i) => (
+                <motion.div key={msg.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                  <MessageRow message={msg} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         )}
+
+        {/* Message Input */}
+        <CommunityMessageInput mode={mode} selectedIssue={selectedIssue} userLevel={userLevel} />
+
+        {/* Guidelines */}
+        <CommunityGuidelines />
       </div>
       )}
     </div>
