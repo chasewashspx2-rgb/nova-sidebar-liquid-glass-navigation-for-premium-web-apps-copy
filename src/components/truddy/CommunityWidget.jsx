@@ -106,7 +106,7 @@ export default function CommunityWidget({ onNavigate }) {
         </motion.button>
       </div>
 
-      {/* Posts & Discord */}
+      {/* Discord Messages */}
       {loading ? (
         <div className="space-y-2">
           {[1,2,3].map(i => (
@@ -119,50 +119,37 @@ export default function CommunityWidget({ onNavigate }) {
             </div>
           ))}
         </div>
-      ) : posts.length === 0 && discordMessages.length === 0 ? (
+      ) : discordMessages.length === 0 ? (
         <div className="text-center py-8">
           <MessageCircle size={28} className="mx-auto mb-2 opacity-20" />
-          <p className="text-[12px] text-[rgba(var(--muted),0.5)] mb-3">No posts yet in your communities</p>
+          <p className="text-[12px] text-[rgba(var(--muted),0.5)] mb-3">No activity yet on Discord</p>
           <motion.button onClick={() => onNavigate?.("community")} whileTap={{ scale: 0.96 }}
             className="mx-auto px-4 py-1.5 rounded-lg text-[11px] font-medium cursor-pointer"
             style={{ background: "rgba(104,155,251,0.15)", color: "rgba(104,155,251,0.9)" }}>
-            Start a discussion
+            Go to Community
           </motion.button>
         </div>
       ) : (
         <div className="space-y-0.5">
-           {posts.map((post, i) => {
-             const meta = ROOM_META[post.room_key];
-             return (
-               <motion.div key={post.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
-                 <PostRow post={post} roomMeta={meta} isNewPost={isNew(post.created_date)} />
-               </motion.div>
-             );
-            })}
-           {discordMessages.length > 0 && (
-             <>
-               <div className="px-3 py-3 text-[11px] font-medium opacity-50 mt-3 border-t border-white/8">Discord</div>
-               {discordMessages.map((msg, i) => (
-                 <motion.div key={msg.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (posts.length + i) * 0.03 }}
-                   className="px-3 py-2.5 rounded-[12px] transition-all hover:bg-white/5">
-                   <div className="flex items-start gap-2.5">
-                     <div className="w-6 h-6 rounded-full grid place-items-center flex-shrink-0 text-[13px] mt-0.5"
-                       style={{ background: "rgba(88,100,184,0.12)" }}>
-                       <MessageSquare size={13} />
-                     </div>
-                     <div className="flex-1 min-w-0">
-                       <div className="flex items-center gap-1.5 mb-1">
-                         <span className="text-[10px] font-medium opacity-70">{msg.channel}</span>
-                         <span className="text-[9px] opacity-40 ml-auto flex-shrink-0">{timeAgo(msg.timestamp)}</span>
-                       </div>
-                       <p className="text-xs leading-relaxed text-[rgba(var(--text),0.75)] line-clamp-2">{msg.content}</p>
-                     </div>
-                   </div>
-                 </motion.div>
-               ))}
-             </>
-           )}
-         </div>
+          {discordMessages.map((msg, i) => (
+            <motion.div key={msg.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+              className="px-3 py-2.5 rounded-[12px] transition-all hover:bg-white/5">
+              <div className="flex items-start gap-2.5">
+                <div className="w-6 h-6 rounded-full grid place-items-center flex-shrink-0 text-[13px] mt-0.5"
+                  style={{ background: "rgba(88,100,184,0.12)" }}>
+                  <MessageSquare size={13} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-[10px] font-medium opacity-70">{msg.channel}</span>
+                    <span className="text-[9px] opacity-40 ml-auto flex-shrink-0">{timeAgo(msg.timestamp)}</span>
+                  </div>
+                  <p className="text-xs leading-relaxed text-[rgba(var(--text),0.75)] line-clamp-2">{msg.content}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       )}
     </div>
   );
