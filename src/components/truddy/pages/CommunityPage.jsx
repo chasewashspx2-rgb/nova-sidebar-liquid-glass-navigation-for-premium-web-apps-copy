@@ -192,8 +192,8 @@ export default function CommunityPage() {
         {/* Level Info */}
         <div className="glass rounded-[16px] p-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">Your Level Range</span>
-            <span className="text-xs text-[rgba(var(--muted),0.6)]">Levels {levelRange}</span>
+            <span className="text-sm font-semibold">Your Level {userLevel}</span>
+            <span className="text-xs text-[rgba(var(--muted),0.6)]">Access to Levels {levelRange}</span>
           </div>
         </div>
 
