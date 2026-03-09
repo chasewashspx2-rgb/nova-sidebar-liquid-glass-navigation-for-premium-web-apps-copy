@@ -132,23 +132,13 @@ export default function LiveSessionRecorder({ onClose }) {
       const ext = mimeType.includes("webm") ? "webm" : mimeType.includes("ogg") ? "ogg" : "webm";
       const file = new File([audioBlob], `session.${ext}`, { type: mimeType });
 
-      // Upload file first to get a URL
-      const uploadRes = await base44.integrations.Core.UploadFile({ file });
+      // Send audio directly to backend function for transcription, analysis, and session creation
+      const formData = new FormData();
+      formData.append('audio', file);
+      formData.append('elapsed', elapsed.toString());
+      formData.append('sessionTitle', sessionTitle);
 
-      const transcriptText = await base44.integrations.Core.InvokeLLM({
-        prompt: "Transcribe the following audio file. Return only the transcribed text, nothing else.",
-        file_urls: [uploadRes.file_url],
-        model: "gemini_3_flash",
-      });
-
-      setTranscript(transcriptText);
-
-      // Send to backend function for analysis and session creation
-      const response = await base44.functions.invoke('transcribeAudio', {
-        transcript: transcriptText,
-        elapsed,
-        sessionTitle,
-      });
+      const response = await base44.functions.invoke('transcribeAudio', formData);
 
       const newSession = response.data;
       setSessions((prev) => [newSession, ...prev]);
