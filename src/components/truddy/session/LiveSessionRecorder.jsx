@@ -183,6 +183,10 @@ Respond in JSON with all fields.`,
       full_transcript: transcriptText,
       problem_identified: analysis.problem_identified,
       proposed_solution: analysis.proposed_solution,
+      summary: analysis.summary,
+      patterns: analysis.patterns || [],
+      recommendations: analysis.recommendations || [],
+      overall_score: analysis.mental_state_score,
       session_title: sessionTitle || `Session — ${format(new Date(), "MMM d, h:mm a")}`,
     });
 
