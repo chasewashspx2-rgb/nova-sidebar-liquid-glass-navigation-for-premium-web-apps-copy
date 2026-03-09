@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, Shield, BarChart2, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Sparkles, Radio, Bell } from "lucide-react";
+import { Brain, Shield, BarChart2, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck, Flame, Sparkles, Radio, Bell, BookOpen } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { MoodBadge } from "@/components/truddy/MoodBadge";
 import { CircuitBreaker } from "@/components/truddy/CircuitBreaker";
