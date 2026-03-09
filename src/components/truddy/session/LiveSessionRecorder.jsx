@@ -115,18 +115,20 @@ export default function LiveSessionRecorder({ onClose }) {
 
   const stopRecording = async () => {
     if (mediaRecorderRef.current && isRecording) {
+      const mimeType = mediaRecorderRef.current.mimeType || "audio/mp4";
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setIsPaused(false);
       setShowTitleInput(true);
-      const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-      await processRecording(audioBlob);
+      const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+      await processRecording(audioBlob, mimeType);
     }
   };
 
-  const processRecording = async (audioBlob) => {
+  const processRecording = async (audioBlob, mimeType = "audio/mp4") => {
     setIsTranscribing(true);
-    const file = new File([audioBlob], "session.webm", { type: "audio/webm" });
+    const ext = mimeType.includes("mp4") ? "mp4" : mimeType.includes("ogg") ? "ogg" : "mp4";
+    const file = new File([audioBlob], `session.${ext}`, { type: mimeType });
     const uploadRes = await base44.integrations.Core.UploadFile({ file });
 
     const transcriptText = await base44.integrations.Core.InvokeLLM({
