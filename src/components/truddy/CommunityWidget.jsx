@@ -124,7 +124,7 @@ export default function CommunityWidget({ onNavigate }) {
           <div className="mx-auto mb-2 opacity-60">
             <DiscordLogo size={28} />
           </div>
-          <p className="text-[12px] text-[rgba(var(--muted),0.5)] mb-3">No activity yet on Discord</p>
+          <p className="text-[12px] text-[rgba(var(--muted),0.5)] mb-3">Join the community to connect with other traders</p>
           <motion.button onClick={() => onNavigate?.("community")} whileTap={{ scale: 0.96 }}
             className="mx-auto px-4 py-1.5 rounded-lg text-[11px] font-medium cursor-pointer"
             style={{ background: "rgba(104,155,251,0.15)", color: "rgba(104,155,251,0.9)" }}>
