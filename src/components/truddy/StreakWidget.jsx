@@ -67,12 +67,7 @@ function StreakCounter({ icon: Icon, label, count, color, glowColor }) {
   );
 }
 
-export default function StreakWidget({ streaks = {}, trades = [] }) {
-  const xpData = useMemo(() => buildXpHistory(trades), [trades]);
-  const currentXp = xpData[xpData.length - 1]?.xp || 0;
-  const weekAgoXp = xpData[xpData.length - 8]?.xp || 0;
-  const xpGrowth = currentXp - weekAgoXp;
-
+export default function StreakWidget({ streaks = {} }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -81,18 +76,9 @@ export default function StreakWidget({ streaks = {}, trades = [] }) {
       className="glass rounded-[24px] p-5 space-y-4"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="font-bold text-base tracking-tight flex items-center gap-2">
-          <Flame size={16} className="text-orange-400" />
-          Daily Streaks
-        </div>
-        {xpGrowth > 0 && (
-          <div className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(72,199,142,0.15)", color: "#34d399", border: "1px solid rgba(72,199,142,0.3)" }}>
-            <TrendingUp size={11} />
-            +{xpGrowth} XP this week
-          </div>
-        )}
+      <div className="font-bold text-base tracking-tight flex items-center gap-2">
+        <Flame size={16} className="text-orange-400" />
+        Daily Streaks
       </div>
 
       {/* Streak Counters */}
@@ -111,51 +97,6 @@ export default function StreakWidget({ streaks = {}, trades = [] }) {
           color="52,211,153"
           glowColor="52,211,153"
         />
-      </div>
-
-      {/* XP Growth Chart */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-xs font-semibold flex items-center gap-1.5" style={{ color: "rgba(var(--muted),0.7)" }}>
-            <Zap size={11} />
-            XP Growth · Last 30 Days
-          </div>
-          <div className="text-xs font-bold" style={{ color: "rgb(104,155,251)" }}>
-            {currentXp.toLocaleString()} XP total
-          </div>
-        </div>
-        <div className="h-[72px] w-full">
-          {xpData.length > 1 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={xpData} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="xpGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="rgb(104,155,251)" stopOpacity={0.45} />
-                    <stop offset="100%" stopColor="rgb(104,155,251)" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <Tooltip
-                  contentStyle={{ background: "rgba(20,20,30,0.85)", border: "none", borderRadius: 10, fontSize: 11, padding: "4px 10px" }}
-                  labelFormatter={() => ""}
-                  formatter={(v) => [`${v} XP`, "Total"]}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="xp"
-                  stroke="rgb(104,155,251)"
-                  strokeWidth={2}
-                  fill="url(#xpGrad)"
-                  dot={false}
-                  activeDot={{ r: 4, fill: "rgb(104,155,251)", strokeWidth: 0 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-full flex items-center justify-center text-xs" style={{ color: "rgba(var(--muted),0.4)" }}>
-              Log your first trade to start tracking XP growth
-            </div>
-          )}
-        </div>
       </div>
     </motion.div>
   );
