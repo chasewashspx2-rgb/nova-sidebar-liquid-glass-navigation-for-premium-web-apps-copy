@@ -141,8 +141,8 @@ export default function LiveSessionRecorder({ onClose }) {
         <div className="px-6 pt-6 pb-4 flex items-center justify-between"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
           <div>
-            <div className="font-bold text-base">Live Trading Analyzer</div>
-            <div className="text-[11px] text-[rgba(var(--muted),0.55)] mt-0.5">Speak freely — no filter, no judgment</div>
+            <div className="font-bold text-base text-[rgb(var(--text))]">Live Trading Analyzer</div>
+            <div className="text-[11px] text-[rgba(var(--muted),0.6)] mt-0.5">Speak freely — no filter, no judgment</div>
           </div>
           <button onClick={onClose} className="text-2xl opacity-40 hover:opacity-80 transition-opacity leading-none">×</button>
         </div>
