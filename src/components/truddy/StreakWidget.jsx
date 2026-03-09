@@ -92,7 +92,7 @@ export default function StreakWidget({ streaks = {} }) {
         />
         <StreakCounter
           icon={ShieldCheck}
-          label="Rules Clean"
+          label="No Rule Violations"
           count={streaks.pretrade || 0}
           color="52,211,153"
           glowColor="52,211,153"
