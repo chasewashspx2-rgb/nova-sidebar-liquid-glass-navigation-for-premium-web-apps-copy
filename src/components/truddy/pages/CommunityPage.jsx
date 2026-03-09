@@ -86,14 +86,23 @@ export default function CommunityPage() {
   const [showCompose, setShowCompose] = useState(false);
   const [userLevel, setUserLevel] = useState(1);
 
-  // Fetch user and calculate level
+  // Fetch user and calculate level from real activity data
   useEffect(() => {
-    base44.auth.me().then(u => {
+    Promise.all([
+      base44.auth.me(),
+      base44.entities.TradeJournal.list("-created_date", 50),
+      base44.entities.TradingSession.list("-created_date", 30),
+      base44.entities.MoodCheck.list("-created_date", 100),
+    ]).then(([u, trades, sessions, moods]) => {
       setUser(u);
-      // Calculate level from XP (1-100 scale)
-      const xp = u?.xp || 0;
-      const level = Math.min(100, Math.max(1, Math.floor(xp / 100) + 1));
-      setUserLevel(level);
+      const xp = calcXpFromActivity({
+        journals: trades.length,
+        pretrades: trades.length,
+        sessions: sessions.filter(s => s.status === "completed").length,
+        moodChecks: moods.length,
+        ruleFollowed: trades.filter(t => t.followed_rules === "yes").length,
+      });
+      setUserLevel(calcLevel(xp));
     }).catch(() => {});
   }, []);
 
