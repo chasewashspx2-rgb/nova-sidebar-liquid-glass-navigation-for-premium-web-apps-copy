@@ -64,28 +64,15 @@ function PostRow({ post, roomMeta, isNewPost }) {
 }
 
 export default function CommunityWidget({ onNavigate }) {
-  const [posts, setPosts]   = useState([]);
   const [discordMessages, setDiscordMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const [levelPosts, issuePosts] = await Promise.all([
-        base44.entities.CommunityPost.filter({ room_key: "level" }, "-created_date", 4),
-        base44.entities.CommunityPost.filter({ room_key: "issue" }, "-created_date", 3),
-      ]);
-      // Merge, dedupe, sort by date
-      const merged = [...levelPosts, ...issuePosts]
-        .filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i)
-        .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
-        .slice(0, 6);
-      setPosts(merged);
-      
-      // Fetch Discord messages
       try {
         const response = await base44.functions.invoke('getDiscordMessages', {});
-        setDiscordMessages(response.data || []);
+        setDiscordMessages((response.data || []).slice(0, 6));
       } catch (error) {
         console.error('Error fetching Discord messages:', error);
       }
@@ -94,7 +81,7 @@ export default function CommunityWidget({ onNavigate }) {
     load();
   }, []);
 
-  const newCount = posts.filter(p => isNew(p.created_date)).length;
+  const newCount = discordMessages.filter(m => isNew(m.timestamp)).length;
 
   return (
     <div className="glass rounded-[24px] p-5">
