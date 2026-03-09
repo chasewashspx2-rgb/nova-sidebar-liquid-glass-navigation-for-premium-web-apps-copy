@@ -115,7 +115,7 @@ export default function LiveSessionRecorder({ onClose }) {
 
   const stopRecording = async () => {
     if (mediaRecorderRef.current && isRecording) {
-      const mimeType = mediaRecorderRef.current.mimeType || "audio/mp4";
+      const mimeType = mediaRecorderRef.current.mimeType || "audio/webm";
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setIsPaused(false);
