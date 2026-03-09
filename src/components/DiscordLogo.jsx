@@ -1,6 +1,6 @@
-export default function DiscordLogo({ size = 28 }) {
+export default function DiscordLogo({ size = 64 }) {
   return (
-    <div style={{ color: "#5865F2", width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ color: "#5865F2", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
       <svg
         width={size}
         height={size}
