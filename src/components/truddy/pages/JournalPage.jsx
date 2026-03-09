@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, X, ChevronDown, TrendingUp, TrendingDown, Minus, BookOpen } from "lucide-react";
+import { Plus, X, TrendingUp, TrendingDown, Minus, BookOpen, Brain, PenLine } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { MoodBadge, emotionConfig } from "@/components/truddy/MoodBadge";
 import { SectionHeader } from "@/components/truddy/SectionHeader";
