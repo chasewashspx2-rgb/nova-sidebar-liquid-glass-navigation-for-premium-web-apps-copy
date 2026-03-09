@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, X, Shield, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Plus, X, Shield, AlertTriangle, CheckCircle2, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { SectionHeader } from "@/components/truddy/SectionHeader";
 
@@ -62,9 +62,17 @@ export default function RulesPage() {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [checkedRules, setCheckedRules] = useState({});
 
   const load = () => base44.entities.TradingRule.list().then((r) => { setRules(r); setLoading(false); });
   useEffect(() => { load(); }, []);
+
+  const handleRuleCompliance = async (rule, followed) => {
+    const newViolationCount = !followed ? (rule.violation_count || 0) + 1 : Math.max(0, (rule.violation_count || 0) - 1);
+    await base44.entities.TradingRule.update(rule.id, { violation_count: newViolationCount });
+    setCheckedRules(prev => ({ ...prev, [rule.id]: followed }));
+    load();
+  };
 
   const handleAdd = async (form) => {
     await base44.entities.TradingRule.create({ ...form, is_active: true, violation_count: 0 });
@@ -173,6 +181,26 @@ export default function RulesPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex gap-1.5">
+                      <motion.button 
+                        onClick={() => handleRuleCompliance(rule, true)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${checkedRules[rule.id] === true ? "bg-green-500/30 border-green-500/60 text-green-400" : "glass"}`}
+                        title="Rule followed"
+                      >
+                        <Check size={14} />
+                      </motion.button>
+                      <motion.button 
+                        onClick={() => handleRuleCompliance(rule, false)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${checkedRules[rule.id] === false ? "bg-red-500/30 border-red-500/60 text-red-400" : "glass"}`}
+                        title="Rule violated"
+                      >
+                        <X size={14} />
+                      </motion.button>
+                    </div>
                     <button onClick={() => handleToggle(rule)} className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${rule.is_active ? "bg-green-400/20 border-green-400/40 text-green-500" : "glass"}`}>
                       <CheckCircle2 size={14} />
                     </button>
