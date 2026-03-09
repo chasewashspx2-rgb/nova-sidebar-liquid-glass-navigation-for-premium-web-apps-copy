@@ -111,6 +111,19 @@ export default function CommunityPage() {
     setJoining(false);
   }
 
+  async function handleJoinLevel() {
+    setJoining(true);
+    try {
+      const levelStart = Math.floor((userLevel - 1) / 10) * 10 + 1;
+      await base44.functions.invoke('syncUserToDiscord', { userLevel });
+      alert(`Joined #level-${levelStart} on Discord!`);
+    } catch (error) {
+      console.error('Error joining level channel:', error);
+      alert('Could not join channel. Please try again.');
+    }
+    setJoining(false);
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
