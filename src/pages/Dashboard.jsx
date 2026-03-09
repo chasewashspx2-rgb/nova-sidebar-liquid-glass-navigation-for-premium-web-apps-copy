@@ -181,7 +181,7 @@ export default function Dashboard() {
         <CursorGlow />
         <div className="relative grid grid-cols-1 lg:grid-cols-[98px_1fr]">
           {/* Sidebar */}
-          <aside className="hidden lg:block relative z-10 px-4 py-6 lg:px-5 lg:py-8">
+          <aside className="hidden lg:block relative z-10 px-4 py-6 lg:px-5 lg:py-8" style={{ background: "rgba(250, 249, 246, 0.8)", backdropFilter: "blur(8px)" }}>
             <div className="flex items-center justify-center">
               <BrandMark />
             </div>
