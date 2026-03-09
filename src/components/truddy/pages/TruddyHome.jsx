@@ -96,7 +96,7 @@ export default function TruddyHome({ onNavigate }) {
   const quickActions = [
     { icon: <Radio size={18} />,         label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: true },
     { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach" },
-    { icon: <PenJournalIcon size={18} />,      label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal" },
+    { icon: <BookOpen size={18} />,      label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal" },
     { icon: <ShieldCheck size={18} />,   label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade" },
   ];
 
