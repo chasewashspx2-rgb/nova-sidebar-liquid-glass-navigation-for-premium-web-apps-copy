@@ -150,21 +150,36 @@ export default function CommunityPage() {
         </motion.button>
       </div>
 
-      {/* Issue Filter */}
+      {/* Issues Grid */}
       {mode === "issues" && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {ISSUES.map(issue => (
-            <motion.button
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {ISSUES.map((issue, i) => (
+            <motion.div
               key={issue.key}
-              onClick={() => setSelectedIssue(issue.key)}
-              whileTap={{ scale: 0.97 }}
-              className="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all"
-              style={selectedIssue === issue.key
-                ? { background: "rgba(104,155,251,0.25)", border: "1px solid rgba(104,155,251,0.4)" }
-                : { background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.2)" }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="glass rounded-[16px] p-6 flex flex-col gap-4"
             >
-              {issue.label}
-            </motion.button>
+              <div>
+                <h3 className="font-semibold text-base mb-1">{issue.label}</h3>
+                <p className="text-xs text-[rgba(var(--muted),0.6)]">
+                  {issue.key === "fomo" && "Fear of missing out on trades"}
+                  {issue.key === "revenge_trading" && "Trading to recover losses"}
+                  {issue.key === "overtrading" && "Taking too many trades"}
+                  {issue.key === "fear" && "Analysis paralysis and hesitation"}
+                  {issue.key === "discipline" && "Following your trading rules"}
+                </p>
+              </div>
+              <motion.button
+                onClick={() => handleJoinIssue(issue.key)}
+                disabled={joining}
+                whileTap={{ scale: 0.96 }}
+                className="w-full btn-primary text-sm"
+              >
+                {joining ? "Joining..." : `Join #issue-${issue.key}`}
+              </motion.button>
+            </motion.div>
           ))}
         </div>
       )}
