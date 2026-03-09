@@ -152,7 +152,7 @@ export default function Dashboard() {
                   <BrandMark />
                   <div>
                     <div className="font-bold text-base">Truddy</div>
-                    <div className="text-[10px] text-[rgba(var(--muted),0.75)]">Trading Psychology Co-Pilot</div>
+                    <div className="text-[10px] text-[rgba(var(--muted),0.75)]">your trading buddy</div>
                   </div>
                 </div>
                 <motion.button onClick={() => setMobileMenuOpen(false)} whileTap={{ scale: 0.9 }} className="w-10 h-10 rounded-full glass grid place-items-center cursor-pointer">
