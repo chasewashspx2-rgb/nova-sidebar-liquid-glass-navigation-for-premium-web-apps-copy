@@ -144,10 +144,7 @@ export default function TruddyHome({ onNavigate }) {
       {/* Streaks + Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4">
         {/* Streaks */}
-        <div className="glass rounded-[20px] sm:rounded-[24px] p-4 sm:p-5">
-          <div className="font-semibold text-sm mb-3">Daily Streaks</div>
-          <StreakBadges streaks={streaks} />
-        </div>
+        <StreakWidget streaks={streaks} trades={trades} />
 
         {/* Quick Actions */}
         <div className="flex flex-col gap-2 sm:min-w-[200px]">
