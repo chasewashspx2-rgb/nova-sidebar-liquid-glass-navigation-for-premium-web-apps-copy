@@ -22,46 +22,7 @@ function timeAgo(dateStr) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-function PostRow({ post, roomMeta, isNewPost }) {
-  const reactions = post.reactions || {};
-  const totalReactions = (reactions.support || 0) + (reactions.relate || 0) + (reactions.helpful || 0);
 
-  return (
-    <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-      className="px-3 py-2.5 rounded-[12px] transition-all hover:bg-white/5">
-      <div className="flex items-start gap-2.5">
-        {/* Room badge */}
-        <div className="w-6 h-6 rounded-full grid place-items-center flex-shrink-0 text-[13px] mt-0.5"
-          style={{ background: roomMeta?.color?.replace("0.9", "0.12") || "rgba(104,155,251,0.12)" }}>
-          {roomMeta?.emoji || "💬"}
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[10px] font-medium opacity-70">
-              {roomMeta?.label}
-            </span>
-            {isNewPost && (
-              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
-                style={{ background: "rgba(104,155,251,0.25)", color: "rgba(104,155,251,1)" }}>
-                NEW
-              </span>
-            )}
-            <span className="text-[9px] opacity-40 ml-auto flex-shrink-0">{timeAgo(post.created_date)}</span>
-          </div>
-          <p className="text-xs leading-relaxed text-[rgba(var(--text),0.75)] line-clamp-2">{post.content}</p>
-          {totalReactions > 0 && (
-            <div className="flex items-center gap-2.5 mt-1.5">
-              {(reactions.support || 0) > 0 && <span className="text-[9px] opacity-50 flex items-center gap-1"><Heart size={8} /> {reactions.support}</span>}
-              {(reactions.relate || 0) > 0 && <span className="text-[9px] opacity-50 flex items-center gap-1"><RefreshCw size={8} /> {reactions.relate}</span>}
-              {(reactions.helpful || 0) > 0 && <span className="text-[9px] opacity-50 flex items-center gap-1"><Lightbulb size={8} /> {reactions.helpful}</span>}
-            </div>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
 export default function CommunityWidget({ onNavigate }) {
   const [discordMessages, setDiscordMessages] = useState([]);
