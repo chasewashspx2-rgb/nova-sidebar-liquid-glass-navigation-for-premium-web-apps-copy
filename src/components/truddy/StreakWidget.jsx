@@ -2,28 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { BookOpen, ShieldCheck, TrendingUp, Flame } from "lucide-react";
 
-function buildXpHistory(trades) {
-  if (!trades.length) return [];
-  const days = 30;
-  const today = new Date();
-  const data = [];
-  let cumulative = 0;
-
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().split("T")[0];
-    const dayTrades = trades.filter(t => (t.date || t.created_date || "").slice(0, 10) === key);
-    const dayXp = dayTrades.reduce((acc, t) => {
-      let xp = 20; // base per journal
-      if (t.followed_rules === "yes") xp += 5;
-      return acc + xp;
-    }, 0);
-    cumulative += dayXp;
-    data.push({ date: key, xp: cumulative, dayXp });
-  }
-  return data;
-}
 
 function MilestoneLabel({ count }) {
   if (count >= 30) return <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,149,0,0.2)", color: "#ff9500" }}>LEGEND</span>;
