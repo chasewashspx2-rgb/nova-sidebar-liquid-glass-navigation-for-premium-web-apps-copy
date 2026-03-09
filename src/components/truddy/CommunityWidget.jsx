@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Heart, RefreshCw, Lightbulb, ArrowRight, Users, MessageCircle } from "lucide-react";
+import { ArrowRight, Users } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getStage } from "@/components/truddy/XPProgressCard";
 import { MessageSquare } from "lucide-react";
