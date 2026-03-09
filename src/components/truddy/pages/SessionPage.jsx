@@ -51,8 +51,8 @@ export default function SessionPage() {
             <Play size={20} className="text-white" fill="white" />
           </div>
           <div>
-            <div className="font-bold text-base">Start New Recording</div>
-            <div className="text-sm opacity-55">Record audio and get instant transcription</div>
+            <div className="font-bold text-base">Start Live Analysis</div>
+            <div className="text-sm opacity-55">Talk through your trade — before, during, and after</div>
           </div>
         </div>
         <ChevronRight size={20} className="opacity-40" />
