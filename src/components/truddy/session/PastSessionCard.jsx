@@ -51,29 +51,86 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
             className="px-4 pb-4 space-y-3"
             style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
           >
+            {/* Mental State Indicator */}
+            {session.overall_score && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+                <MentalStateIndicator 
+                  score={Math.round(session.overall_score)} 
+                  recommendation={session.trading_recommendation}
+                />
+              </motion.div>
+            )}
+
+            {/* Summary */}
+            {session.summary && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="pt-2 space-y-1">
+                <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Session Summary</div>
+                <div className="text-xs leading-relaxed text-[#faf9f6] opacity-75">{session.summary}</div>
+              </motion.div>
+            )}
+
+            {/* Patterns */}
+            {session.patterns && session.patterns.length > 0 && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="pt-2 space-y-2">
+                <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Observed Patterns</div>
+                <div className="space-y-1.5">
+                  {session.patterns.map((pattern, idx) => (
+                    <div key={idx} className="flex gap-2 text-xs">
+                      <span className="text-[rgba(200,200,200,0.4)] flex-shrink-0">•</span>
+                      <span className="text-[#faf9f6] opacity-75">{pattern}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Problem */}
+            {session.problem_identified && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                <div className="rounded-[12px] p-3 space-y-1" style={{ background: "rgba(255,100,80,0.1)", border: "1px solid rgba(255,100,80,0.25)" }}>
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold" style={{ color: "rgba(255,120,90,0.9)" }}>
+                    <AlertTriangle size={11} /> Biggest Problem
+                  </div>
+                  <div className="text-xs leading-relaxed text-[#faf9f6] opacity-80">{session.problem_identified}</div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Solution */}
+            {session.proposed_solution && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+                <div className="rounded-[12px] p-3 space-y-1" style={{ background: "rgba(80,220,160,0.08)", border: "1px solid rgba(80,220,160,0.25)" }}>
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold" style={{ color: "rgba(80,220,160,0.9)" }}>
+                    <Lightbulb size={11} /> Recommended Fix
+                  </div>
+                  <div className="text-xs leading-relaxed text-[#faf9f6] opacity-80">{session.proposed_solution}</div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Recommendations */}
+            {session.recommendations && session.recommendations.length > 0 && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="pt-2 space-y-2">
+                <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Coach's Advice</div>
+                <div className="space-y-1.5">
+                  {session.recommendations.map((rec, idx) => (
+                    <div key={idx} className="flex gap-2 text-xs">
+                      <span className="text-[rgba(80,220,160,0.7)] flex-shrink-0">✓</span>
+                      <span className="text-[#faf9f6] opacity-75">{rec}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Transcript */}
             {session.full_transcript && (
-              <div className="pt-3 space-y-1">
-                <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Transcript</div>
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="pt-2 space-y-1">
+                <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Full Transcript</div>
                 <div className="text-xs leading-relaxed text-[#faf9f6] opacity-70 max-h-28 overflow-y-auto" style={{ whiteSpace: "pre-wrap" }}>
                   {session.full_transcript}
                 </div>
-              </div>
-            )}
-            {session.problem_identified && (
-              <div className="rounded-[12px] p-3 space-y-1" style={{ background: "rgba(255,100,80,0.1)", border: "1px solid rgba(255,100,80,0.25)" }}>
-                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold" style={{ color: "rgba(255,120,90,0.9)" }}>
-                  <AlertTriangle size={11} /> Biggest Problem
-                </div>
-                <div className="text-xs leading-relaxed text-[#faf9f6] opacity-80">{session.problem_identified}</div>
-              </div>
-            )}
-            {session.proposed_solution && (
-              <div className="rounded-[12px] p-3 space-y-1" style={{ background: "rgba(80,220,160,0.08)", border: "1px solid rgba(80,220,160,0.25)" }}>
-                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold" style={{ color: "rgba(80,220,160,0.9)" }}>
-                  <Lightbulb size={11} /> Recommended Fix
-                </div>
-                <div className="text-xs leading-relaxed text-[#faf9f6] opacity-80">{session.proposed_solution}</div>
-              </div>
+              </motion.div>
             )}
           </motion.div>
         )}
