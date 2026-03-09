@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Heart, RefreshCw, Lightbulb, ArrowRight, Users, MessageCircle } from "lucide-react";
+import { Heart, RefreshCw, Lightbulb, ArrowRight, Users, MessageSquare } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getStage } from "@/components/truddy/XPProgressCard";
-import { MessageSquare } from "lucide-react";
+import DiscordLogo from "@/components/DiscordLogo";
 
 const ROOM_META = {
   level: { label: "Your Level", emoji: "📊", color: "rgba(104,155,251,0.9)" },
