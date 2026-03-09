@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, RefreshCw, Lightbulb, Send, MessageCircle, AlertCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { calcXpFromActivity, calcLevel } from "@/components/truddy/XPProgressCard";
 
 // Chat types
 const CHATS = [
