@@ -331,11 +331,12 @@ Respond in JSON.`,
               </div>
               <div className="grid grid-cols-1 gap-2">
                 {sessions.map((s) => (
-                  <PastRecordingCard
+                  <PastSessionCard
                     key={s.id}
                     session={s}
                     isExpanded={expandedId === s.id}
                     onToggle={() => setExpandedId(expandedId === s.id ? null : s.id)}
+                    onDelete={handleDeleteSession}
                   />
                 ))}
               </div>
