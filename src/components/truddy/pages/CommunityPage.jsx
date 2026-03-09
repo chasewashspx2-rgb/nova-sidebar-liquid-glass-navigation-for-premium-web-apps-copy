@@ -184,29 +184,16 @@ export default function CommunityPage() {
         </div>
       )}
 
-      {/* Messages Feed */}
+      {/* Messages Feed - Only show for level mode */}
+      {mode === "level" && (
       <div className="space-y-3">
         {/* Level Info */}
-        {mode === "level" && (
-          <div className="glass rounded-[16px] p-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">Your Level Range</span>
-              <span className="text-xs text-[rgba(var(--muted),0.6)]">Levels {levelRange}</span>
-            </div>
+        <div className="glass rounded-[16px] p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold">Your Level Range</span>
+            <span className="text-xs text-[rgba(var(--muted),0.6)]">Levels {levelRange}</span>
           </div>
-        )}
-
-        {/* Join Button for Issues */}
-        {mode === "issues" && (
-          <motion.button
-            onClick={handleJoinChannel}
-            disabled={joining}
-            whileTap={{ scale: 0.96 }}
-            className="w-full btn-primary text-sm"
-          >
-            {joining ? "Joining..." : `Join #issue-${selectedIssue}`}
-          </motion.button>
-        )}
+        </div>
 
         {/* Messages */}
         {loading ? (
