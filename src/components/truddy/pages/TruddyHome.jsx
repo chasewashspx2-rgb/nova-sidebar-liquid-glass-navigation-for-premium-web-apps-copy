@@ -50,10 +50,12 @@ export default function TruddyHome({ onNavigate }) {
       base44.entities.TradingSession.list("-created_date", 30),
       base44.auth.me(),
       base44.entities.CommunityPost.list("-created_date", 20),
-    ]).then(([t, s, u, posts]) => {
+      base44.entities.MoodCheck.list("-created_date", 100),
+    ]).then(([t, s, u, posts, moods]) => {
       setTrades(t);
       setSessions(s);
       setUser(u);
+      setMoodChecks(moods);
       // Count posts not created by current user as "unread" (simple approximation)
       const unread = posts.filter(p => p.created_by !== u?.email).length;
       setUnreadCount(unread);
