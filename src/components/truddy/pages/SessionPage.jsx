@@ -36,7 +36,7 @@ export default function SessionPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <SectionHeader title="Live Session Recorder" subtitle="Record and transcribe your voice sessions instantly with AI-powered transcription." />
+      <SectionHeader title="Live Trading Analyzer" subtitle="Speak freely — your emotions, urges, and thoughts. All of it matters." />
 
       {/* Start Button */}
       <motion.button
