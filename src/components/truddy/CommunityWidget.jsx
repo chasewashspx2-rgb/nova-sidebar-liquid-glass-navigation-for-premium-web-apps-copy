@@ -5,22 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { getStage } from "@/components/truddy/XPProgressCard";
 import { MessageSquare } from "lucide-react";
 
-const ROOM_META = {
-  level: { label: "Your Level", emoji: "📊", color: "rgba(104,155,251,0.9)" },
-  issue: { label: "Shared Issues", emoji: "🤝", color: "rgba(220,100,100,0.9)" },
-};
 
-function isNew(dateStr) {
-  return (Date.now() - new Date(dateStr)) < 24 * 60 * 60 * 1000;
-}
-
-function timeAgo(dateStr) {
-  const diff = (Date.now() - new Date(dateStr)) / 1000;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
-}
 
 
 
