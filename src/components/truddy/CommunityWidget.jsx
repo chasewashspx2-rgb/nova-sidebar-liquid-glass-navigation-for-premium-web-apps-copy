@@ -10,25 +10,6 @@ import { MessageSquare } from "lucide-react";
 
 
 export default function CommunityWidget({ onNavigate }) {
-  const [discordMessages, setDiscordMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const response = await base44.functions.invoke('getDiscordMessages', {});
-        setDiscordMessages((response.data || []).slice(0, 6));
-      } catch (error) {
-        console.error('Error fetching Discord messages:', error);
-      }
-      setLoading(false);
-    }
-    load();
-  }, []);
-
-  const newCount = discordMessages.filter(m => isNew(m.timestamp)).length;
-
   return (
     <div className="glass rounded-[24px] p-5">
       {/* Header */}
