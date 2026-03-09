@@ -94,10 +94,14 @@ export default function TruddyHome({ onNavigate }) {
   })();
 
   const quickActions = [
-    { icon: <Radio size={18} />,       label: "Live Session",   sub: "Real-time trade tracking",  page: "session", iconColor: { icon: "rgba(255,130,100,0.9)", bg: "rgba(255,120,90,0.15)", border: "rgba(255,140,110,0.25)" } },
-    { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach",   iconColor: { icon: "rgba(190,165,255,0.9)", bg: "rgba(160,120,255,0.15)", border: "rgba(185,155,255,0.25)" } },
-    { icon: <BookOpen size={18} />,    label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal", iconColor: { icon: "rgba(126,184,247,0.9)", bg: "rgba(100,165,245,0.15)", border: "rgba(126,184,247,0.25)" } },
-    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade", iconColor: { icon: "rgba(232,200,74,0.9)", bg: "rgba(220,185,50,0.15)", border: "rgba(232,200,74,0.25)" } },
+    { icon: <Radio size={18} />,       label: "Live Session",   sub: "Real-time trade tracking",  page: "session", accent: false, iconColor: { icon: "#ff8060", bg: "rgba(255,120,90,0.2)", border: "rgba(255,140,110,0.4)" },
+      btnStyle: { background: "linear-gradient(135deg, rgba(255,120,90,0.25) 0%, rgba(255,180,155,0.1) 100%)", border: "1px solid rgba(255,140,110,0.35)" } },
+    { icon: <YinYangIcon size={18} />, label: "Yin and Yang",   sub: "AI coaching session",       page: "coach",   iconColor: null,
+      btnStyle: { background: "linear-gradient(135deg, rgba(160,120,255,0.28) 0%, rgba(210,185,255,0.1) 100%)", border: "1px solid rgba(185,155,255,0.38)" } },
+    { icon: <BookOpen size={18} />,    label: "Journal Entry",  sub: "Log and reflect on trades", page: "journal", iconColor: { icon: "#7eb8f7", bg: "rgba(126,184,247,0.18)", border: "rgba(126,184,247,0.35)" },
+      btnStyle: { background: "linear-gradient(135deg, rgba(100,165,245,0.26) 0%, rgba(180,215,255,0.1) 100%)", border: "1px solid rgba(126,184,247,0.3)" } },
+    { icon: <ShieldCheck size={18} />, label: "Pre-Trade Gate", sub: "Validate your next trade",  page: "pretrade", iconColor: { icon: "#e8c84a", bg: "rgba(232,200,74,0.18)", border: "rgba(232,200,74,0.35)" },
+      btnStyle: { background: "linear-gradient(135deg, rgba(220,185,50,0.26) 0%, rgba(255,235,130,0.1) 100%)", border: "1px solid rgba(232,200,74,0.3)" } },
   ];
 
   return (
@@ -154,12 +158,12 @@ export default function TruddyHome({ onNavigate }) {
               initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.35, delay: 0.08 + i * 0.06 }}
               whileHover={{ x: 3 }} whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-3 px-4 py-3 rounded-[18px] cursor-pointer text-left glass"
-              style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
+              className="flex items-center gap-3 px-4 py-3 rounded-[18px] cursor-pointer text-left"
+              style={action.btnStyle || { background: "rgba(var(--glass),0.38)", border: "1px solid rgba(255,255,255,0.28)" }}>
               <div className="w-8 h-8 rounded-[11px] grid place-items-center flex-shrink-0"
                 style={{
-                  background: action.iconColor ? action.iconColor.bg : "rgba(255,255,255,0.15)",
-                  border: `1px solid ${action.iconColor ? action.iconColor.border : "rgba(255,255,255,0.2)"}`,
+                  background: action.accent ? "rgba(104,155,251,0.2)" : action.iconColor ? action.iconColor.bg : "rgba(255,255,255,0.28)",
+                  border: `1px solid ${action.accent ? "rgba(104,155,251,0.4)" : action.iconColor ? action.iconColor.border : "rgba(255,255,255,0.35)"}`,
                   color: action.iconColor ? action.iconColor.icon : undefined,
                 }}>
                 {action.icon}
