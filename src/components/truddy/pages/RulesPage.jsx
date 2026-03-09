@@ -163,52 +163,58 @@ export default function RulesPage() {
             return (
               <motion.div key={rule.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
                 className={`glass rounded-[18px] p-4 sm:p-5 transition-opacity ${!rule.is_active ? "opacity-50" : ""}`}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3 flex-1">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0 border`}
-                      style={{ background: cfg.color, borderColor: cfg.border }}>
-                      {cfg.emoji} {cfg.label}
-                    </span>
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm">{rule.title}</div>
-                      {rule.description && <div className="text-xs text-[rgba(var(--muted),0.75)] mt-1">{rule.description}</div>}
-                      {(rule.violation_count || 0) > 0 && (
-                        <div className="mt-2 flex items-center gap-1.5">
-                          <AlertTriangle size={11} className="text-red-400" />
-                          <span className="text-xs text-red-400">{rule.violation_count} violation{rule.violation_count > 1 ? "s" : ""} logged</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="flex gap-1.5">
-                      <motion.button 
-                        onClick={() => handleRuleCompliance(rule, true)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${checkedRules[rule.id] === true ? "bg-green-500/30 border-green-500/60 text-green-400" : "glass"}`}
-                        title="Rule followed"
-                      >
-                        <Check size={14} />
-                      </motion.button>
-                      <motion.button 
-                        onClick={() => handleRuleCompliance(rule, false)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${checkedRules[rule.id] === false ? "bg-red-500/30 border-red-500/60 text-red-400" : "glass"}`}
-                        title="Rule violated"
-                      >
-                        <X size={14} />
-                      </motion.button>
-                    </div>
-                    <button onClick={() => handleToggle(rule)} className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${rule.is_active ? "bg-green-400/20 border-green-400/40 text-green-500" : "glass"}`}>
-                      <CheckCircle2 size={14} />
-                    </button>
-                    <button onClick={() => handleDelete(rule.id)} className="w-8 h-8 rounded-full glass grid place-items-center cursor-pointer text-[rgba(var(--muted),0.5)] hover:text-red-400 transition-colors">
-                      <X size={13} />
-                    </button>
-                  </div>
-                </div>
+                <div className="space-y-3">
+                   <div className="flex items-center justify-between gap-3">
+                     <div className="flex items-center gap-3 flex-1">
+                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0 border`}
+                         style={{ background: cfg.color, borderColor: cfg.border }}>
+                         {cfg.emoji} {cfg.label}
+                       </span>
+                       <div className="flex-1">
+                         <div className="font-semibold text-sm">{rule.title}</div>
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-2 flex-shrink-0">
+                       <button onClick={() => handleToggle(rule)} className={`w-8 h-8 rounded-full grid place-items-center cursor-pointer transition-all border ${rule.is_active ? "bg-green-400/20 border-green-400/40 text-green-500" : "glass"}`}>
+                         <CheckCircle2 size={14} />
+                       </button>
+                       <button onClick={() => handleDelete(rule.id)} className="w-8 h-8 rounded-full glass grid place-items-center cursor-pointer text-[rgba(var(--muted),0.5)] hover:text-red-400 transition-colors">
+                         <X size={13} />
+                       </button>
+                     </div>
+                   </div>
+                   <div className="text-xs text-[rgba(var(--muted),0.75)]">{rule.description}</div>
+                   <div className="flex items-center justify-between gap-3 pt-2 border-t border-[rgba(255,255,255,0.08)]">
+                     <div>
+                       {(rule.violation_count || 0) > 0 && (
+                         <div className="flex items-center gap-1.5">
+                           <AlertTriangle size={11} className="text-red-400" />
+                           <span className="text-xs text-red-400">{rule.violation_count} violation{rule.violation_count > 1 ? "s" : ""} logged</span>
+                         </div>
+                       )}
+                     </div>
+                     <div className="flex gap-2">
+                       <motion.button 
+                         onClick={() => handleRuleCompliance(rule, true)}
+                         whileHover={{ scale: 1.08 }}
+                         whileTap={{ scale: 0.92 }}
+                         className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all border ${checkedRules[rule.id] === true ? "bg-green-500/40 border-green-500/70 text-green-300" : "glass"}`}
+                         title="Rule followed"
+                       >
+                         <Check size={14} /> Followed
+                       </motion.button>
+                       <motion.button 
+                         onClick={() => handleRuleCompliance(rule, false)}
+                         whileHover={{ scale: 1.08 }}
+                         whileTap={{ scale: 0.92 }}
+                         className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all border ${checkedRules[rule.id] === false ? "bg-red-500/40 border-red-500/70 text-red-300" : "glass"}`}
+                         title="Rule violated"
+                       >
+                         <X size={14} /> Violated
+                       </motion.button>
+                     </div>
+                   </div>
+                 </div>
               </motion.div>
             );
           })}
