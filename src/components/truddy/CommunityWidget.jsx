@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Heart, RefreshCw, Lightbulb, ArrowRight, Users, MessageCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getStage } from "@/components/truddy/XPProgressCard";
+import { MessageSquare } from "lucide-react";
 
 const ROOM_META = {
   level: { label: "Your Level", emoji: "📊", color: "rgba(104,155,251,0.9)" },
@@ -64,6 +65,7 @@ function PostRow({ post, roomMeta, isNewPost }) {
 
 export default function CommunityWidget({ onNavigate }) {
   const [posts, setPosts]   = useState([]);
+  const [discordMessages, setDiscordMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -79,6 +81,14 @@ export default function CommunityWidget({ onNavigate }) {
         .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
         .slice(0, 6);
       setPosts(merged);
+      
+      // Fetch Discord messages
+      try {
+        const response = await base44.functions.invoke('getDiscordMessages', {});
+        setDiscordMessages(response.data || []);
+      } catch (error) {
+        console.error('Error fetching Discord messages:', error);
+      }
       setLoading(false);
     }
     load();
@@ -109,7 +119,7 @@ export default function CommunityWidget({ onNavigate }) {
         </motion.button>
       </div>
 
-      {/* Posts */}
+      {/* Posts & Discord */}
       {loading ? (
         <div className="space-y-2">
           {[1,2,3].map(i => (
@@ -122,7 +132,7 @@ export default function CommunityWidget({ onNavigate }) {
             </div>
           ))}
         </div>
-      ) : posts.length === 0 ? (
+      ) : posts.length === 0 && discordMessages.length === 0 ? (
         <div className="text-center py-8">
           <MessageCircle size={28} className="mx-auto mb-2 opacity-20" />
           <p className="text-[12px] text-[rgba(var(--muted),0.5)] mb-3">No posts yet in your communities</p>
@@ -142,6 +152,29 @@ export default function CommunityWidget({ onNavigate }) {
                </motion.div>
              );
             })}
+           {discordMessages.length > 0 && (
+             <>
+               <div className="px-3 py-3 text-[11px] font-medium opacity-50 mt-3 border-t border-white/8">Discord</div>
+               {discordMessages.map((msg, i) => (
+                 <motion.div key={msg.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (posts.length + i) * 0.03 }}
+                   className="px-3 py-2.5 rounded-[12px] transition-all hover:bg-white/5">
+                   <div className="flex items-start gap-2.5">
+                     <div className="w-6 h-6 rounded-full grid place-items-center flex-shrink-0 text-[13px] mt-0.5"
+                       style={{ background: "rgba(88,100,184,0.12)" }}>
+                       <MessageSquare size={13} />
+                     </div>
+                     <div className="flex-1 min-w-0">
+                       <div className="flex items-center gap-1.5 mb-1">
+                         <span className="text-[10px] font-medium opacity-70">{msg.channel}</span>
+                         <span className="text-[9px] opacity-40 ml-auto flex-shrink-0">{timeAgo(msg.timestamp)}</span>
+                       </div>
+                       <p className="text-xs leading-relaxed text-[rgba(var(--text),0.75)] line-clamp-2">{msg.content}</p>
+                     </div>
+                   </div>
+                 </motion.div>
+               ))}
+             </>
+           )}
          </div>
       )}
     </div>
