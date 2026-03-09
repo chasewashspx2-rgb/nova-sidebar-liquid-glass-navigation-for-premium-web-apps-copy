@@ -92,11 +92,18 @@ export default function ConsistencyGrid({ trades = [], sessions = [] }) {
               {todayDay && <div className="absolute inset-0 rounded-[10px] ring-1 ring-[rgba(104,155,251,0.6)]" />}
 
               {/* Tooltip */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-[10px] text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
-                style={{ background: "rgba(15,20,35,0.92)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <div className="font-semibold text-white">{format(day, "MMM d")}</div>
-                <div className="text-[rgba(255,255,255,0.55)] mt-0.5">
-                  {hasTrade ? "✓" : "·"} Trade &nbsp; {hasSession ? "✓" : "·"} Session
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-[12px] text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
+                style={{ background: "linear-gradient(135deg, rgba(30,25,55,0.97) 0%, rgba(20,30,60,0.97) 100%)", border: "1px solid rgba(104,155,251,0.35)", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}>
+                <div className="font-bold text-white mb-1.5">{format(day, "EEEE, MMM d")}</div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-1.5 h-1.5 rounded-full ${hasTrade ? "bg-[rgba(104,155,251,1)]" : "bg-[rgba(255,255,255,0.15)]"}`} />
+                    <span className={hasTrade ? "text-[rgba(104,155,251,0.95)]" : "text-[rgba(255,255,255,0.3)]"}>Trade Journal</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-1.5 h-1.5 rounded-full ${hasSession ? "bg-[rgba(121,113,249,1)]" : "bg-[rgba(255,255,255,0.15)]"}`} />
+                    <span className={hasSession ? "text-[rgba(180,165,255,0.95)]" : "text-[rgba(255,255,255,0.3)]"}>Live Session</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
