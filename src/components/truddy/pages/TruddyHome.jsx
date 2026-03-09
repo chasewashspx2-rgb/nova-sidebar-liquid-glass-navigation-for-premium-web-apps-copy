@@ -159,9 +159,7 @@ export default function TruddyHome({ onNavigate }) {
               transition={{ duration: 0.35, delay: 0.08 + i * 0.06 }}
               whileHover={{ x: 3 }} whileTap={{ scale: 0.97 }}
               className="flex items-center gap-3 px-4 py-3 rounded-[18px] cursor-pointer text-left"
-              style={action.accent
-                ? { background: "linear-gradient(135deg, rgba(104,155,251,0.25), rgba(121,113,249,0.18))", border: "1px solid rgba(104,155,251,0.35)" }
-                : { background: "rgba(var(--glass),0.38)", border: "1px solid rgba(255,255,255,0.28)" }}>
+              style={action.btnStyle || { background: "rgba(var(--glass),0.38)", border: "1px solid rgba(255,255,255,0.28)" }}>
               <div className="w-8 h-8 rounded-[11px] grid place-items-center flex-shrink-0"
                 style={{
                   background: action.accent ? "rgba(104,155,251,0.2)" : action.iconColor ? action.iconColor.bg : "rgba(255,255,255,0.28)",
