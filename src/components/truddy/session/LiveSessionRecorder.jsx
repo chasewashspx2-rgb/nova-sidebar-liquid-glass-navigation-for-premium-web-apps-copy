@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, Square, Clock, ChevronDown, ChevronUp, AlertTriangle, Lightbulb } from "lucide-react";
+import { Mic, Square, Clock } from "lucide-react";
+import PastSessionCard from "@/components/truddy/session/PastSessionCard";
 import { base44 } from "@/api/base44Client";
 import { format } from "date-fns";
 

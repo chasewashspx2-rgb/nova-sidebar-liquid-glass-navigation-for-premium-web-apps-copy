@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ChevronRight, Loader2 } from "lucide-react";
+import { Mic, Loader2, Clock, Brain } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { SectionHeader } from "@/components/truddy/SectionHeader";
 import LiveSessionRecorder from "@/components/truddy/session/LiveSessionRecorder";
-import { format, formatDistanceStrict } from "date-fns";
-
-
+import PastSessionCard from "@/components/truddy/session/PastSessionCard";
+import { format, formatDistanceToNow } from "date-fns";
 
 export default function SessionPage() {
   const [showRecorder, setShowRecorder] = useState(false);
   const [sessions, setSessions] = useState([]);
+  const [expandedId, setExpandedId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,10 +24,16 @@ export default function SessionPage() {
     setLoading(false);
   };
 
+  const handleDeleteSession = async (sessionId) => {
+    await base44.entities.TradingSession.delete(sessionId);
+    setSessions(prev => prev.filter(s => s.id !== sessionId));
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 gap-3 opacity-50">
-        <Loader2 size={18} className="animate-spin" /> Loading sessions...
+      <div className="flex items-center justify-center h-64 gap-3 opacity-40">
+        <Loader2 size={16} className="animate-spin" />
+        <span className="text-sm">Loading sessions...</span>
       </div>
     );
   }
@@ -35,67 +41,138 @@ export default function SessionPage() {
   const completedSessions = sessions.filter(s => s.status === "completed");
 
   return (
-    <div className="flex flex-col gap-5">
-      <SectionHeader title="Live Trading Analyzer" subtitle="Speak freely — your emotions, urges, and thoughts. All of it matters." />
+    <div className="flex flex-col gap-6">
+      <SectionHeader
+        title="Live Trading Analyzer"
+        subtitle="Speak freely — your emotions, urges, and thoughts. All of it matters."
+      />
 
-      {/* Start Button */}
+      {/* Hero Start Button */}
       <motion.button
         onClick={() => setShowRecorder(true)}
-        whileHover={{ scale: 1.02, y: -2 }}
+        whileHover={{ scale: 1.015, y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full flex items-center justify-between px-6 py-5 rounded-[22px] mb-6 cursor-pointer"
-        style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.2), rgba(121,113,249,0.15))", border: "1px solid rgba(104,155,251,0.4)", boxShadow: "0 8px 32px rgba(104,155,251,0.18)" }}
+        className="w-full relative overflow-hidden rounded-[24px] px-6 py-7 flex items-center gap-5 text-left"
+        style={{
+          background: "linear-gradient(135deg, rgba(104,155,251,0.18) 0%, rgba(121,113,249,0.12) 100%)",
+          border: "1px solid rgba(104,155,251,0.35)",
+          boxShadow: "0 12px 40px rgba(104,155,251,0.14)",
+        }}
       >
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full grid place-items-center" style={{ background: "linear-gradient(135deg, rgba(104,155,251,1), rgba(121,113,249,1))", boxShadow: "0 6px 20px rgba(104,155,251,0.4)" }}>
-            <Play size={20} className="text-white" fill="white" />
+        {/* Glowing mic icon */}
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+          style={{
+            background: "linear-gradient(135deg, rgba(104,155,251,1), rgba(121,113,249,1))",
+            boxShadow: "0 8px 28px rgba(104,155,251,0.45)",
+          }}
+        >
+          <Mic size={24} className="text-white" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="font-bold text-base tracking-tight" style={{ color: "rgb(var(--text))" }}>
+            Start Live Analysis
           </div>
-          <div>
-            <div className="font-bold text-base">Start Live Analysis</div>
-            <div className="text-sm opacity-55">Talk through your trade — before, during, and after</div>
+          <div className="text-sm mt-0.5 opacity-50 leading-snug">
+            Talk through your setup, emotions, and doubts in real time
           </div>
         </div>
-        <ChevronRight size={20} className="opacity-40" />
+
+        {/* Decorative pulse rings */}
+        <div className="relative w-8 h-8 flex-shrink-0">
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.3)" }}
+            animate={{ scale: [1, 1.5, 1], opacity: [0.6, 0, 0.6] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute inset-1 rounded-full"
+            style={{ background: "rgba(104,155,251,0.25)" }}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.8, 0.3, 0.8] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: 0.3 }}
+          />
+        </div>
       </motion.button>
 
-      {/* Past Sessions */}
+      {/* Stats row */}
       {completedSessions.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          <div
+            className="rounded-[18px] px-4 py-3.5 flex items-center gap-3"
+            style={{ background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.18)" }}
+          >
+            <div className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0"
+              style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.25)" }}>
+              <Brain size={15} style={{ color: "rgba(104,155,251,0.9)" }} />
+            </div>
+            <div>
+              <div className="font-bold text-lg leading-none">{completedSessions.length}</div>
+              <div className="text-[11px] opacity-45 mt-0.5">Sessions analyzed</div>
+            </div>
+          </div>
+          <div
+            className="rounded-[18px] px-4 py-3.5 flex items-center gap-3"
+            style={{ background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.18)" }}
+          >
+            <div className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0"
+              style={{ background: "rgba(80,220,160,0.12)", border: "1px solid rgba(80,220,160,0.25)" }}>
+              <Clock size={15} style={{ color: "rgba(80,220,160,0.9)" }} />
+            </div>
+            <div>
+              <div className="font-bold text-sm leading-none truncate">
+                {formatDistanceToNow(new Date(completedSessions[0].started_at), { addSuffix: true })}
+              </div>
+              <div className="text-[11px] opacity-45 mt-0.5">Last session</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Past Sessions */}
+      {completedSessions.length > 0 ? (
         <div>
-          <div className="text-xs font-semibold opacity-45 uppercase tracking-wide mb-3">Past Recordings</div>
+          <div className="text-[11px] font-semibold opacity-40 uppercase tracking-widest mb-3 px-1">
+            Past Recordings
+          </div>
           <div className="flex flex-col gap-2">
             {completedSessions.map((s, i) => (
               <motion.div
                 key={s.id}
-                initial={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex items-start justify-between px-5 py-4 rounded-[18px] text-left w-full"
-                style={{ background: "rgba(var(--glass),0.32)", border: "1px solid rgba(255,255,255,0.28)" }}
               >
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="w-8 h-8 rounded-full grid place-items-center text-sm flex-shrink-0" style={{ background: "rgba(var(--glass),0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
-                    🎙️
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium">{format(new Date(s.started_at), "MMM d, yyyy")}</div>
-                    {s.full_transcript && (
-                      <p className="text-xs opacity-60 mt-1 line-clamp-2">{s.full_transcript}</p>
-                    )}
-                  </div>
-                </div>
+                <PastSessionCard
+                  session={s}
+                  isExpanded={expandedId === s.id}
+                  onToggle={() => setExpandedId(expandedId === s.id ? null : s.id)}
+                  onDelete={handleDeleteSession}
+                />
               </motion.div>
             ))}
           </div>
         </div>
-      )}
-
-      {completedSessions.length === 0 && (
-        <div className="text-center py-12 opacity-35 text-sm">No recordings yet. Start your first one above.</div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-14 flex flex-col items-center gap-3"
+        >
+          <div className="w-14 h-14 rounded-2xl grid place-items-center opacity-20"
+            style={{ background: "rgba(var(--glass),0.5)", border: "1px solid rgba(255,255,255,0.2)" }}>
+            <Mic size={22} />
+          </div>
+          <div className="text-sm opacity-35">No recordings yet.<br />Start your first session above.</div>
+        </motion.div>
       )}
 
       <AnimatePresence>
         {showRecorder && (
-          <LiveSessionRecorder onClose={() => setShowRecorder(false)} />
+          <LiveSessionRecorder
+            onClose={() => { setShowRecorder(false); loadSessions(); }}
+          />
         )}
       </AnimatePresence>
     </div>
