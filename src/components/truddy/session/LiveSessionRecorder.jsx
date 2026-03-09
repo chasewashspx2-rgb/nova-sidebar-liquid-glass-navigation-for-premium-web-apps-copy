@@ -41,6 +41,12 @@ export default function LiveSessionRecorder({ onClose }) {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [sessions, setSessions] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+
+  const handleDeleteSession = async (sessionId) => {
+    await base44.entities.TradingSession.delete(sessionId);
+    setSessions(prev => prev.filter(s => s.id !== sessionId));
+    if (expandedId === sessionId) setExpandedId(null);
+  };
   const [activePhase, setActivePhase] = useState(0);
   const [promptIdx, setPromptIdx] = useState(0);
   const [promptVisible, setPromptVisible] = useState(true);
