@@ -227,6 +227,7 @@ export default function CommunityPage() {
           </AnimatePresence>
         )}
       </div>
+      )}
     </div>
   );
 }
