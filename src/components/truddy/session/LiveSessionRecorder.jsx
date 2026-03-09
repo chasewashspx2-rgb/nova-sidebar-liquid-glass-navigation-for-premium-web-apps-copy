@@ -125,9 +125,9 @@ export default function LiveSessionRecorder({ onClose }) {
     }
   };
 
-  const processRecording = async (audioBlob, mimeType = "audio/mp4") => {
+  const processRecording = async (audioBlob, mimeType = "audio/webm") => {
     setIsTranscribing(true);
-    const ext = mimeType.includes("mp4") ? "mp4" : mimeType.includes("ogg") ? "ogg" : "mp4";
+    const ext = mimeType.includes("webm") ? "webm" : mimeType.includes("ogg") ? "ogg" : "webm";
     const file = new File([audioBlob], `session.${ext}`, { type: mimeType });
     const uploadRes = await base44.integrations.Core.UploadFile({ file });
 
