@@ -209,17 +209,14 @@ export default function CommunityPage() {
             ))}
           </div>
         ) : messages.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="glass rounded-[16px] py-10 px-4 text-center">
-            <AlertCircle size={32} className="mx-auto mb-3 opacity-40" />
-            <div className="font-semibold mb-1">No messages yet</div>
-            <div className="text-sm text-[rgba(var(--muted),0.6)]">
-              {mode === "level" 
-                ? "Be the first to chat in your level channel on Discord."
-                : "Start a discussion about this issue on Discord."}
-            </div>
-          </motion.div>
-        ) : (
+           <motion.button
+             onClick={() => handleJoinLevel()}
+             whileTap={{ scale: 0.96 }}
+             className="w-full btn-primary text-sm py-6"
+           >
+             Join Level {Math.floor((userLevel - 1) / 10) * 10 + 1}-{Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)} Channel
+           </motion.button>
+         ) : (
           <AnimatePresence>
             {messages.map((msg, i) => (
               <motion.div key={msg.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
