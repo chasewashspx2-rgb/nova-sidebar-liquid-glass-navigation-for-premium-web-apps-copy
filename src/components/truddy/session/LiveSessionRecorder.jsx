@@ -158,7 +158,7 @@ export default function LiveSessionRecorder({ onClose }) {
               style={{
                 background: activePhase === i ? p.bg : "rgba(var(--glass),0.2)",
                 border: `1px solid ${activePhase === i ? p.border : "rgba(255,255,255,0.1)"}`,
-                color: activePhase === i ? p.color : p.color.replace("0.9)", "0.35)")
+                color: activePhase === i ? p.color : "rgba(var(--muted),0.5)"
               }}>
                   {p.label}
                 </button>
