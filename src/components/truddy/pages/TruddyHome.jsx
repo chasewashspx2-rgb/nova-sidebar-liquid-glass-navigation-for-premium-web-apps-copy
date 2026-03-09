@@ -159,7 +159,11 @@ export default function TruddyHome({ onNavigate }) {
                 ? { background: "linear-gradient(135deg, rgba(104,155,251,0.25), rgba(121,113,249,0.18))", border: "1px solid rgba(104,155,251,0.35)" }
                 : { background: "rgba(var(--glass),0.38)", border: "1px solid rgba(255,255,255,0.28)" }}>
               <div className="w-8 h-8 rounded-[11px] grid place-items-center flex-shrink-0"
-                style={{ background: action.accent ? "rgba(104,155,251,0.2)" : "rgba(255,255,255,0.28)", border: "1px solid rgba(255,255,255,0.35)" }}>
+                style={{
+                  background: action.accent ? "rgba(104,155,251,0.2)" : action.iconColor ? action.iconColor.bg : "rgba(255,255,255,0.28)",
+                  border: `1px solid ${action.accent ? "rgba(104,155,251,0.4)" : action.iconColor ? action.iconColor.border : "rgba(255,255,255,0.35)"}`,
+                  color: action.iconColor ? action.iconColor.icon : undefined,
+                }}>
                 {action.icon}
               </div>
               <div className="flex-1 min-w-0">
