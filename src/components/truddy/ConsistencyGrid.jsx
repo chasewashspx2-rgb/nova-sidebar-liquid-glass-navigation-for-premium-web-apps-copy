@@ -1,62 +1,103 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { format, subDays, parseISO } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, isToday } from "date-fns";
 
-// 28-day habit grid — colored cells per activity logged that day
 export default function ConsistencyGrid({ trades = [], sessions = [] }) {
-  const days = Array.from({ length: 28 }, (_, i) => {
-    const date = subDays(new Date(), 27 - i);
+  const today = new Date();
+  const monthStart = startOfMonth(today);
+  const monthEnd = endOfMonth(today);
+  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+
+  // Pad start: Monday=0 offset
+  const startPad = (getDay(monthStart) + 6) % 7; // Mon-based
+
+  const getActivity = (date) => {
     const key = format(date, "yyyy-MM-dd");
     const hasTrade   = trades.some(t => (t.date || t.created_date || "").startsWith(key));
     const hasSession = sessions.some(s => (s.started_at || "").startsWith(key));
-    const count = [hasTrade, hasSession].filter(Boolean).length;
-    return { key, date, count, hasTrade, hasSession, label: format(date, "MMM d") };
-  });
-
-  const cellColor = (count) => {
-    if (count === 2) return { bg: "rgba(104,155,251,0.85)", border: "rgba(104,155,251,0.6)" };
-    if (count === 1) return { bg: "rgba(104,155,251,0.35)", border: "rgba(104,155,251,0.25)" };
-    return { bg: "rgba(var(--glass),0.2)", border: "rgba(255,255,255,0.12)" };
+    return { hasTrade, hasSession, count: [hasTrade, hasSession].filter(Boolean).length };
   };
 
-  const activeDays = days.filter(d => d.count > 0).length;
-  const perfectDays = days.filter(d => d.count === 2).length;
+  const activeDays  = days.filter(d => getActivity(d).count > 0).length;
+  const perfectDays = days.filter(d => getActivity(d).count === 2).length;
 
   return (
-    <div className="glass rounded-[20px] sm:rounded-[24px] p-4 sm:p-5">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+      className="glass rounded-[20px] sm:rounded-[24px] p-4 sm:p-5">
+
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-           <div className="font-semibold text-sm">Consistency Tracker</div>
-           <div className="text-[11px] text-[rgba(var(--muted),0.6)] mt-0.5">Last 28 days · Journal · Session</div>
-         </div>
+          <div className="font-semibold text-sm">Consistency Tracker</div>
+          <div className="text-[11px] text-[rgba(var(--muted),0.55)] mt-0.5">{format(today, "MMMM yyyy")}</div>
+        </div>
         <div className="flex items-center gap-3 text-xs">
-          <span className="text-[rgba(var(--muted),0.6)]"><span className="font-bold text-[rgb(var(--text))]">{activeDays}</span> active</span>
-          <span className="text-[rgba(var(--muted),0.6)]"><span className="font-bold text-[rgba(104,155,251,0.9)]">{perfectDays}</span> perfect</span>
+          <div className="text-center">
+            <div className="font-bold text-[rgb(var(--text))]">{activeDays}</div>
+            <div className="text-[10px] text-[rgba(var(--muted),0.5)]">active</div>
+          </div>
+          <div className="w-px h-6 bg-[rgba(var(--muted),0.15)]" />
+          <div className="text-center">
+            <div className="font-bold" style={{ color: "rgba(104,155,251,0.9)" }}>{perfectDays}</div>
+            <div className="text-[10px] text-[rgba(var(--muted),0.5)]">perfect</div>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5">
-        {["M","T","W","T","F","S","S"].map((d, i) => (
-          <div key={i} className="text-[10px] text-center text-[rgba(var(--muted),0.4)] font-medium pb-1">{d}</div>
+      {/* Day headers */}
+      <div className="grid grid-cols-7 mb-1">
+        {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d => (
+          <div key={d} className="text-[10px] text-center text-[rgba(var(--muted),0.4)] font-medium py-1">{d}</div>
         ))}
+      </div>
+
+      {/* Calendar grid */}
+      <div className="grid grid-cols-7 gap-1">
+        {/* Empty pads */}
+        {Array.from({ length: startPad }).map((_, i) => <div key={`pad-${i}`} />)}
+
+        {/* Day cells */}
         {days.map((day, i) => {
-          const { bg, border } = cellColor(day.count);
+          const { hasTrade, hasSession, count } = getActivity(day);
+          const todayDay = isToday(day);
+
+          const bgStyle = count === 2
+            ? { background: "linear-gradient(135deg, rgba(104,155,251,0.3) 0%, rgba(121,113,249,0.18) 100%)", border: "1px solid rgba(104,155,251,0.4)" }
+            : count === 1
+            ? { background: "rgba(104,155,251,0.12)", border: "1px solid rgba(104,155,251,0.2)" }
+            : { background: "rgba(var(--glass),0.18)", border: "1px solid rgba(255,255,255,0.1)" };
+
           return (
-            <motion.div key={day.key}
-              initial={{ opacity: 0, scale: 0.8 }}
+            <motion.div key={day.toISOString()}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.012 }}
-              title={`${day.label}: ${day.count}/3 activities`}
-              className="aspect-square rounded-[6px] cursor-default relative group"
-              style={{ background: bg, border: `1px solid ${border}` }}
-            >
+              transition={{ delay: i * 0.008 }}
+              className="relative rounded-[10px] aspect-square flex flex-col items-center justify-center gap-0.5 group cursor-default"
+              style={bgStyle}>
+
+              {/* Date number */}
+              <div className={`text-[11px] font-semibold leading-none ${todayDay ? "text-[rgb(104,155,251)]" : count > 0 ? "text-[rgb(var(--text))]" : "text-[rgba(var(--muted),0.45)]"}`}>
+                {format(day, "d")}
+              </div>
+
+              {/* Activity dots */}
+              {count > 0 && (
+                <div className="flex items-center gap-[3px]">
+                  {hasTrade   && <div className="w-1 h-1 rounded-full" style={{ background: "rgba(104,155,251,0.9)" }} />}
+                  {hasSession && <div className="w-1 h-1 rounded-full" style={{ background: "rgba(121,113,249,0.9)" }} />}
+                </div>
+              )}
+
+              {/* Today ring */}
+              {todayDay && <div className="absolute inset-0 rounded-[10px] ring-1 ring-[rgba(104,155,251,0.6)]" />}
+
               {/* Tooltip */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-[10px] text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
                 style={{ background: "rgba(15,20,35,0.92)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <div className="font-semibold">{day.label}</div>
-                <div className="text-[rgba(255,255,255,0.6)] mt-0.5">
-                   {day.hasTrade ? "✓" : "·"} Trade  {day.hasSession ? "✓" : "·"} Session
-                 </div>
+                <div className="font-semibold text-white">{format(day, "MMM d")}</div>
+                <div className="text-[rgba(255,255,255,0.55)] mt-0.5">
+                  {hasTrade ? "✓" : "·"} Trade &nbsp; {hasSession ? "✓" : "·"} Session
+                </div>
               </div>
             </motion.div>
           );
@@ -64,18 +105,18 @@ export default function ConsistencyGrid({ trades = [], sessions = [] }) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-3 mt-3 justify-end">
+      <div className="flex items-center gap-4 mt-3 justify-end">
         {[
-           { label: "None",   bg: "rgba(var(--glass),0.3)", border: "rgba(255,255,255,0.15)" },
-           { label: "1",      bg: "rgba(104,155,251,0.35)", border: "rgba(104,155,251,0.25)" },
-           { label: "Both",   bg: "rgba(104,155,251,0.85)", border: "rgba(104,155,251,0.6)" },
-         ].map(l => (
-          <div key={l.label} className="flex items-center gap-1">
+          { label: "No activity", bg: "rgba(var(--glass),0.3)", border: "rgba(255,255,255,0.12)" },
+          { label: "1 activity",  bg: "rgba(104,155,251,0.2)",  border: "rgba(104,155,251,0.25)" },
+          { label: "Both",        bg: "rgba(104,155,251,0.45)", border: "rgba(104,155,251,0.5)"  },
+        ].map(l => (
+          <div key={l.label} className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-[3px]" style={{ background: l.bg, border: `1px solid ${l.border}` }} />
             <span className="text-[9px] text-[rgba(var(--muted),0.45)]">{l.label}</span>
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
