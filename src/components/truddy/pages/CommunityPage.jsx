@@ -98,6 +98,18 @@ export default function CommunityPage() {
 
   const levelRange = `${Math.max(1, Math.floor((userLevel - 1) / 10) * 10 + 1)}-${Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)}`;
 
+  async function handleJoinIssue(issueKey) {
+    setJoining(true);
+    try {
+      await base44.functions.invoke('joinDiscordIssueChannel', { issueType: issueKey });
+      alert(`Joined #issue-${issueKey} on Discord!`);
+    } catch (error) {
+      console.error('Error joining channel:', error);
+      alert('Could not join channel. Please try again.');
+    }
+    setJoining(false);
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
