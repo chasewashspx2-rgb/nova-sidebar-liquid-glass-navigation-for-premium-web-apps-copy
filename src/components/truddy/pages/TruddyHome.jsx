@@ -191,46 +191,46 @@ export default function TruddyHome({ onNavigate }) {
         {/* Truddy AI Insight */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
           className="rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(15,20,40,0.82) 0%, rgba(30,25,60,0.78) 100%)", border: "1px solid rgba(104,155,251,0.25)" }}>
-          <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(300px 250px at 20% 20%, rgba(104,155,251,0.12), transparent 70%)" }} />
+          style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.35) 0%, rgba(121,113,249,0.28) 100%)", border: "1px solid rgba(104,155,251,0.35)" }}>
+          <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(300px 250px at 20% 20%, rgba(255,255,255,0.2), transparent 70%)" }} />
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">
               <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
                 <Sparkles size={16} className="text-[rgb(var(--accent))]" />
               </motion.div>
-              <div className="font-semibold text-sm text-white">Truddy's Insight</div>
+              <div className="font-semibold text-sm">Truddy's Insight</div>
             </div>
             {loading ? (
-              <div className="text-sm text-white/50">Analyzing your patterns...</div>
+              <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
             ) : total === 0 ? (
-              <div className="text-sm leading-relaxed text-white/75">
+              <div className="text-sm leading-relaxed text-[rgba(var(--text),0.85)]">
                 Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing the leaderboard.
               </div>
             ) : (
               <div className="space-y-3">
                 {winRate >= 60 && (
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-white/80">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
+                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
                   </div>
                 )}
                 {disciplineRate < 70 && total >= 3 && (
                   <div className="flex items-start gap-2">
                     <AlertCircle size={14} className="text-orange-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-white/80">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
+                    <div className="text-sm text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
                   </div>
                 )}
                 {disciplineRate >= 70 && (
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-white/80">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
+                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
                   </div>
                 )}
 
               </div>
             )}
             <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 4 }} whileTap={{ scale: 0.95 }}
-              className="mt-4 text-xs font-semibold underline underline-offset-4 cursor-pointer text-white/60 hover:text-white/90">
+              className="mt-4 text-xs font-semibold underline underline-offset-4 cursor-pointer">
               See full analysis →
             </motion.button>
           </div>
