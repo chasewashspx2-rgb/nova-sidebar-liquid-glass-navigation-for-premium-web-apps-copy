@@ -190,7 +190,7 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
               style={{
                 minWidth: isActive ? 80 : 48,
                 height: 48,
-                background: isActive ? "rgba(104,155,251,0.14)" : "transparent",
+                background: "transparent",
               }}
             >
               {isActive && (
