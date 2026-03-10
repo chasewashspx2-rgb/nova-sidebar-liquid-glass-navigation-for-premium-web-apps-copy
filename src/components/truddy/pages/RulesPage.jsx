@@ -68,8 +68,12 @@ export default function RulesPage() {
   useEffect(() => { load(); }, []);
 
   const handleRuleCompliance = async (rule, followed) => {
+    const today = new Date().toISOString().split("T")[0];
     const newViolationCount = !followed ? (rule.violation_count || 0) + 1 : Math.max(0, (rule.violation_count || 0) - 1);
-    await base44.entities.TradingRule.update(rule.id, { violation_count: newViolationCount });
+    await Promise.all([
+      base44.entities.TradingRule.update(rule.id, { violation_count: newViolationCount }),
+      base44.entities.RuleCompliance.create({ date: today, rule_id: rule.id, rule_title: rule.title, followed }),
+    ]);
     setCheckedRules(prev => ({ ...prev, [rule.id]: followed }));
     load();
   };
