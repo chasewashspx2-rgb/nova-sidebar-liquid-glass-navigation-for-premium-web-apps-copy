@@ -233,7 +233,8 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
 
 const pageComponents = {
   home:      TruddyHome,
-  pretrade:  PreTradePage,
+  pretrade:  RulesAndPreTradePage,
+  rules:     RulesAndPreTradePage,
   journal:   JournalPage,
   rules:     RulesPage,
   insights:  InsightsPage,
