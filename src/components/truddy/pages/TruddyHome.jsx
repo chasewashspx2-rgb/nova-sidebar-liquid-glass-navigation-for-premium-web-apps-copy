@@ -207,26 +207,25 @@ export default function TruddyHome({ onNavigate }) {
                 Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing the leaderboard.
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {winRate >= 60 && (
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2 px-3 py-2 rounded-[14px]" style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)" }}>
                     <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
                   </div>
                 )}
                 {disciplineRate < 70 && total >= 3 && (
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2 px-3 py-2 rounded-[14px]" style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)" }}>
                     <AlertCircle size={14} className="text-orange-400 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
                   </div>
                 )}
                 {disciplineRate >= 70 && (
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2 px-3 py-2 rounded-[14px]" style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)" }}>
                     <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
                   </div>
                 )}
-
               </div>
             )}
             <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 3 }} whileTap={{ scale: 0.95 }}
