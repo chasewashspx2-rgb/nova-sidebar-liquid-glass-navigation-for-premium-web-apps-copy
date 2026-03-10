@@ -1,6 +1,6 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, AlertTriangle, Lightbulb, Trash2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertTriangle, ChevronDown, ChevronUp, Lightbulb, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import MentalStateIndicator from "@/components/truddy/session/MentalStateIndicator";
 
@@ -9,10 +9,15 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
   const dateStr = format(date, "MMM d, yyyy");
   const timeStr = format(date, "h:mm a");
   const title = session.session_title || "Untitled Session";
+  const score = Number.isFinite(Number(session.overall_score)) ? Math.round(Number(session.overall_score)) : null;
+  const recommendation = session.trading_recommendation || "";
+  const takeaway = recommendation || session.summary || session.problem_identified || "";
 
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    if (window.confirm("Delete this session?")) onDelete(session.id);
+  const handleDelete = (event) => {
+    event.stopPropagation();
+    if (window.confirm("Delete this session?")) {
+      onDelete(session.id);
+    }
   };
 
   return (
@@ -22,16 +27,27 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
       style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
       onClick={onToggle}
     >
-      <div className="px-4 py-3 flex items-center justify-between">
+      <div className="px-4 py-3 flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold text-[#faf9f6] truncate">{title}</div>
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
             <span className="text-[11px] text-[#faf9f6] opacity-50">{dateStr}</span>
-            <span className="text-[10px] text-[#faf9f6] opacity-30">·</span>
+            <span className="text-[10px] text-[#faf9f6] opacity-30">-</span>
             <span className="text-[11px] text-[#faf9f6] opacity-50">{timeStr}</span>
+            {score !== null && (
+              <span
+                className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: "rgba(104,155,251,0.14)", border: "1px solid rgba(104,155,251,0.25)", color: "rgba(130,180,255,0.95)" }}
+              >
+                {score}/10
+              </span>
+            )}
           </div>
+          {takeaway && (
+            <div className="text-[11px] text-[#faf9f6] opacity-55 mt-2 truncate">{takeaway}</div>
+          )}
         </div>
-        <div className="flex items-center gap-1.5 ml-3">
+        <div className="flex items-center gap-1.5 ml-1 flex-shrink-0">
           <button onClick={handleDelete} className="p-1.5 rounded-full hover:bg-white/10 transition-colors">
             <Trash2 size={13} className="text-[#faf9f6] opacity-35 hover:opacity-70" />
           </button>
@@ -51,17 +67,15 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
             className="px-4 pb-4 space-y-3"
             style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
           >
-            {/* Mental State Indicator */}
-            {session.overall_score && (
+            {score !== null && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-                <MentalStateIndicator 
-                  score={Math.round(session.overall_score)} 
-                  recommendation={session.trading_recommendation}
+                <MentalStateIndicator
+                  score={score}
+                  recommendation={recommendation}
                 />
               </motion.div>
             )}
 
-            {/* Summary */}
             {session.summary && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="pt-2 space-y-1">
                 <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Session Summary</div>
@@ -69,14 +83,13 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
               </motion.div>
             )}
 
-            {/* Patterns */}
             {session.patterns && session.patterns.length > 0 && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="pt-2 space-y-2">
                 <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Observed Patterns</div>
                 <div className="space-y-1.5">
-                  {session.patterns.map((pattern, idx) => (
-                    <div key={idx} className="flex gap-2 text-xs">
-                      <span className="text-[rgba(200,200,200,0.4)] flex-shrink-0">•</span>
+                  {session.patterns.map((pattern, index) => (
+                    <div key={index} className="flex gap-2 text-xs">
+                      <span className="text-[rgba(200,200,200,0.4)] flex-shrink-0">-</span>
                       <span className="text-[#faf9f6] opacity-75">{pattern}</span>
                     </div>
                   ))}
@@ -84,7 +97,6 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
               </motion.div>
             )}
 
-            {/* Problem */}
             {session.problem_identified && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                 <div className="rounded-[12px] p-3 space-y-1" style={{ background: "rgba(255,100,80,0.1)", border: "1px solid rgba(255,100,80,0.25)" }}>
@@ -96,7 +108,6 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
               </motion.div>
             )}
 
-            {/* Solution */}
             {session.proposed_solution && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
                 <div className="rounded-[12px] p-3 space-y-1" style={{ background: "rgba(80,220,160,0.08)", border: "1px solid rgba(80,220,160,0.25)" }}>
@@ -108,22 +119,20 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
               </motion.div>
             )}
 
-            {/* Recommendations */}
             {session.recommendations && session.recommendations.length > 0 && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="pt-2 space-y-2">
                 <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Coach's Advice</div>
                 <div className="space-y-1.5">
-                  {session.recommendations.map((rec, idx) => (
-                    <div key={idx} className="flex gap-2 text-xs">
-                      <span className="text-[rgba(80,220,160,0.7)] flex-shrink-0">✓</span>
-                      <span className="text-[#faf9f6] opacity-75">{rec}</span>
+                  {session.recommendations.map((item, index) => (
+                    <div key={index} className="flex gap-2 text-xs">
+                      <span className="text-[rgba(80,220,160,0.7)] flex-shrink-0">+</span>
+                      <span className="text-[#faf9f6] opacity-75">{item}</span>
                     </div>
                   ))}
                 </div>
               </motion.div>
             )}
 
-            {/* Transcript */}
             {session.full_transcript && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="pt-2 space-y-1">
                 <div className="text-[10px] uppercase tracking-wider text-[#faf9f6] opacity-40 font-semibold">Full Transcript</div>

@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mic, Square, Clock } from "lucide-react";
-import PastSessionCard from "@/components/truddy/session/PastSessionCard";
-import { base44 } from "@/api/base44Client";
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Mic, Square } from "lucide-react";
 import { format } from "date-fns";
+import { base44 } from "@/api/base44Client";
+import PastSessionCard from "@/components/truddy/session/PastSessionCard";
 
 const PROMPTS = [
   "What's going through your mind right now?",
@@ -11,13 +11,13 @@ const PROMPTS = [
   "What does your gut say about this setup?",
   "Are you feeling any fear or hesitation?",
   "What would you regret NOT saying right now?",
-  "Describe the market as you see it — no filter.",
+  "Describe the market as you see it - no filter.",
   "Are you chasing? Be honest with yourself.",
   "What emotion is driving you most right now?",
   "Is this trade fear-of-missing-out, or conviction?",
   "Talk through your entry criteria out loud.",
   "What's your body telling you right now?",
-  "If your best trading self could speak — what would they say?",
+  "If your best trading self could speak - what would they say?",
 ];
 
 const PHASES = [
@@ -28,6 +28,36 @@ const PHASES = [
   { label: "Exit / Review", color: "rgba(180,160,255,0.9)", bg: "rgba(160,120,255,0.1)", border: "rgba(160,120,255,0.3)" },
 ];
 
+function getFriendlyErrorMessage(error) {
+  const rawMessage = error?.data?.error || error?.message || "Unable to process the session.";
+  const stage = error?.data?.stage;
+
+  if (stage === "auth") {
+    return "The session could not be processed because the Base44 user session was not available.";
+  }
+
+  if (stage === "upload") {
+    return "The recording finished, but the audio upload failed. Try again in a moment.";
+  }
+
+  if (stage === "transcription") {
+    return "The audio uploaded, but transcription failed. Try again with a shorter recording.";
+  }
+
+  if (stage === "analysis") {
+    return "The transcript came through, but the coaching analysis failed. Try the session again.";
+  }
+
+  if (stage === "save") {
+    return "The analysis finished, but saving the session failed. Try again in a moment.";
+  }
+
+  if (typeof rawMessage === "string" && rawMessage.toLowerCase().includes("unauthorized")) {
+    return "The session could not be processed because the Base44 user session was not available.";
+  }
+
+  return rawMessage;
+}
 
 export default function LiveSessionRecorder({ onClose }) {
   const mediaRecorderRef = useRef(null);
@@ -41,17 +71,13 @@ export default function LiveSessionRecorder({ onClose }) {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [sessions, setSessions] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
-
-  const handleDeleteSession = async (sessionId) => {
-    await base44.entities.TradingSession.delete(sessionId);
-    setSessions(prev => prev.filter(s => s.id !== sessionId));
-    if (expandedId === sessionId) setExpandedId(null);
-  };
   const [activePhase, setActivePhase] = useState(0);
   const [promptIdx, setPromptIdx] = useState(0);
   const [promptVisible, setPromptVisible] = useState(true);
   const [sessionTitle, setSessionTitle] = useState("");
   const [showTitleInput, setShowTitleInput] = useState(false);
+  const [pendingRecording, setPendingRecording] = useState(null);
+  const [processingError, setProcessingError] = useState("");
 
   useEffect(() => {
     base44.entities.TradingSession.list("-created_date", 20).then(setSessions);
@@ -75,14 +101,30 @@ export default function LiveSessionRecorder({ onClose }) {
         }, 400);
       }, 8000);
     }
+
     return () => clearInterval(promptTimerRef.current);
   }, [isRecording, isPaused]);
 
-  const formatTime = (s) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
+  const handleDeleteSession = async (sessionId) => {
+    await base44.entities.TradingSession.delete(sessionId);
+    setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+    if (expandedId === sessionId) {
+      setExpandedId(null);
+    }
+  };
+
+  const formatTime = (seconds) => `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, "0")}`;
 
   const getSupportedMimeType = () => {
     const types = ["audio/mp4", "audio/ogg;codecs=opus", "audio/ogg", "audio/webm;codecs=opus", "audio/webm"];
-    return types.find((t) => MediaRecorder.isTypeSupported(t)) || "";
+    return types.find((type) => MediaRecorder.isTypeSupported(type)) || "";
+  };
+
+  const resetDraftState = () => {
+    setPendingRecording(null);
+    setSessionTitle("");
+    setShowTitleInput(false);
+    setProcessingError("");
   };
 
   const startRecording = async () => {
@@ -90,14 +132,22 @@ export default function LiveSessionRecorder({ onClose }) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = getSupportedMimeType();
       const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+
       audioChunksRef.current = [];
-      recorder.ondataavailable = (e) => audioChunksRef.current.push(e.data);
-      recorder.onstop = () => stream.getTracks().forEach((t) => t.stop());
-      recorder.start();
+      recorder.addEventListener("dataavailable", (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      });
+
       mediaRecorderRef.current = recorder;
+      recorder.start();
+
       setIsRecording(true);
+      setIsPaused(false);
       setElapsed(0);
       setTranscript("");
+      resetDraftState();
     } catch {
       alert("Unable to access microphone. Please check permissions.");
     }
@@ -113,42 +163,109 @@ export default function LiveSessionRecorder({ onClose }) {
     setIsPaused(false);
   };
 
+  const finalizeRecorderOutput = () => new Promise((resolve, reject) => {
+    const recorder = mediaRecorderRef.current;
+
+    if (!recorder) {
+      reject(new Error("No active recording was found."));
+      return;
+    }
+
+    const mimeType = recorder.mimeType || "audio/webm";
+    const stream = recorder.stream;
+
+    const cleanup = () => {
+      recorder.removeEventListener("stop", handleStop);
+      recorder.removeEventListener("error", handleError);
+      stream?.getTracks().forEach((track) => track.stop());
+      mediaRecorderRef.current = null;
+    };
+
+    const handleError = (event) => {
+      cleanup();
+      reject(event?.error || new Error("Recording failed while stopping."));
+    };
+
+    const handleStop = () => {
+      cleanup();
+      if (!audioChunksRef.current.length) {
+        reject(new Error("No audio data was captured. Please try again."));
+        return;
+      }
+
+      resolve({
+        audioBlob: new Blob(audioChunksRef.current, { type: mimeType }),
+        mimeType,
+      });
+    };
+
+    recorder.addEventListener("stop", handleStop, { once: true });
+    recorder.addEventListener("error", handleError, { once: true });
+
+    try {
+      recorder.stop();
+    } catch (error) {
+      cleanup();
+      reject(error);
+    }
+  });
+
   const stopRecording = async () => {
-    if (mediaRecorderRef.current && isRecording) {
-      const mimeType = mediaRecorderRef.current.mimeType || "audio/webm";
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      setIsPaused(false);
+    if (!mediaRecorderRef.current || !isRecording) {
+      return;
+    }
+
+    setProcessingError("");
+    setIsRecording(false);
+    setIsPaused(false);
+
+    try {
+      const { audioBlob, mimeType } = await finalizeRecorderOutput();
+      setPendingRecording({
+        audioBlob,
+        mimeType,
+        elapsedSeconds: elapsed,
+        phaseLabel: PHASES[activePhase].label,
+      });
       setShowTitleInput(true);
-      const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
-      await processRecording(audioBlob, mimeType);
+    } catch (error) {
+      setProcessingError(getFriendlyErrorMessage(error));
+      alert(getFriendlyErrorMessage(error));
     }
   };
 
-  const processRecording = async (audioBlob, mimeType = "audio/webm") => {
+  const processRecording = async () => {
+    if (!pendingRecording) {
+      return;
+    }
+
     setIsTranscribing(true);
-    
+    setProcessingError("");
+
     try {
-      const ext = mimeType.includes("webm") ? "webm" : mimeType.includes("ogg") ? "ogg" : "webm";
-      const file = new File([audioBlob], `session.${ext}`, { type: mimeType });
-
-      // Send audio directly to backend function for transcription, analysis, and session creation
+      const { audioBlob, mimeType, elapsedSeconds, phaseLabel } = pendingRecording;
+      const extension = mimeType.includes("mp4") ? "m4a" : mimeType.includes("ogg") ? "ogg" : "webm";
+      const file = new File([audioBlob], `session.${extension}`, { type: mimeType });
       const formData = new FormData();
-      formData.append('audio', file);
-      formData.append('elapsed', elapsed.toString());
-      formData.append('sessionTitle', sessionTitle);
 
-      const response = await base44.functions.invoke('transcribeAudio', formData);
+      formData.append("audio", file);
+      formData.append("elapsed", elapsedSeconds.toString());
+      formData.append("sessionTitle", sessionTitle.trim());
+      formData.append("phase", phaseLabel);
 
-      const newSession = response.data;
+      const response = await base44.functions.invoke("transcribeAudio", formData);
+      const newSession = response?.data || response;
+
       setSessions((prev) => [newSession, ...prev]);
       setExpandedId(newSession.id);
       setIsTranscribing(false);
-      setShowTitleInput(false);
+      resetDraftState();
     } catch (error) {
-      console.error('Error processing recording:', error);
+      const friendlyMessage = getFriendlyErrorMessage(error);
+      console.error("Error processing recording:", error);
       setIsTranscribing(false);
-      alert('Error processing recording. Please try again.');
+      setProcessingError(friendlyMessage);
+      alert(friendlyMessage);
     }
   };
 
@@ -162,7 +279,6 @@ export default function LiveSessionRecorder({ onClose }) {
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         className="glass-strong rounded-[28px] max-w-lg w-full overflow-hidden max-h-[90vh] flex flex-col"
       >
-        {/* Top bar */}
         <div
           className="px-6 pt-6 pb-4 flex items-center justify-between flex-shrink-0"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
@@ -170,39 +286,37 @@ export default function LiveSessionRecorder({ onClose }) {
           <div>
             <div className="text-sm font-semibold text-[#faf9f6]">Live Trading Analyzer</div>
             <div className="text-[11px] text-[#faf9f6] mt-0.5 font-light tracking-wide opacity-60">
-              Speak freely — no filter, no judgment
+              Speak freely - no filter, no judgment
             </div>
           </div>
           <button onClick={onClose} className="text-2xl opacity-40 hover:opacity-80 transition-opacity leading-none">
-            ×
+            x
           </button>
         </div>
 
         <div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
-          {/* Phase selector */}
           <div className="space-y-2">
             <div className="text-[11px] text-[#faf9f6] font-light uppercase tracking-wider opacity-70">
               Where are you in the trade?
             </div>
             <div className="flex gap-1.5 flex-wrap">
-              {PHASES.map((p, i) => (
+              {PHASES.map((item, index) => (
                 <button
-                  key={p.label}
-                  onClick={() => setActivePhase(i)}
+                  key={item.label}
+                  onClick={() => setActivePhase(index)}
                   className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-all"
                   style={{
-                    background: activePhase === i ? p.bg : "rgba(var(--glass),0.2)",
-                    border: `1px solid ${activePhase === i ? p.border : "rgba(255,255,255,0.1)"}`,
-                    color: activePhase === i ? p.color : "rgba(200,200,200,0.4)",
+                    background: activePhase === index ? item.bg : "rgba(var(--glass),0.2)",
+                    border: `1px solid ${activePhase === index ? item.border : "rgba(255,255,255,0.1)"}`,
+                    color: activePhase === index ? item.color : "rgba(200,200,200,0.4)",
                   }}
                 >
-                  {p.label}
+                  {item.label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Prompt */}
           <AnimatePresence mode="wait">
             {promptVisible && (
               <motion.div
@@ -214,34 +328,63 @@ export default function LiveSessionRecorder({ onClose }) {
                 className="rounded-[16px] px-4 py-3 text-sm font-medium leading-snug"
                 style={{ background: phase.bg, border: `1px solid ${phase.border}`, color: phase.color }}
               >
-                {isRecording ? `💬 ${PROMPTS[promptIdx]}` : `🎙 Ready when you are — tap the mic to begin`}
+                {isRecording ? ` ${PROMPTS[promptIdx]}` : ` Ready when you are - tap the mic to begin`}
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Title input (after recording stops, before saving) */}
           <AnimatePresence>
             {showTitleInput && (
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="space-y-1"
+                className="space-y-3"
               >
-                <div className="text-[11px] text-[#faf9f6] opacity-50 uppercase tracking-wider">Name this session (optional)</div>
-                <input
-                  type="text"
-                  value={sessionTitle}
-                  onChange={(e) => setSessionTitle(e.target.value)}
-                  placeholder={`e.g. NQ Pre-Market ${format(new Date(), "MMM d")}`}
-                  className="w-full rounded-[12px] px-3 py-2 text-sm text-[#faf9f6] outline-none placeholder:opacity-30"
-                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
-                />
+                <div className="space-y-1">
+                  <div className="text-[11px] text-[#faf9f6] opacity-50 uppercase tracking-wider">Name this session (optional)</div>
+                  <input
+                    type="text"
+                    value={sessionTitle}
+                    onChange={(event) => setSessionTitle(event.target.value)}
+                    placeholder={`e.g. NQ Pre-Market ${format(new Date(), "MMM d")}`}
+                    className="w-full rounded-[12px] px-3 py-2 text-sm text-[#faf9f6] outline-none placeholder:opacity-30"
+                    style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={processRecording}
+                    disabled={isTranscribing || !pendingRecording}
+                    className="flex-1 rounded-[12px] px-4 py-2.5 text-sm font-semibold transition-all disabled:opacity-50"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(104,155,251,0.22), rgba(121,113,249,0.18))",
+                      border: "1px solid rgba(104,155,251,0.35)",
+                      color: "#faf9f6",
+                    }}
+                  >
+                    {isTranscribing ? "Analyzing session..." : "Analyze session"}
+                  </button>
+                  <button
+                    onClick={resetDraftState}
+                    disabled={isTranscribing}
+                    className="rounded-[12px] px-4 py-2.5 text-sm font-medium transition-all disabled:opacity-50"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(250,249,246,0.72)" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+                {processingError && (
+                  <div className="rounded-[12px] px-3 py-2 text-xs leading-relaxed" style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.24)", color: "rgba(255,190,190,0.92)" }}>
+                    {processingError}
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Main mic area */}
           <div className="flex flex-col items-center gap-4 py-2">
             {isRecording && (
               <div className="flex items-center gap-2 text-sm font-mono">
@@ -288,7 +431,7 @@ export default function LiveSessionRecorder({ onClose }) {
               </motion.button>
             )}
 
-            {!isRecording && !isTranscribing && !transcript && (
+            {!isRecording && !isTranscribing && !transcript && !showTitleInput && (
               <div className="text-center space-y-1 max-w-xs">
                 <div className="text-xs text-[rgba(200,200,200,0.4)] leading-relaxed">
                   Talk through your setup, your emotions, your doubts.<br />
@@ -308,19 +451,18 @@ export default function LiveSessionRecorder({ onClose }) {
             )}
           </div>
 
-          {/* Past Sessions */}
           {sessions.length > 0 && (
             <div className="space-y-2">
               <div className="text-[11px] text-[#faf9f6] font-light uppercase tracking-wider opacity-50">
                 Past Sessions
               </div>
               <div className="grid grid-cols-1 gap-2">
-                {sessions.map((s) => (
+                {sessions.map((session) => (
                   <PastSessionCard
-                    key={s.id}
-                    session={s}
-                    isExpanded={expandedId === s.id}
-                    onToggle={() => setExpandedId(expandedId === s.id ? null : s.id)}
+                    key={session.id}
+                    session={session}
+                    isExpanded={expandedId === session.id}
+                    onToggle={() => setExpandedId(expandedId === session.id ? null : session.id)}
                     onDelete={handleDeleteSession}
                   />
                 ))}
