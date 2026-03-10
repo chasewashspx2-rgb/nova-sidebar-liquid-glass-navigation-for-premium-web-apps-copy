@@ -56,6 +56,7 @@ export default function TruddyHome({ onNavigate }) {
   const [trades, setTrades]       = useState([]);
   const [moodChecks, setMoodChecks] = useState([]);
   const [sessions, setSessions]   = useState([]);
+  const [ruleCompliances, setRuleCompliances] = useState([]);
   const [loading, setLoading]     = useState(true);
   const [user, setUser]           = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -67,12 +68,13 @@ export default function TruddyHome({ onNavigate }) {
       base44.auth.me(),
       base44.entities.CommunityPost.list("-created_date", 20),
       base44.entities.MoodCheck.list("-created_date", 100),
-    ]).then(([t, s, u, posts, moods]) => {
+      base44.entities.RuleCompliance.list("-created_date", 200),
+    ]).then(([t, s, u, posts, moods, compliances]) => {
       setTrades(t);
       setSessions(s);
       setUser(u);
       setMoodChecks(moods);
-      // Count posts not created by current user as "unread" (simple approximation)
+      setRuleCompliances(compliances);
       const unread = posts.filter(p => p.created_by !== u?.email).length;
       setUnreadCount(unread);
       setLoading(false);
