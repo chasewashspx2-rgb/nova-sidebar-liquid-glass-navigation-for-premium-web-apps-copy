@@ -12,18 +12,34 @@ import RotatingQuote from "@/components/truddy/RotatingQuote";
 import YinYangIcon from "@/components/YinYangIcon";
 import PenJournalIcon from "@/components/PenJournalIcon";
 
-// Compute streaks from activity data
-function computeStreaks(trades) {
+// Compute streaks — weekdays only (Mon–Fri), skip weekends
+function computeStreaks(trades, ruleCompliances) {
   const today = new Date();
   const fmt = (d) => d.toISOString().split("T")[0];
 
   const journalDays = new Set(trades.map(t => (t.date || t.created_date || "").slice(0, 10)));
-  const ruleDays    = new Set(trades.filter(t => t.followed_rules === "yes").map(t => (t.date || t.created_date || "").slice(0, 10)));
+
+  // Discipline streak: days where at least one rule was followed and none violated
+  const complianceDayMap = {};
+  for (const c of ruleCompliances) {
+    if (!complianceDayMap[c.date]) complianceDayMap[c.date] = { followed: 0, violated: 0 };
+    if (c.followed) complianceDayMap[c.date].followed++;
+    else complianceDayMap[c.date].violated++;
+  }
+  const disciplineDays = new Set(
+    Object.entries(complianceDayMap)
+      .filter(([, v]) => v.followed > 0 && v.violated === 0)
+      .map(([date]) => date)
+  );
 
   const streak = (daySet) => {
     let count = 0;
     for (let i = 0; i <= 365; i++) {
-      const d = new Date(today); d.setDate(d.getDate() - i);
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dow = d.getDay();
+      // Skip weekends — they don't break the streak
+      if (dow === 0 || dow === 6) continue;
       if (daySet.has(fmt(d))) count++;
       else break;
     }
@@ -32,7 +48,7 @@ function computeStreaks(trades) {
 
   return {
     journal:  streak(journalDays),
-    pretrade: streak(ruleDays),
+    pretrade: streak(disciplineDays),
   };
 }
 
