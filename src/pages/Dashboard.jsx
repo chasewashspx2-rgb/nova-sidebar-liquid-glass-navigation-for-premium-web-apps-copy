@@ -15,6 +15,7 @@ import JournalPage from "@/components/truddy/pages/JournalPage";
 import RulesPage from "@/components/truddy/pages/RulesPage";
 import InsightsPage from "@/components/truddy/pages/InsightsPage";
 import PreTradePage from "@/components/truddy/pages/PreTradePage";
+import RulesAndPreTradePage from "@/components/truddy/pages/RulesAndPreTradePage";
 import CoachPage from "@/components/truddy/pages/CoachPage";
 import SessionPage from "@/components/truddy/pages/SessionPage";
 import CommunityPage from "@/components/truddy/pages/CommunityPage";
