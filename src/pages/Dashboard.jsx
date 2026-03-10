@@ -197,7 +197,7 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
                 <motion.div
                   layoutId="float-tab-bg"
                   className="absolute inset-0 rounded-[22px]"
-                  style={{ background: "rgba(104,155,251,0.14)" }}
+                  style={{ background: "rgba(0,0,0,0.07)" }}
                   transition={{ type: "spring", stiffness: 500, damping: 35 }}
                 />
               )}
