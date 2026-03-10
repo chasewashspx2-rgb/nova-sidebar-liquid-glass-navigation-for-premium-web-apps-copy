@@ -205,7 +205,7 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
                 <Icon
                   size={20}
                   strokeWidth={isActive ? 2.2 : 1.6}
-                  style={{ color: isActive ? "rgb(104,155,251)" : "rgba(0,0,0,0.4)" }}
+                  style={{ color: isActive ? "rgba(0,0,0,0.85)" : "rgba(0,0,0,0.4)" }}
                 />
                 <AnimatePresence>
                   {isActive && (
