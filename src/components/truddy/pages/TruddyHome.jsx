@@ -190,48 +190,72 @@ export default function TruddyHome({ onNavigate }) {
 
         {/* Truddy AI Insight */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.35) 0%, rgba(121,113,249,0.28) 100%)", border: "1px solid rgba(104,155,251,0.35)" }}>
-          <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(300px 250px at 20% 20%, rgba(255,255,255,0.2), transparent 70%)" }} />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
-                <Sparkles size={16} className="text-[rgb(var(--accent))]" />
-              </motion.div>
-              <div className="font-semibold text-sm">Truddy's Insight</div>
-            </div>
-            {loading ? (
-              <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
-            ) : total === 0 ? (
-              <div className="text-sm leading-relaxed text-[rgba(var(--text),0.85)]">
-                Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing the leaderboard.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {winRate >= 60 && (
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
-                  </div>
-                )}
-                {disciplineRate < 70 && total >= 3 && (
-                  <div className="flex items-start gap-2">
-                    <AlertCircle size={14} className="text-orange-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
-                  </div>
-                )}
-                {disciplineRate >= 70 && (
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
-                  </div>
-                )}
+          className="rounded-[20px] sm:rounded-[24px] relative overflow-hidden"
+          style={{ background: "linear-gradient(160deg, rgba(255,235,195,0.55) 0%, rgba(255,210,160,0.38) 60%, rgba(255,190,130,0.28) 100%)", border: "1px solid rgba(255,190,120,0.45)" }}>
+          {/* warm glow top-right */}
+          <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(255,160,80,0.22) 0%, transparent 70%)" }} />
+          {/* subtle grain */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03] rounded-[24px]"
+            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
 
+          <div className="relative p-4 sm:p-5">
+            {/* Header row */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-full grid place-items-center flex-shrink-0"
+                style={{ background: "linear-gradient(135deg, rgba(255,160,60,0.55), rgba(255,120,40,0.38))", border: "1.5px solid rgba(255,150,60,0.5)" }}>
+                <motion.span animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }} className="text-base">🧠</motion.span>
               </div>
-            )}
-            <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 4 }} whileTap={{ scale: 0.95 }}
-              className="mt-4 text-xs font-semibold underline underline-offset-4 cursor-pointer">
-              See full analysis →
+              <div>
+                <div className="font-bold text-sm" style={{ color: "rgba(140,70,10,0.9)" }}>Truddy</div>
+                <div className="text-[10px] font-medium" style={{ color: "rgba(160,90,20,0.6)" }}>your trading co-pilot</div>
+              </div>
+              <motion.div className="ml-auto" animate={{ rotate: [0, 12, -12, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}>
+                <Sparkles size={14} style={{ color: "rgba(200,120,30,0.7)" }} />
+              </motion.div>
+            </div>
+
+            {/* Message bubble */}
+            <div className="rounded-[16px] p-3.5" style={{ background: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,200,140,0.5)" }}>
+              {loading ? (
+                <div className="text-sm" style={{ color: "rgba(120,70,10,0.6)" }}>Analyzing your patterns...</div>
+              ) : total === 0 ? (
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(100,55,10,0.85)" }}>
+                  Hey! Log your first trade, do a mood check-in, and run the Pre-Trade Gate to kick things off. I'll be watching 👀
+                </p>
+              ) : (
+                <div className="space-y-2.5">
+                  {winRate >= 60 && (
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={13} className="mt-0.5 flex-shrink-0" style={{ color: "rgba(40,160,80,0.85)" }} />
+                      <p className="text-sm leading-relaxed" style={{ color: "rgba(100,55,10,0.85)" }}>
+                        {winRate}% win rate — your setups are clicking. Stay patient and protect that edge.
+                      </p>
+                    </div>
+                  )}
+                  {disciplineRate < 70 && total >= 3 && (
+                    <div className="flex items-start gap-2">
+                      <AlertCircle size={13} className="mt-0.5 flex-shrink-0" style={{ color: "rgba(210,100,30,0.85)" }} />
+                      <p className="text-sm leading-relaxed" style={{ color: "rgba(100,55,10,0.85)" }}>
+                        Rule violations in {100 - disciplineRate}% of trades. Every clean trade is +5 XP — the small habits compound fast.
+                      </p>
+                    </div>
+                  )}
+                  {disciplineRate >= 70 && (
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={13} className="mt-0.5 flex-shrink-0" style={{ color: "rgba(40,160,80,0.85)" }} />
+                      <p className="text-sm leading-relaxed" style={{ color: "rgba(100,55,10,0.85)" }}>
+                        {disciplineRate}% discipline — that's elite. Consistency is your real competitive edge.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 3 }} whileTap={{ scale: 0.96 }}
+              className="mt-3 flex items-center gap-1.5 text-xs font-semibold"
+              style={{ color: "rgba(160,80,10,0.8)" }}>
+              Full analysis <ArrowRight size={11} />
             </motion.button>
           </div>
         </motion.div>
