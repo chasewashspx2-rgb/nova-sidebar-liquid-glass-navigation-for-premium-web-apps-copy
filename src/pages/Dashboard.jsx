@@ -169,11 +169,11 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.2 }}
         className="flex items-center gap-1 px-3 py-2.5 rounded-[30px]"
         style={{
-          background: "rgba(255,255,255,0.28)",
+          background: "rgba(220,225,235,0.55)",
           backdropFilter: "blur(40px) saturate(180%)",
           WebkitBackdropFilter: "blur(40px) saturate(180%)",
-          border: "1px solid rgba(255,255,255,0.65)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 1.5px 0 rgba(255,255,255,0.95) inset, 0 -1px 0 rgba(255,255,255,0.2) inset, 0 0 0 0.5px rgba(255,255,255,0.4) inset",
+          border: "1px solid rgba(255,255,255,0.75)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.13), 0 1.5px 0 rgba(255,255,255,0.95) inset, 0 -1px 0 rgba(255,255,255,0.25) inset",
         }}
       >
         {primaryTabs.map((tab) => {
