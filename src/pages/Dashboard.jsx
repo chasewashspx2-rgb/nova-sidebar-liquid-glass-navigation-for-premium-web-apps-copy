@@ -197,14 +197,8 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
                 <motion.div
                   layoutId="float-tab-bg"
                   className="absolute inset-0 rounded-[22px]"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(210,225,255,0.82) 0%, rgba(200,215,255,0.68) 100%)",
-                    border: "1.5px solid rgba(255,255,255,0.95)",
-                    boxShadow: "0 6px 20px rgba(100,140,255,0.22), 0 2px 6px rgba(0,0,0,0.08), inset 0 1.5px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(180,200,255,0.3)",
-                    backdropFilter: "blur(12px) saturate(160%)",
-                    WebkitBackdropFilter: "blur(12px) saturate(160%)",
-                  }}
-                  transition={{ type: "spring", stiffness: 420, damping: 22, mass: 0.7 }}
+                  style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.9)", boxShadow: "0 2px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,1)" }}
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
                 />
               )}
               <div className="relative flex items-center gap-1.5 px-3">
