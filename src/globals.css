@@ -40,13 +40,27 @@ html,
 body {
   min-height: 100%;
   height: auto;
+  overscroll-behavior: none;
 }
 
 body {
   color: rgb(var(--text));
-  min-height: 100vh;
+  min-height: 100dvh;
   background-attachment: fixed;
   background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #eeeeee 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent iOS auto-zoom on input focus */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+/* Fix tap highlight and active states on iOS */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dark body {
