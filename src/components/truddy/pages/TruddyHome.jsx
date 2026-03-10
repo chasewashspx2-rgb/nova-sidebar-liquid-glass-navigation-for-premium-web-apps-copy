@@ -201,29 +201,29 @@ export default function TruddyHome({ onNavigate }) {
               <div className="font-semibold text-sm text-white">Truddy's Insight</div>
             </div>
             {loading ? (
-              <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
+              <div className="text-sm text-white/50">Analyzing your patterns...</div>
             ) : total === 0 ? (
-              <div className="text-sm leading-relaxed text-[rgba(var(--text),0.85)]">
+              <div className="text-sm leading-relaxed text-white/75">
                 Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing the leaderboard.
               </div>
             ) : (
               <div className="space-y-3">
                 {winRate >= 60 && (
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
+                    <CheckCircle2 size={14} className="text-green-400 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-white/80">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
                   </div>
                 )}
                 {disciplineRate < 70 && total >= 3 && (
                   <div className="flex items-start gap-2">
                     <AlertCircle size={14} className="text-orange-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
+                    <div className="text-sm text-white/80">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
                   </div>
                 )}
                 {disciplineRate >= 70 && (
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
+                    <CheckCircle2 size={14} className="text-green-400 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-white/80">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
                   </div>
                 )}
 
