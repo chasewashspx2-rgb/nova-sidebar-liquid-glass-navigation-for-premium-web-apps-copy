@@ -284,7 +284,7 @@ export default function Dashboard() {
   const ActivePage = pageComponents[active] || pageComponents.home;
 
   return (
-    <main className="min-h-screen p-3 sm:p-6 lg:p-10">
+    <main className="min-h-dvh p-3 sm:p-6 lg:p-10" style={{ overscrollBehavior: "none" }}>
       <PremiumCursor />
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
