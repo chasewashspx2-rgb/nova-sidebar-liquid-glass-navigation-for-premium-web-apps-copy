@@ -98,7 +98,7 @@ export default function TruddyHome({ onNavigate }) {
   });
 
   // Streaks
-  const streaks = computeStreaks(trades);
+  const streaks = computeStreaks(trades, ruleCompliances);
 
   // Loss streak for circuit breaker
   const lossStreak = (() => {
