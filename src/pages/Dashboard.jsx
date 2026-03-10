@@ -156,20 +156,26 @@ function MoreSheet({ isOpen, onClose, active, onNavigate, theme, toggleTheme }) 
   );
 }
 
-// iOS Bottom Tab Bar
+// Floating Glass Nav Bar
 function BottomTabBar({ active, onChange, onMoreOpen }) {
   return (
     <div
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
-      style={{
-        background: "rgba(250,249,246,0.88)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderTop: "1px solid rgba(0,0,0,0.08)",
-        paddingBottom: "env(safe-area-inset-bottom)",
-      }}
+      className="lg:hidden fixed left-0 right-0 z-50 flex justify-center px-4"
+      style={{ bottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
     >
-      <div className="flex items-stretch justify-around px-2 pt-1 pb-1">
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.2 }}
+        className="flex items-center gap-1 px-3 py-2.5 rounded-[30px]"
+        style={{
+          background: "rgba(255,255,255,0.72)",
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
+          border: "1px solid rgba(255,255,255,0.9)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)",
+        }}
+      >
         {primaryTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = tab.key !== "__more__" && active === tab.key;
@@ -179,37 +185,47 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
             <motion.button
               key={tab.key}
               onClick={() => isMore ? onMoreOpen() : onChange(tab.key)}
-              whileTap={{ scale: 0.88 }}
-              className="flex flex-col items-center justify-center gap-0.5 flex-1 min-h-[48px] pt-1 pb-0.5 cursor-pointer relative"
+              whileTap={{ scale: 0.84 }}
+              className="relative flex flex-col items-center justify-center cursor-pointer rounded-[22px] transition-all"
+              style={{
+                minWidth: isActive ? 80 : 48,
+                height: 48,
+                background: isActive ? "rgba(104,155,251,0.14)" : "transparent",
+              }}
             >
-              <motion.div
-                animate={isActive ? { scale: [1, 1.18, 1] } : { scale: 1 }}
-                transition={{ duration: 0.28 }}
-              >
-                <Icon
-                  size={22}
-                  strokeWidth={isActive ? 2.2 : 1.6}
-                  style={{ color: isActive ? "rgb(104,155,251)" : "rgba(0,0,0,0.38)" }}
-                />
-              </motion.div>
-              <span
-                className="text-[10px] font-medium leading-none"
-                style={{ color: isActive ? "rgb(104,155,251)" : "rgba(0,0,0,0.38)" }}
-              >
-                {tab.label}
-              </span>
               {isActive && (
                 <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
-                  style={{ background: "rgb(104,155,251)" }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  layoutId="float-tab-bg"
+                  className="absolute inset-0 rounded-[22px]"
+                  style={{ background: "rgba(104,155,251,0.14)" }}
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
                 />
               )}
+              <div className="relative flex items-center gap-1.5 px-3">
+                <Icon
+                  size={20}
+                  strokeWidth={isActive ? 2.2 : 1.6}
+                  style={{ color: isActive ? "rgb(104,155,251)" : "rgba(0,0,0,0.4)" }}
+                />
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "auto" }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.22 }}
+                      className="text-[11px] font-semibold overflow-hidden whitespace-nowrap"
+                      style={{ color: "rgb(104,155,251)" }}
+                    >
+                      {tab.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.button>
           );
         })}
-      </div>
+      </motion.div>
     </div>
   );
 }
