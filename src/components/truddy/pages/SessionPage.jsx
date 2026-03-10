@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { SectionHeader } from "@/components/truddy/SectionHeader";
 import LiveSessionRecorder from "@/components/truddy/session/LiveSessionRecorder";
 import PastSessionCard from "@/components/truddy/session/PastSessionCard";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 export default function SessionPage() {
   const [showRecorder, setShowRecorder] = useState(false);
