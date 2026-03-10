@@ -161,7 +161,7 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
   return (
     <div
       className="lg:hidden fixed left-0 right-0 z-50 flex justify-center px-4"
-      style={{ bottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
+      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)", transform: "translateZ(0)" }}
     >
       <motion.div
         initial={{ y: 20, opacity: 0 }}
