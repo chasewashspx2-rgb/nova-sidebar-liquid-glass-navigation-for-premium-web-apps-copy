@@ -246,14 +246,14 @@ export default function LiveSessionRecorder({ onClose }) {
       const { audioBlob, mimeType, elapsedSeconds, phaseLabel } = pendingRecording;
       const extension = mimeType.includes("mp4") ? "m4a" : mimeType.includes("ogg") ? "ogg" : "webm";
       const file = new File([audioBlob], `session.${extension}`, { type: mimeType });
-      const formData = new FormData();
+      const payload = {
+        audio: file,
+        elapsed: elapsedSeconds.toString(),
+        sessionTitle: sessionTitle.trim(),
+        phase: phaseLabel,
+      };
 
-      formData.append("audio", file);
-      formData.append("elapsed", elapsedSeconds.toString());
-      formData.append("sessionTitle", sessionTitle.trim());
-      formData.append("phase", phaseLabel);
-
-      const response = await base44.functions.invoke("transcribeAudio", formData);
+      const response = await base44.functions.invoke("transcribeAudio", payload);
       const newSession = response?.data || response;
 
       setSessions((prev) => [newSession, ...prev]);
