@@ -353,7 +353,7 @@ export default function Dashboard() {
           {/* Main Content */}
           <section
             className="bg-[#faf9f6] p-4 sm:p-5 lg:p-7"
-            style={{ minHeight: "calc(100vh - 80px)", paddingBottom: "calc(env(safe-area-inset-bottom) + 72px)" }}
+            style={{ minHeight: "calc(100vh - 80px)", paddingBottom: "calc(env(safe-area-inset-bottom) + 96px)" }}
           >
             <AnimatePresence mode="wait">
               <motion.div
