@@ -169,7 +169,7 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.2 }}
         className="flex items-center gap-1 px-3 py-2.5 rounded-[30px]"
         style={{
-          background: "rgba(220,225,235,0.55)",
+          background: "rgba(180,200,255,0.45)",
           backdropFilter: "blur(40px) saturate(180%)",
           WebkitBackdropFilter: "blur(40px) saturate(180%)",
           border: "1px solid rgba(255,255,255,0.75)",
