@@ -230,7 +230,7 @@ export default function TruddyHome({ onNavigate }) {
               </div>
             )}
             <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 4 }} whileTap={{ scale: 0.95 }}
-              className="mt-4 text-xs font-semibold underline underline-offset-4 cursor-pointer">
+              className="mt-4 text-xs font-semibold underline underline-offset-4 cursor-pointer text-white/60 hover:text-white/90">
               See full analysis →
             </motion.button>
           </div>
