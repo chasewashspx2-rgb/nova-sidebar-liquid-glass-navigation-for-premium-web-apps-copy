@@ -35,7 +35,7 @@ const sidebar = [
 const primaryTabs = [
   { key: "home",     label: "Home",     icon: Home },
   { key: "journal",  label: "Journal",  icon: BookOpen },
-  { key: "pretrade", label: "Pre-Trade",icon: ShieldCheck },
+  { key: "community", label: "Community", icon: Users },
   { key: "session",  label: "Session",  icon: Radio },
   { key: "__more__", label: "More",     icon: MoreHorizontal },
 ];
