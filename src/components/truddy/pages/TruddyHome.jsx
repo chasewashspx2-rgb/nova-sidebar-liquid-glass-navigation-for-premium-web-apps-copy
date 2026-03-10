@@ -229,8 +229,9 @@ export default function TruddyHome({ onNavigate }) {
 
               </div>
             )}
-            <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 4 }} whileTap={{ scale: 0.95 }}
-              className="mt-4 text-xs font-semibold underline underline-offset-4 cursor-pointer">
+            <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 3 }} whileTap={{ scale: 0.95 }}
+              className="mt-4 text-xs font-semibold cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full"
+              style={{ background: "rgba(255,255,255,0.25)", border: "1px solid rgba(255,255,255,0.35)" }}>
               See full analysis →
             </motion.button>
           </div>
