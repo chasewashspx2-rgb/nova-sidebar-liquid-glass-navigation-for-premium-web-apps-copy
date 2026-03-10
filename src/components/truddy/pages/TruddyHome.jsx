@@ -190,7 +190,7 @@ export default function TruddyHome({ onNavigate }) {
 
         {/* Truddy AI Insight */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 relative overflow-hidden"
+          className="rounded-[28px] sm:rounded-[32px] p-4 sm:p-5 relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.35) 0%, rgba(121,113,249,0.28) 100%)", border: "1px solid rgba(104,155,251,0.35)" }}>
           <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(300px 250px at 20% 20%, rgba(255,255,255,0.2), transparent 70%)" }} />
           <div className="relative">
