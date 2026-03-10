@@ -198,7 +198,7 @@ export default function TruddyHome({ onNavigate }) {
               <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
                 <Sparkles size={16} className="text-[rgb(var(--accent))]" />
               </motion.div>
-              <div className="font-semibold text-sm">Truddy's Insight</div>
+              <div className="font-semibold text-sm text-white">Truddy's Insight</div>
             </div>
             {loading ? (
               <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
