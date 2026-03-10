@@ -215,7 +215,7 @@ function BottomTabBar({ active, onChange, onMoreOpen }) {
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.22 }}
                       className="text-[11px] font-semibold overflow-hidden whitespace-nowrap"
-                      style={{ color: "rgb(104,155,251)" }}
+                      style={{ color: "rgba(0,0,0,0.85)" }}
                     >
                       {tab.label}
                     </motion.span>
