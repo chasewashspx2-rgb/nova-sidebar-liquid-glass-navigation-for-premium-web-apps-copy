@@ -42,7 +42,7 @@ function getBestMimeType() {
 }
 
 function getExtension(mimeType) {
-  if (mimeType.includes("mp4") || mimeType.includes("aac")) return "m4a";
+  if (mimeType.includes("mp4") || mimeType.includes("aac")) return "mp4";
   if (mimeType.includes("ogg")) return "ogg";
   return "webm";
 }
