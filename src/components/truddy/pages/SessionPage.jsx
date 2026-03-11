@@ -171,7 +171,13 @@ export default function SessionPage() {
       <AnimatePresence>
         {showRecorder && (
           <LiveSessionRecorder
-            onClose={() => { setShowRecorder(false); loadSessions(); }}
+            onClose={(newSession) => {
+              setShowRecorder(false);
+              if (newSession) {
+                setSessions((prev) => [newSession, ...prev]);
+                setExpandedId(newSession.id);
+              }
+            }}
           />
         )}
       </AnimatePresence>
