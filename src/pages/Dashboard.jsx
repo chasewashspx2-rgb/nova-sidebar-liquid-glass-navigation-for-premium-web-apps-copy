@@ -21,16 +21,14 @@ import SessionPage from "@/components/truddy/pages/SessionPage";
 import CommunityPage from "@/components/truddy/pages/CommunityPage";
 
 const sidebar = [
-  { key: "home",      label: "Home",           icon: <Home size={18} /> },
+  { key: "home",      label: "Home",                 icon: <Home size={18} /> },
   { key: "pretrade",  label: "Discipline Blueprint", icon: <ShieldCheck size={18} /> },
-  { key: "journal",   label: "Trade Journal",   icon: <BookOpen size={18} /> },
-  { key: "pretrade",  label: "Discipline Blueprint", icon: <ShieldCheck size={18} />, hidden: true },
-  { key: "rules",     label: "Discipline Blueprint", icon: <Shield size={18} /> },
-  { key: "insights",  label: "Insights",        icon: <BarChart2 size={18} /> },
-  { key: "session",   label: "Live Session",    icon: <Radio size={18} /> },
-  { key: "community", label: "Community",       icon: <Users size={18} /> },
-  { key: "coach",     label: "AI Coach",        icon: <MessageCircle size={18} /> },
-  { key: "settings",  label: "Settings",        icon: <Settings size={18} /> },
+  { key: "journal",   label: "Trade Journal",        icon: <BookOpen size={18} /> },
+  { key: "insights",  label: "Insights",             icon: <BarChart2 size={18} /> },
+  { key: "session",   label: "Live Session",         icon: <Radio size={18} /> },
+  { key: "community", label: "Community",            icon: <Users size={18} /> },
+  { key: "coach",     label: "AI Coach",             icon: <MessageCircle size={18} /> },
+  { key: "settings",  label: "Settings",             icon: <Settings size={18} /> },
 ];
 
 // Primary tabs shown in the bottom tab bar (max 5 per Apple HIG)
@@ -237,6 +235,7 @@ const pageComponents = {
   pretrade:  RulesAndPreTradePage,
   journal:   JournalPage,
   insights:  InsightsPage,
+  rules:     RulesAndPreTradePage,
   session:   SessionPage,
   community: CommunityPage,
   coach:     CoachPage,
