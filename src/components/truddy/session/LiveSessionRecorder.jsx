@@ -72,6 +72,7 @@ export default function LiveSessionRecorder({ onClose }) {
   const [pendingElapsed, setPendingElapsed] = useState(0);
   const [title, setTitle] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeStep, setAnalyzeStep] = useState("");
   const [error, setError] = useState("");
 
   // Cleanup on unmount
@@ -174,19 +175,35 @@ export default function LiveSessionRecorder({ onClose }) {
     setError("");
 
     try {
+      // Step 1: Normalize (fixes iOS .mp4 → .m4a)
+      setAnalyzeStep("Normalizing audio...");
       const ext = getExtension(pendingMime);
       const normalizedMime = ext === "m4a" ? "audio/m4a" : pendingMime;
       const file = new File([pendingBlob], `session.${ext}`, { type: normalizedMime });
-      const response = await base44.functions.invoke("transcribeAudio", {
-        audio: file,
+
+      const normalizeRes = await base44.functions.invoke("normalizeAudio", { audio: file });
+      const { normalizedFileUrl } = normalizeRes.data;
+
+      // Step 2: Transcribe
+      setAnalyzeStep("Transcribing session...");
+      const transcribeRes = await base44.functions.invoke("transcribeAudio", { normalizedFileUrl });
+      const { transcript } = transcribeRes.data;
+
+      // Step 3: Analyze psychology + save session
+      setAnalyzeStep("Analyzing psychology...");
+      const analyzeRes = await base44.functions.invoke("analyzeSessionPsychology", {
+        transcript,
         elapsed: String(pendingElapsed),
         sessionTitle: title.trim(),
+        normalizedFileUrl,
       });
-      onClose(response?.data || response);
+
+      onClose(analyzeRes?.data || analyzeRes);
     } catch (err) {
-      const msg = err?.data?.error || err?.message || "Analysis failed. Please try again.";
+      const msg = err?.response?.data?.error || err?.data?.error || err?.message || "Analysis failed. Please try again.";
       setError(msg);
       setAnalyzing(false);
+      setAnalyzeStep("");
     }
   }
 
