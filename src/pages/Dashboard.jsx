@@ -22,7 +22,7 @@ import CommunityPage from "@/components/truddy/pages/CommunityPage";
 
 const sidebar = [
   { key: "home",      label: "Home",           icon: <Home size={18} /> },
-  { key: "pretrade",  label: "Pre-Trade Gate",  icon: <ShieldCheck size={18} /> },
+  { key: "pretrade",  label: "Discipline Blueprint", icon: <ShieldCheck size={18} /> },
   { key: "journal",   label: "Trade Journal",   icon: <BookOpen size={18} /> },
   { key: "rules",     label: "My Rules",        icon: <Shield size={18} /> },
   { key: "insights",  label: "Insights",        icon: <BarChart2 size={18} /> },
