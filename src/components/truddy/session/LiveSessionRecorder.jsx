@@ -30,6 +30,7 @@ const PHASES = [
 // iOS-safe: prefer mp4, then webm
 function getBestMimeType() {
   const candidates = [
+    "audio/mpeg",
     "audio/mp4",
     "audio/aac",
     "audio/webm;codecs=opus",
@@ -42,6 +43,7 @@ function getBestMimeType() {
 }
 
 function getExtension(mimeType) {
+  if (mimeType.includes("mpeg")) return "mp3";
   if (mimeType.includes("mp4") || mimeType.includes("aac")) return "mp4";
   if (mimeType.includes("ogg")) return "ogg";
   return "webm";
