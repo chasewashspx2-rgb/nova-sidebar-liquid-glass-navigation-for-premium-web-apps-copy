@@ -27,9 +27,11 @@ const PHASES = [
   { label: "Exit/Review",  color: "rgba(180,160,255,1)",  bg: "rgba(160,120,255,0.11)", border: "rgba(160,120,255,0.3)" },
 ];
 
-// iOS-safe: prefer mp4, then webm
+// Accept whatever the browser natively supports — mp4 on iOS, webm on Android
 function getBestMimeType() {
   const candidates = [
+    "audio/mp4",
+    "audio/aac",
     "audio/webm;codecs=opus",
     "audio/webm",
     "audio/ogg;codecs=opus",
@@ -40,7 +42,9 @@ function getBestMimeType() {
 }
 
 function getExtension(mimeType) {
+  if (!mimeType) return "webm";
   if (mimeType.includes("ogg")) return "ogg";
+  if (mimeType.includes("mp4") || mimeType.includes("aac") || mimeType.includes("m4a")) return "mp4";
   return "webm";
 }
 
