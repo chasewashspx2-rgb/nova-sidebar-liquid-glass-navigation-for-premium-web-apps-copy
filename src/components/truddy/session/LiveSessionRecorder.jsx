@@ -371,7 +371,7 @@ export default function LiveSessionRecorder({ onClose }) {
               {analyzing ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />
-                  Analyzing session...
+                  {analyzeStep || "Processing..."}
                 </>
               ) : (
                 <>
