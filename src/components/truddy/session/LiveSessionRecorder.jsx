@@ -175,7 +175,8 @@ export default function LiveSessionRecorder({ onClose }) {
 
     try {
       const ext = getExtension(pendingMime);
-      const file = new File([pendingBlob], `session.${ext}`, { type: pendingMime });
+      const normalizedMime = ext === "m4a" ? "audio/m4a" : pendingMime;
+      const file = new File([pendingBlob], `session.${ext}`, { type: normalizedMime });
       const response = await base44.functions.invoke("transcribeAudio", {
         audio: file,
         elapsed: String(pendingElapsed),
