@@ -35,9 +35,9 @@ Deno.serve(async (req) => {
     let transcript;
     try {
       transcript = await base44.integrations.Core.InvokeLLM({
-        prompt: 'Transcribe the following audio file. Return only the transcribed text, nothing else.',
+        prompt: 'Transcribe the following audio file verbatim. Return only the transcribed text, nothing else. If the audio is unclear or empty, return an empty string.',
         file_urls: [uploadRes.file_url],
-        model: 'gpt_5',
+        model: 'gemini_3_flash',
       });
     } catch (error) {
       return errorResponse('transcription', error);
