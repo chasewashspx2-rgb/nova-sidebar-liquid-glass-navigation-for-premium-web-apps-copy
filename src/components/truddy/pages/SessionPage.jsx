@@ -123,28 +123,31 @@ export default function SessionPage() {
             <div className="absolute -right-4 -bottom-4 w-16 h-16 rounded-full" style={{ background: "rgba(104,155,251,0.08)" }} />
           </div>
 
-          {/* Last session */}
-          <div
-            className="rounded-2xl px-4 py-4 flex flex-col gap-2 relative overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, rgba(26,158,100,0.1) 0%, rgba(26,158,100,0.06) 100%)",
-              border: "1px solid rgba(26,158,100,0.22)",
-            }}
-          >
-            <div
-              className="w-8 h-8 rounded-xl grid place-items-center"
-              style={{ background: "rgba(26,158,100,0.15)", border: "1px solid rgba(26,158,100,0.28)" }}
-            >
-              <Clock size={15} style={{ color: "rgba(26,158,100,1)" }} />
-            </div>
-            <div>
-              <div className="font-black text-[13px] leading-tight tracking-tight" style={{ color: "rgba(26,158,100,1)" }}>
-                {formatDistanceToNow(new Date(completedSessions[0].started_at), { addSuffix: true })}
+          {/* Avg score */}
+          {(() => {
+            const scored = completedSessions.filter(s => s.overall_score != null);
+            const avg = scored.length ? Math.round(scored.reduce((acc, s) => acc + Number(s.overall_score), 0) / scored.length) : null;
+            const avgColor = avg === null ? "#888" : avg >= 7 ? "rgba(26,158,100,1)" : avg >= 4 ? "rgba(176,138,0,1)" : "rgba(200,60,40,1)";
+            const avgBg    = avg === null ? "rgba(120,120,120,0.08)" : avg >= 7 ? "rgba(26,158,100,0.1)" : avg >= 4 ? "rgba(176,138,0,0.1)" : "rgba(200,60,40,0.1)";
+            const avgBorder= avg === null ? "rgba(120,120,120,0.18)" : avg >= 7 ? "rgba(26,158,100,0.22)" : avg >= 4 ? "rgba(176,138,0,0.22)" : "rgba(200,60,40,0.22)";
+            return (
+              <div
+                className="rounded-2xl px-4 py-4 flex flex-col gap-2 relative overflow-hidden"
+                style={{ background: `linear-gradient(135deg, ${avgBg} 0%, transparent 100%)`, border: `1px solid ${avgBorder}` }}
+              >
+                <div className="w-8 h-8 rounded-xl grid place-items-center" style={{ background: avgBg, border: `1px solid ${avgBorder}` }}>
+                  <Brain size={15} style={{ color: avgColor }} />
+                </div>
+                <div>
+                  <div className="font-black text-2xl leading-none tracking-tight" style={{ color: avgColor }}>
+                    {avg ?? "—"}<span className="text-sm font-semibold opacity-50">/10</span>
+                  </div>
+                  <div className="text-[11px] font-medium text-gray-400 mt-1">Avg psych score</div>
+                </div>
+                <div className="absolute -right-4 -bottom-4 w-16 h-16 rounded-full" style={{ background: avgBg }} />
               </div>
-              <div className="text-[11px] font-medium text-gray-400 mt-1">Last session</div>
-            </div>
-            <div className="absolute -right-4 -bottom-4 w-16 h-16 rounded-full" style={{ background: "rgba(26,158,100,0.08)" }} />
-          </div>
+            );
+          })()}
         </div>
       )}
 
