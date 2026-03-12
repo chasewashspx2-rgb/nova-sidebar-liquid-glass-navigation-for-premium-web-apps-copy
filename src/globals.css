@@ -19,21 +19,21 @@
   --noiseA: 0.02;
 }
 
-/* Yin (Black Theme) */
+/* Yin (Dark Theme) */
 .dark {
-  --bgA: 10 10 10;
-  --bgB: 20 20 20;
-  --bgC: 30 30 30;
-  --text: 245 248 255;
-  --muted: 150 150 150;
-  --accent: 255 255 255;
-  --accent2: 220 220 220;
-  --glass: 255 255 255;
-  --glassA: 0.08;
-  --glassA2: 0.12;
-  --strokeA: 0.15;
-  --ring: 255 255 255;
-  --noiseA: 0.03;
+  --bgA: 10 10 18;
+  --bgB: 13 13 28;
+  --bgC: 16 16 36;
+  --text: 220 232 255;
+  --muted: 130 150 200;
+  --accent: 200 215 255;
+  --accent2: 165 195 255;
+  --glass: 104 155 251;
+  --glassA: 0.07;
+  --glassA2: 0.11;
+  --strokeA: 0.18;
+  --ring: 104 155 251;
+  --noiseA: 0.025;
 }
 
 html,
