@@ -64,7 +64,7 @@ button, a, [role="button"] {
 }
 
 .dark body {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background: linear-gradient(145deg, #07070f 0%, #0d0d1e 40%, #0a0a1a 70%, #0c0818 100%);
 }
 
 * {
