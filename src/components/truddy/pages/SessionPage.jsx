@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, Loader2, Clock, Brain } from "lucide-react";
+import { Mic, Loader2, Brain } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { SectionHeader } from "@/components/truddy/SectionHeader";
 import LiveSessionRecorder from "@/components/truddy/session/LiveSessionRecorder";
