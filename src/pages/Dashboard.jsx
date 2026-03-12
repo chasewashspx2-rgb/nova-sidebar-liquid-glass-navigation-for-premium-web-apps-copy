@@ -105,10 +105,10 @@ function MoreSheet({ isOpen, onClose, active, onNavigate, theme, toggleTheme }) 
           transition={{ type: "spring", stiffness: 400, damping: 38, mass: 0.9 }}
           className="fixed bottom-0 left-0 right-0 z-[70] rounded-t-[28px] overflow-hidden"
           style={{
-            background: "rgba(250,249,246,0.96)",
+            background: theme === "dark" ? "rgba(10,10,22,0.97)" : "rgba(250,249,246,0.96)",
             backdropFilter: "blur(26px)",
             WebkitBackdropFilter: "blur(26px)",
-            borderTop: "1px solid rgba(0,0,0,0.08)",
+            borderTop: theme === "dark" ? "1px solid rgba(104,155,251,0.15)" : "1px solid rgba(0,0,0,0.08)",
             paddingBottom: "env(safe-area-inset-bottom)",
           }}
         >
