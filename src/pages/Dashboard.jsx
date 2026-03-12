@@ -118,33 +118,38 @@ function MoreSheet({ isOpen, onClose, active, onNavigate, theme, toggleTheme }) 
           </div>
 
           <div className="px-4 pt-2 pb-4">
-            <div className="text-[11px] font-semibold text-[rgba(0,0,0,0.35)] uppercase tracking-wider mb-3 px-1">More</div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider mb-3 px-1"
+              style={{ color: theme === "dark" ? "rgba(104,155,251,0.5)" : "rgba(0,0,0,0.35)" }}>More</div>
             <div className="grid grid-cols-2 gap-2">
               {moreItems.map((item) => (
                 <motion.button
                   key={item.key}
                   onClick={() => { onNavigate(item.key); onClose(); }}
                   whileTap={{ scale: 0.97 }}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3.5 rounded-[16px] text-left transition-all",
-                    active === item.key ? "bg-black/8" : "bg-black/4"
-                  )}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-[16px] text-left transition-all"
+                  style={{ background: active === item.key
+                    ? (theme === "dark" ? "rgba(104,155,251,0.15)" : "rgba(0,0,0,0.08)")
+                    : (theme === "dark" ? "rgba(104,155,251,0.06)" : "rgba(0,0,0,0.04)") }}
                 >
-                  <div className={cn("w-8 h-8 rounded-[10px] grid place-items-center flex-shrink-0",
-                    active === item.key ? "bg-black text-white" : "bg-black/8"
-                  )}>
+                  <div className="w-8 h-8 rounded-[10px] grid place-items-center flex-shrink-0"
+                    style={{ background: active === item.key
+                      ? (theme === "dark" ? "rgba(104,155,251,0.3)" : "black")
+                      : (theme === "dark" ? "rgba(104,155,251,0.1)" : "rgba(0,0,0,0.08)"),
+                      color: active === item.key ? (theme === "dark" ? "#a5c8ff" : "white") : undefined }}>
                     {React.cloneElement(item.icon, { size: 16 })}
                   </div>
-                  <span className="text-sm font-medium text-black/80">{item.label}</span>
+                  <span className="text-sm font-medium" style={{ color: theme === "dark" ? "rgba(220,232,255,0.8)" : "rgba(0,0,0,0.8)" }}>{item.label}</span>
                 </motion.button>
               ))}
             </div>
 
             {/* Theme toggle in sheet */}
-            <div className="mt-3 pt-3 border-t border-black/6 flex items-center justify-between px-1">
-              <span className="text-sm text-black/50">Appearance</span>
+            <div className="mt-3 pt-3 flex items-center justify-between px-1"
+              style={{ borderTop: theme === "dark" ? "1px solid rgba(104,155,251,0.1)" : "1px solid rgba(0,0,0,0.06)" }}>
+              <span className="text-sm" style={{ color: theme === "dark" ? "rgba(104,155,251,0.5)" : "rgba(0,0,0,0.5)" }}>Appearance</span>
               <motion.button onClick={toggleTheme} whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm bg-black/6">
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm"
+                style={{ background: theme === "dark" ? "rgba(104,155,251,0.1)" : "rgba(0,0,0,0.06)" }}>
                 {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
                 <span className="text-xs font-medium">{theme === "dark" ? "Light mode" : "Dark mode"}</span>
               </motion.button>
