@@ -1,57 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, MessageCircle, AlertCircle, ExternalLink, Users, Zap } from "lucide-react";
+import { ExternalLink, Users, Zap, MessageCircle, CheckCircle, AlertCircle, Loader2, Link } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { calcXpFromActivity, calcLevel } from "@/components/truddy/XPProgressCard";
-import CommunityMessageInput from "@/components/truddy/CommunityMessageInput";
 import CommunityGuidelines from "@/components/truddy/CommunityGuidelines";
 
 const ISSUES = [
-  { key: "fomo", label: "FOMO" },
-  { key: "revenge_trading", label: "Revenge Trading" },
-  { key: "overtrading", label: "Overtrading" },
-  { key: "fear", label: "Fear" },
-  { key: "discipline", label: "Discipline" },
-  { key: "motivation", label: "Motivation" },
+  { key: "fomo",            label: "FOMO",            desc: "Fear of missing out on trades" },
+  { key: "revenge_trading", label: "Revenge Trading",  desc: "Trading to recover losses" },
+  { key: "overtrading",     label: "Overtrading",      desc: "Taking too many trades" },
+  { key: "fear",            label: "Fear",             desc: "Analysis paralysis and hesitation" },
+  { key: "discipline",      label: "Discipline",       desc: "Following your trading rules" },
+  { key: "motivation",      label: "Motivation",       desc: "Stay inspired and motivated" },
 ];
 
-function MessageRow({ message }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-[16px] p-4"
-    >
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-sm">{message.author || "Unknown User"}</div>
-        </div>
-        <div className="text-xs text-[rgba(var(--muted),0.5)] flex-shrink-0 ml-2">
-          {new Date(message.timestamp).toLocaleDateString()}
-        </div>
-      </div>
-      <p className="text-sm leading-relaxed text-[rgba(var(--text),0.88)]">{message.content}</p>
-    </motion.div>
-  );
+const DISCORD_INVITE = "https://discord.gg/truddy";
+const DISCORD_GUILD_URL = "https://discord.com/channels/1480680849857933322/1480686131107598529";
+
+// Persist Discord join status in localStorage
+function getDiscordStatus() {
+  return localStorage.getItem("truddy_discord_status") || "not_connected";
+}
+function setDiscordStatusLS(s) {
+  localStorage.setItem("truddy_discord_status", s);
 }
 
 export default function CommunityPage() {
   const [mode, setMode] = useState("level");
-  const [selectedIssue, setSelectedIssue] = useState("fomo");
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [joining, setJoining] = useState(false);
-  const [user, setUser] = useState(null);
   const [userLevel, setUserLevel] = useState(1);
+  const [discordStatus, setDiscordStatus] = useState(getDiscordStatus); // not_connected | connecting | connected | failed
+  const [joining, setJoining] = useState(false);
 
   useEffect(() => {
     Promise.all([
-      base44.auth.me(),
       base44.entities.TradeJournal.list("-created_date", 50),
       base44.entities.TradingSession.list("-created_date", 30),
       base44.entities.MoodCheck.list("-created_date", 100),
-    ]).then(([u, trades, sessions, moods]) => {
-      setUser(u);
+    ]).then(([trades, sessions, moods]) => {
       const xp = calcXpFromActivity({
         journals: trades.length,
         pretrades: trades.length,
@@ -63,193 +48,286 @@ export default function CommunityPage() {
     }).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    loadMessages();
-  }, [mode, selectedIssue]);
+  const levelStart = Math.floor((userLevel - 1) / 10) * 10 + 1;
+  const levelEnd   = Math.min(100, levelStart + 9);
+  const levelRange = `${levelStart}–${levelEnd}`;
 
-  async function loadMessages() {
-    setLoading(true);
-    try {
-      const response = await base44.functions.invoke('getDiscordMessages', {});
-      const allMessages = response.data || [];
-      
-      if (mode === "level") {
-        const levelRange = Math.floor((userLevel - 1) / 10) * 10 + 1;
-        const filtered = allMessages.filter(m => m.channel.startsWith(`level-${levelRange}`));
-        setMessages(filtered);
-      } else {
-        const filtered = allMessages.filter(m => m.channel === `issue-${selectedIssue}`);
-        setMessages(filtered);
-      }
-    } catch (error) {
-      console.error('Error loading messages:', error);
-    }
-    setLoading(false);
-  }
-
-  async function handleJoinChannel() {
+  async function handleConnectDiscord() {
     setJoining(true);
+    setDiscordStatus("connecting");
     try {
-      await base44.functions.invoke('joinDiscordIssueChannel', { issueType: selectedIssue });
-      alert(`Joined #issue-${selectedIssue} on Discord!`);
-    } catch (error) {
-      console.error('Error joining channel:', error);
-      alert('Could not join channel. Please try again.');
+      await base44.functions.invoke("syncUserToDiscord", { userLevel });
+      setDiscordStatus("connected");
+      setDiscordStatusLS("connected");
+    } catch (err) {
+      console.error("Discord sync error:", err);
+      setDiscordStatus("failed");
+      setDiscordStatusLS("failed");
     }
     setJoining(false);
   }
 
-  const levelRange = `${Math.max(1, Math.floor((userLevel - 1) / 10) * 10 + 1)}-${Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)}`;
-
-  async function handleJoinIssue(issueKey) {
-    setJoining(true);
-    try {
-      await base44.functions.invoke('joinDiscordIssueChannel', { issueType: issueKey });
-      alert(`Joined #issue-${issueKey} on Discord!`);
-    } catch (error) {
-      console.error('Error joining channel:', error);
-      alert('Could not join channel. Please try again.');
-    }
-    setJoining(false);
+  function handleOpenChannel() {
+    window.open(DISCORD_GUILD_URL, "_blank");
   }
 
-  async function handleJoinLevel() {
-    setJoining(true);
-    try {
-      const levelStart = Math.floor((userLevel - 1) / 10) * 10 + 1;
-      await base44.functions.invoke('syncUserToDiscord', { userLevel });
-      window.open('https://discord.com/channels/1480680849857933322/1480686131107598529', '_blank');
-    } catch (error) {
-      console.error('Error joining level channel:', error);
-      alert('Could not join channel. Please try again.');
-    }
-    setJoining(false);
+  function handleRetry() {
+    setDiscordStatus("not_connected");
+    setDiscordStatusLS("not_connected");
   }
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Discord Community</h1>
-            <p className="text-sm text-[rgba(var(--muted),0.75)] mt-1">Live discussions on Discord</p>
+        <h1 className="text-2xl font-bold">Community</h1>
+        <p className="text-sm mt-1 opacity-50">Your peer group of traders at the same level</p>
+      </motion.div>
+
+      {/* Tier badge — always visible */}
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="rounded-2xl px-5 py-4 flex items-center justify-between"
+        style={{
+          background: "linear-gradient(135deg, rgba(104,155,251,0.12) 0%, rgba(121,113,249,0.08) 100%)",
+          border: "1px solid rgba(104,155,251,0.25)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="w-10 h-10 rounded-xl grid place-items-center"
+            style={{ background: "rgba(104,155,251,0.18)", border: "1px solid rgba(104,155,251,0.3)" }}
+          >
+            <Users size={16} style={{ color: "rgba(104,155,251,1)" }} />
           </div>
-          <a href="https://discord.gg" target="_blank" rel="noopener noreferrer"
-            className="btn-primary text-sm flex items-center gap-2">
-            <ExternalLink size={14} /> Open Discord
-          </a>
+          <div>
+            <div className="font-bold text-sm">Level {userLevel} Trader</div>
+            <div className="text-xs opacity-50 mt-0.5">Eligible for Levels {levelRange} community</div>
+          </div>
         </div>
       </motion.div>
 
       {/* Mode Selector */}
       <div className="flex gap-2">
-        <motion.button
-          onClick={() => setMode("level")}
-          whileTap={{ scale: 0.97 }}
-          className="flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
-          style={mode === "level"
-            ? { background: "linear-gradient(135deg, rgba(104,155,251,0.3), rgba(121,113,249,0.22))", border: "1px solid rgba(104,155,251,0.4)" }
-            : { background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.2)" }}
-        >
-          <Users size={14} /> Your Level
-        </motion.button>
-        <motion.button
-          onClick={() => setMode("issues")}
-          whileTap={{ scale: 0.97 }}
-          className="flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
-          style={mode === "issues"
-            ? { background: "linear-gradient(135deg, rgba(104,155,251,0.3), rgba(121,113,249,0.22))", border: "1px solid rgba(104,155,251,0.4)" }
-            : { background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.2)" }}
-        >
-          <Zap size={14} /> Issues
-        </motion.button>
+        {[
+          { key: "level",  label: "Your Level",  icon: <Users size={13} /> },
+          { key: "issues", label: "Issues",       icon: <Zap size={13} /> },
+        ].map(tab => (
+          <motion.button
+            key={tab.key}
+            onClick={() => setMode(tab.key)}
+            whileTap={{ scale: 0.97 }}
+            className="flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1.5"
+            style={mode === tab.key
+              ? { background: "linear-gradient(135deg, rgba(104,155,251,0.28), rgba(121,113,249,0.2))", border: "1px solid rgba(104,155,251,0.4)" }
+              : { background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.15)" }}
+          >
+            {tab.icon}{tab.label}
+          </motion.button>
+        ))}
       </div>
 
-      {/* Issues Grid */}
-      {mode === "issues" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {ISSUES.map((issue, i) => (
-            <motion.div
-              key={issue.key}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="glass rounded-[16px] p-6 flex flex-col gap-4"
-            >
-              <div>
-                <h3 className="font-semibold text-base mb-1">{issue.label}</h3>
-                <p className="text-xs text-[rgba(var(--muted),0.6)]">
-                    {issue.key === "fomo" && "Fear of missing out on trades"}
-                    {issue.key === "revenge_trading" && "Trading to recover losses"}
-                    {issue.key === "overtrading" && "Taking too many trades"}
-                    {issue.key === "fear" && "Analysis paralysis and hesitation"}
-                    {issue.key === "discipline" && "Following your trading rules"}
-                    {issue.key === "motivation" && "Stay inspired and motivated"}
-                  </p>
-              </div>
-              <motion.button
-                onClick={() => handleJoinIssue(issue.key)}
-                disabled={joining}
-                whileTap={{ scale: 0.96 }}
-                className="w-full btn-primary text-sm"
-              >
-                {joining ? "Joining..." : `Join #issue-${issue.key}`}
-              </motion.button>
-            </motion.div>
-          ))}
-        </div>
-      )}
+      {/* ── Level Mode ── */}
+      <AnimatePresence mode="wait">
+        {mode === "level" && (
+          <motion.div key="level" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
 
-      {/* Messages Feed - Only show for level mode */}
-      {mode === "level" && (
-      <div className="space-y-4">
-        {/* Level Info */}
-        <div className="glass rounded-[16px] p-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">Your Level {userLevel}</span>
-            <span className="text-xs text-[rgba(var(--muted),0.6)]">Access to Levels {levelRange}</span>
-          </div>
-        </div>
+            {/* NOT CONNECTED */}
+            {discordStatus === "not_connected" && (
+              <DiscordPromptCard
+                title={`Levels ${levelRange} Community`}
+                description="Connect Discord to chat live with traders at your level. This is completely optional — the rest of the app works without it."
+                cta="Optional: Join Discord Chat"
+                ctaIcon={<MessageCircle size={14} />}
+                onConnect={handleConnectDiscord}
+                loading={joining}
+              />
+            )}
 
-        {/* Messages */}
-        {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="glass rounded-[16px] p-4 animate-pulse">
-                <div className="h-3 bg-white/20 rounded-full w-1/3 mb-3" />
-                <div className="h-3 bg-white/10 rounded-full w-full mb-2" />
-                <div className="h-3 bg-white/10 rounded-full w-3/4" />
+            {/* CONNECTING */}
+            {discordStatus === "connecting" && (
+              <StatusCard
+                icon={<Loader2 size={18} className="animate-spin" style={{ color: "rgba(104,155,251,0.8)" }} />}
+                title="Connecting to Discord…"
+                subtitle="Adding you to the Levels community server"
+                color="rgba(104,155,251,0.15)"
+                border="rgba(104,155,251,0.25)"
+              />
+            )}
+
+            {/* CONNECTED */}
+            {discordStatus === "connected" && (
+              <div className="space-y-3">
+                <StatusCard
+                  icon={<CheckCircle size={18} style={{ color: "rgba(26,200,120,0.9)" }} />}
+                  title="Discord connected"
+                  subtitle={`You're in the Levels ${levelRange} community`}
+                  color="rgba(26,200,120,0.1)"
+                  border="rgba(26,200,120,0.25)"
+                />
+                <motion.button
+                  onClick={handleOpenChannel}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="w-full rounded-2xl px-5 py-4 flex items-center justify-between text-sm font-semibold"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(104,155,251,0.18), rgba(121,113,249,0.12))",
+                    border: "1px solid rgba(104,155,251,0.35)",
+                    boxShadow: "0 8px 28px rgba(104,155,251,0.14)",
+                  }}
+                >
+                  <span style={{ color: "rgba(104,155,251,1)" }}>Open Levels {levelRange} Discord Channel</span>
+                  <ExternalLink size={14} style={{ color: "rgba(104,155,251,0.7)" }} />
+                </motion.button>
               </div>
-            ))}
-          </div>
-        ) : messages.length === 0 ? (
-           <motion.button
-             onClick={() => handleJoinLevel()}
-             whileTap={{ scale: 0.96 }}
-             className="w-full btn-primary text-sm py-6"
-           >
-             Join Level {Math.floor((userLevel - 1) / 10) * 10 + 1}-{Math.min(100, Math.floor((userLevel - 1) / 10) * 10 + 10)} Channel
-           </motion.button>
-         ) : (
-          <div className="space-y-3">
-            <AnimatePresence>
-              {messages.map((msg, i) => (
-                <motion.div key={msg.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                  <MessageRow message={msg} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+            )}
+
+            {/* FAILED */}
+            {discordStatus === "failed" && (
+              <div className="space-y-3">
+                <StatusCard
+                  icon={<AlertCircle size={18} style={{ color: "rgba(220,80,60,0.9)" }} />}
+                  title="Discord connection failed"
+                  subtitle="Something went wrong. You can try again or skip Discord entirely."
+                  color="rgba(220,80,60,0.08)"
+                  border="rgba(220,80,60,0.25)"
+                />
+                <div className="flex gap-2">
+                  <motion.button
+                    onClick={handleConnectDiscord}
+                    disabled={joining}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex-1 btn-primary text-sm"
+                  >
+                    {joining ? <Loader2 size={14} className="animate-spin" /> : "Try Again"}
+                  </motion.button>
+                  <motion.button
+                    onClick={handleRetry}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex-1 btn-secondary text-sm"
+                  >
+                    Skip for Now
+                  </motion.button>
+                </div>
+              </div>
+            )}
+
+            <CommunityGuidelines />
+          </motion.div>
         )}
 
-        {/* Message Input */}
-        <CommunityMessageInput mode={mode} selectedIssue={selectedIssue} userLevel={userLevel} />
+        {/* ── Issues Mode ── */}
+        {mode === "issues" && (
+          <motion.div key="issues" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
+            <p className="text-xs opacity-40 px-1">Each channel focuses on a specific trading psychology challenge. Connect Discord to join the conversation.</p>
+            <div className="grid grid-cols-1 gap-3">
+              {ISSUES.map((issue, i) => (
+                <motion.div
+                  key={issue.key}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.04 }}
+                  className="glass rounded-2xl p-4 flex items-center justify-between gap-4"
+                >
+                  <div className="min-w-0">
+                    <div className="font-semibold text-sm">{issue.label}</div>
+                    <div className="text-xs opacity-50 mt-0.5">{issue.desc}</div>
+                  </div>
 
-        {/* Guidelines */}
-        <CommunityGuidelines />
+                  {discordStatus === "connected" ? (
+                    <motion.button
+                      onClick={() => window.open(DISCORD_GUILD_URL, "_blank")}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex-shrink-0 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5"
+                      style={{
+                        background: "rgba(104,155,251,0.14)",
+                        border: "1px solid rgba(104,155,251,0.28)",
+                        color: "rgba(104,155,251,0.9)",
+                      }}
+                    >
+                      <ExternalLink size={11} /> Open
+                    </motion.button>
+                  ) : (
+                    <span className="flex-shrink-0 text-[10px] opacity-30 font-medium">Discord optional</span>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+
+            {discordStatus !== "connected" && (
+              <motion.button
+                onClick={handleConnectDiscord}
+                disabled={joining}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.97 }}
+                className="w-full rounded-2xl px-5 py-4 flex items-center justify-center gap-2 text-sm font-semibold"
+                style={{
+                  background: "rgba(104,155,251,0.1)",
+                  border: "1px solid rgba(104,155,251,0.25)",
+                  color: "rgba(104,155,251,0.85)",
+                }}
+              >
+                {joining
+                  ? <><Loader2 size={13} className="animate-spin" /> Connecting…</>
+                  : <><Link size={13} /> Connect Discord to Join These Channels</>
+                }
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+function DiscordPromptCard({ title, description, cta, ctaIcon, onConnect, loading }) {
+  return (
+    <div
+      className="rounded-2xl p-5 flex flex-col gap-4"
+      style={{
+        background: "rgba(var(--glass),0.4)",
+        border: "1px solid rgba(255,255,255,0.15)",
+      }}
+    >
+      <div>
+        <div className="font-semibold text-sm mb-1">{title}</div>
+        <p className="text-xs leading-relaxed opacity-50">{description}</p>
       </div>
-      )}
+      <motion.button
+        onClick={onConnect}
+        disabled={loading}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.97 }}
+        className="w-full rounded-xl px-4 py-3 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{
+          background: "linear-gradient(135deg, rgba(104,155,251,0.2), rgba(121,113,249,0.14))",
+          border: "1px solid rgba(104,155,251,0.35)",
+          color: "rgba(104,155,251,1)",
+          boxShadow: "0 6px 24px rgba(104,155,251,0.12)",
+        }}
+      >
+        {loading ? <Loader2 size={14} className="animate-spin" /> : ctaIcon}
+        {loading ? "Connecting…" : cta}
+      </motion.button>
+    </div>
+  );
+}
+
+function StatusCard({ icon, title, subtitle, color, border }) {
+  return (
+    <div
+      className="rounded-2xl px-5 py-4 flex items-center gap-3"
+      style={{ background: color, border: `1px solid ${border}` }}
+    >
+      <div className="flex-shrink-0">{icon}</div>
+      <div>
+        <div className="font-semibold text-sm">{title}</div>
+        <div className="text-xs opacity-55 mt-0.5">{subtitle}</div>
+      </div>
     </div>
   );
 }
