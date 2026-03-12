@@ -98,7 +98,9 @@ button, a, [role="button"] {
 }
 
 .dark .glass-strong {
-  box-shadow: 0 34px 110px rgba(0, 0, 0, 0.62);
+  background: rgba(104, 155, 251, 0.09);
+  border: 1px solid rgba(104, 155, 251, 0.2);
+  box-shadow: 0 28px 80px rgba(10, 10, 30, 0.7), 0 0 0 1px rgba(104, 155, 251, 0.08) inset;
 }
 
 .pill {
