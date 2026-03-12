@@ -9,7 +9,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { accessToken } = await base44.asServiceRole.connectors.getConnection('discord');
+    const botToken = Deno.env.get('DISCORD_BOT_TOKEN');
+    const guildId = Deno.env.get('DISCORD_GUILD_ID');
+
+    if (!guildId) {
+      return Response.json({ error: 'Discord guild not configured' }, { status: 500 });
+    }
 
     // Get user's trader profile to determine level
     const profiles = await base44.entities.TraderProfile.filter({ created_by: user.email });
@@ -23,23 +28,9 @@ Deno.serve(async (req) => {
     const levelRange = Math.floor((userLevel - 1) / 10) * 10;
     const levelChannelName = `level-${levelRange + 1}-${levelRange + 10}`;
 
-    // Get Discord user ID and add to guild
-    const meResponse = await fetch('https://discord.com/api/v10/users/@me', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const discordUser = await meResponse.json();
-    const discordUserId = discordUser.id;
-
-    // Get the guild (you'll need to set DISCORD_GUILD_ID as a secret)
-    const guildId = Deno.env.get('DISCORD_GUILD_ID');
-    
-    if (!guildId) {
-      return Response.json({ error: 'Discord guild not configured' }, { status: 500 });
-    }
-
     // Get or create level channel
     const channelsResponse = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bot ${botToken}` }
     });
     const channels = await channelsResponse.json();
     let levelChannel = channels.find(c => c.name === levelChannelName);
@@ -50,7 +41,7 @@ Deno.serve(async (req) => {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bot ${botToken}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -63,18 +54,8 @@ Deno.serve(async (req) => {
       levelChannel = await createChannelResponse.json();
     }
 
-    // Add user to level channel
-    await fetch(
-      `https://discord.com/api/v10/channels/${levelChannel.id}/members/${discordUserId}`,
-      {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }
-    );
-
     return Response.json({
       success: true,
-      discordUserId,
       levelChannel: levelChannel.name,
       userLevel
     });

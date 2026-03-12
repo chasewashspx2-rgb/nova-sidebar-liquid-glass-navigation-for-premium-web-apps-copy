@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { postContent, roomKey, issueType } = body;
 
-    const { accessToken } = await base44.asServiceRole.connectors.getConnection('discord');
+    const botToken = Deno.env.get('DISCORD_BOT_TOKEN');
     const guildId = Deno.env.get('DISCORD_GUILD_ID');
 
     if (!guildId) {
@@ -34,13 +34,31 @@ Deno.serve(async (req) => {
 
     // Get channels
     const channelsResponse = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bot ${botToken}` }
     });
     const channels = await channelsResponse.json();
-    const targetChannel = channels.find(c => c.name === channelName);
+    let targetChannel = channels.find(c => c.name === channelName);
 
+    // Auto-create channel if it doesn't exist
     if (!targetChannel) {
-      return Response.json({ error: 'Channel not found', channel: channelName }, { status: 404 });
+      const createChannelResponse = await fetch(
+        `https://discord.com/api/v10/guilds/${guildId}/channels`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bot ${botToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: channelName,
+            type: 0,
+            topic: roomKey === 'issue'
+              ? `Discussion channel for traders dealing with ${issueType}`
+              : `Trading community for ${channelName}`
+          })
+        }
+      );
+      targetChannel = await createChannelResponse.json();
     }
 
     // Post message to Discord
@@ -49,7 +67,7 @@ Deno.serve(async (req) => {
       {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bot ${botToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
