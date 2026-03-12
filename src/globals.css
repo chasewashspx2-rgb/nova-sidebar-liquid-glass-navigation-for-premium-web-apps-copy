@@ -181,10 +181,10 @@ button, a, [role="button"] {
 }
 
 .dark .btn-primary {
-  background: rgba(255, 255, 255, 1);
+  background: linear-gradient(135deg, #4e8ef5, #7971f9);
   border: none;
-  box-shadow: 0 12px 32px rgba(255, 255, 255, 0.15);
-  color: #000000;
+  box-shadow: 0 12px 32px rgba(104, 155, 251, 0.35);
+  color: #ffffff;
 }
 
 .btn-primary:hover {
