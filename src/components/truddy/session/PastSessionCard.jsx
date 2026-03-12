@@ -60,7 +60,7 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
         {/* Title + meta */}
         <div className="flex-1 min-w-0">
-          <div className="text-[14px] font-semibold text-gray-900 leading-snug truncate">
+          <div className="text-[14px] font-semibold text-gray-900 dark:text-[rgb(var(--text))] leading-snug truncate">
             {title}
           </div>
 
