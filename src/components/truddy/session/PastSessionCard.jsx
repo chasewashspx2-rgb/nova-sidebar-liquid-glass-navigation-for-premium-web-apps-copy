@@ -145,11 +145,11 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
             {session.proposed_solution && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }}>
-                <div className="rounded-xl p-3.5 space-y-1.5 bg-green-50 border border-green-100">
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-green-600">
-                    <Lightbulb size={11} /> Recommended Fix
-                  </div>
-                  <div className="text-[12px] leading-relaxed text-gray-700">{session.proposed_solution}</div>
+                <div className="rounded-xl p-3.5 space-y-1.5 bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800/40">
+                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-green-600 dark:text-green-400">
+                  <Lightbulb size={11} /> Recommended Fix
+                </div>
+                <div className="text-[12px] leading-relaxed text-gray-700 dark:text-green-200/70">{session.proposed_solution}</div>
                 </div>
               </motion.div>
             )}
