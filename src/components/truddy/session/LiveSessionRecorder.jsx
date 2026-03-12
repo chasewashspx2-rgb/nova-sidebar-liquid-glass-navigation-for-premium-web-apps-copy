@@ -230,21 +230,38 @@ export default function LiveSessionRecorder({ onClose }) {
     setError("");
 
     try {
-      // Step 1: Normalize (fixes iOS .mp4 → .m4a)
-      setAnalyzeStep("Normalizing audio...");
-      const ext = getExtension(pendingMime);
-      const normalizedMime = ext === "m4a" ? "audio/m4a" : pendingMime;
-      const file = new File([pendingBlob], `session.${ext}`, { type: normalizedMime });
+      // Step 1: Convert to WAV in-browser (works regardless of iOS .mp4 / .webm / etc.)
+      setAnalyzeStep("Converting audio to WAV...");
+      console.log(`[recorder] Original blob: type=${pendingMime}, size=${pendingBlob.size}`);
 
-      const normalizeRes = await base44.functions.invoke("normalizeAudio", { audio: file });
+      let wavBlob;
+      try {
+        wavBlob = await convertBlobToWav(pendingBlob);
+      } catch (convErr) {
+        throw new Error(`Audio conversion failed (original format: ${pendingMime || "unknown"}). ${convErr.message}`);
+      }
+
+      const wavFile = new File([wavBlob], "session.wav", { type: "audio/wav" });
+      console.log(`[recorder] WAV file ready: name=${wavFile.name}, size=${wavFile.size}, type=${wavFile.type}`);
+
+      // Validate before upload
+      if (wavFile.size < 1000) {
+        throw new Error("Converted WAV file is too small — no audio was captured. Please try recording again.");
+      }
+
+      // Step 2: Upload via normalizeAudio (which now just uploads the WAV directly)
+      setAnalyzeStep("Uploading audio...");
+      const normalizeRes = await base44.functions.invoke("normalizeAudio", { audio: wavFile });
+      if (normalizeRes.data?.error) throw new Error(normalizeRes.data.error);
       const { normalizedFileUrl } = normalizeRes.data;
 
-      // Step 2: Transcribe
+      // Step 3: Transcribe
       setAnalyzeStep("Transcribing session...");
       const transcribeRes = await base44.functions.invoke("transcribeAudio", { normalizedFileUrl });
+      if (transcribeRes.data?.error) throw new Error(transcribeRes.data.error);
       const { transcript } = transcribeRes.data;
 
-      // Step 3: Analyze psychology + save session
+      // Step 4: Analyze psychology + save session
       setAnalyzeStep("Analyzing psychology...");
       const analyzeRes = await base44.functions.invoke("analyzeSessionPsychology", {
         transcript,
@@ -252,6 +269,7 @@ export default function LiveSessionRecorder({ onClose }) {
         sessionTitle: title.trim(),
         normalizedFileUrl,
       });
+      if (analyzeRes.data?.error) throw new Error(analyzeRes.data.error);
 
       onClose(analyzeRes?.data || analyzeRes);
     } catch (err) {
