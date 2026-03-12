@@ -312,8 +312,7 @@ export default function Dashboard() {
       <MDiv initial={{ opacity: 0, y: 12, scale: 0.995 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
         className={`relative mx-auto max-w-[1280px] rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] overflow-hidden grain ${theme !== "dark" ? "glass-strong" : ""}`}
         style={theme === "dark" ? { background: "rgba(10,10,20,0.95)", border: "1px solid rgba(104,155,251,0.15)", boxShadow: "0 30px 100px rgba(0,0,0,0.8)" } : {}}>
-        <CursorGlow />
-        <div className="relative grid grid-cols-1 lg:grid-cols-[98px_1fr]">
+<div className="relative grid grid-cols-1 lg:grid-cols-[98px_1fr]">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block relative z-10 px-4 py-6 lg:px-5 lg:py-8" style={{ background: theme === "dark" ? "rgba(10,10,24,0.7)" : "rgba(250, 249, 246, 0.8)", backdropFilter: "blur(8px)", borderRight: theme === "dark" ? "1px solid rgba(104,155,251,0.1)" : "none" }}>
             <div className="flex items-center justify-center">
