@@ -156,6 +156,8 @@ export default function LiveSessionRecorder({ onClose }) {
   const hasPending = pendingTranscript !== null;
   const liveText   = finalTextRef.current + interimText;
 
+  const BG = "linear-gradient(160deg, #0c0c10 0%, #111116 60%, #0e0e14 100%)";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -163,10 +165,7 @@ export default function LiveSessionRecorder({ onClose }) {
       exit={{ opacity: 0, y: 40 }}
       transition={{ type: "spring", stiffness: 340, damping: 32 }}
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
-      style={{
-        background: "linear-gradient(160deg, #0c0c10 0%, #111116 60%, #0e0e14 100%)",
-        paddingBottom: "env(safe-area-inset-bottom)",
-      }}
+      style={{ background: BG, paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {/* ── Top bar ────────────────────────────────────── */}
       <div className="flex items-center justify-between px-6 pt-6 pb-2 flex-shrink-0">
@@ -232,7 +231,6 @@ export default function LiveSessionRecorder({ onClose }) {
       <div className="flex-1 flex flex-col items-center justify-center px-6 overflow-y-auto">
         {!hasPending && (
           <>
-            {/* Live transcript */}
             <AnimatePresence>
               {isRecording && liveText && (
                 <motion.div
@@ -248,7 +246,6 @@ export default function LiveSessionRecorder({ onClose }) {
               )}
             </AnimatePresence>
 
-            {/* Timer */}
             <AnimatePresence>
               {isRecording && (
                 <motion.div
@@ -268,7 +265,6 @@ export default function LiveSessionRecorder({ onClose }) {
               )}
             </AnimatePresence>
 
-            {/* Mic button */}
             <motion.button
               onTouchEnd={(e) => { e.preventDefault(); isRecording ? stopRecording() : startRecording(); }}
               onClick={() => isRecording ? stopRecording() : startRecording()}
@@ -281,7 +277,6 @@ export default function LiveSessionRecorder({ onClose }) {
                   ? "radial-gradient(circle, rgba(255,80,80,0.18) 0%, rgba(255,50,50,0.06) 100%)"
                   : `radial-gradient(circle, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%)`,
                 border: `1.5px solid ${isRecording ? "rgba(255,80,80,0.5)" : "rgba(255,255,255,0.12)"}`,
-                boxShadow: isRecording ? "none" : `0 0 0px ${cp.glow}`,
               }}
             >
               {isRecording
@@ -294,7 +289,6 @@ export default function LiveSessionRecorder({ onClose }) {
               {isRecording ? "tap to stop" : "tap to begin"}
             </div>
 
-            {/* Stop button below transcript */}
             {isRecording && liveText && (
               <button
                 onTouchEnd={(e) => { e.preventDefault(); stopRecording(); }}
@@ -309,78 +303,109 @@ export default function LiveSessionRecorder({ onClose }) {
         )}
       </div>
 
-      {/* ── Post-recording panel ───────────────────────── */}
+      {/* ── Post-recording full-screen overlay ─────────── */}
       <AnimatePresence>
         {hasPending && (
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 32 }}
-            transition={{ type: "spring", stiffness: 320, damping: 30 }}
-            className="flex-1 flex flex-col px-6 pb-6 gap-4 overflow-y-auto"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", stiffness: 340, damping: 32 }}
+            className="absolute inset-0 z-10 flex flex-col"
+            style={{ background: BG, paddingBottom: "env(safe-area-inset-bottom)" }}
           >
-            {/* Captured duration badge */}
-            <div className="flex items-center justify-center pt-4">
-              <span
-                className="px-4 py-1 rounded-full text-[11px] font-semibold tracking-widest uppercase"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.35)" }}
+            {/* Header */}
+            <div className="flex items-start justify-between px-6 pt-7 pb-6 flex-shrink-0">
+              <div>
+                <div className="text-[10px] uppercase tracking-widest text-white/25 font-semibold mb-1.5">Session complete</div>
+                <div className="text-2xl font-bold text-white tracking-tight leading-tight">Review &<br/>Analyze</div>
+              </div>
+              <div
+                className="px-3 py-1.5 rounded-full text-[12px] font-semibold tabular-nums mt-1"
+                style={{ background: "rgba(80,220,160,0.1)", border: "1px solid rgba(80,220,160,0.25)", color: "rgba(80,220,160,0.9)" }}
               >
-                {formatTime(pendingElapsed)} captured
-              </span>
+                {formatTime(pendingElapsed)} recorded
+              </div>
             </div>
 
-            {/* Transcript */}
-            <div
-              className="rounded-2xl px-5 py-4 text-[13px] leading-relaxed text-white/40 max-h-28 overflow-y-auto flex-shrink-0"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
-            >
-              {pendingTranscript}
+            {/* Transcript block */}
+            <div className="px-6 flex-shrink-0">
+              <div className="text-[10px] uppercase tracking-widest text-white/20 font-semibold mb-2">What you said</div>
+              <div
+                className="rounded-2xl px-5 py-4 text-[13px] leading-relaxed text-white/40 max-h-40 overflow-y-auto"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                {pendingTranscript}
+              </div>
             </div>
 
-            {/* Title input */}
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={`Session title — e.g. NQ Pre-Market ${format(new Date(), "MMM d")}`}
-              className="w-full rounded-2xl px-5 py-3.5 text-sm text-white bg-transparent outline-none placeholder:text-white/18 flex-shrink-0"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)" }}
-            />
+            <div className="mx-6 my-5 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
 
-            {/* Analyze CTA */}
-            <button
-              onClick={analyze}
-              disabled={analyzing}
-              className="w-full rounded-2xl py-4 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 transition-all flex-shrink-0"
-              style={{
-                background: `linear-gradient(135deg, rgba(107,155,251,0.18), rgba(121,113,249,0.14))`,
-                border:     "1px solid rgba(107,155,251,0.3)",
-                color:      "#8BBEFF",
-                boxShadow:  analyzing ? "none" : "0 0 40px rgba(107,155,251,0.1)",
-              }}
-            >
-              {analyzing
-                ? <><Loader2 size={14} className="animate-spin" />{analyzeStep || "Processing..."}</>
-                : <>Analyze Session<ArrowRight size={14} /></>
-              }
-            </button>
+            {/* Title */}
+            <div className="px-6 flex-shrink-0">
+              <div className="text-[10px] uppercase tracking-widest text-white/20 font-semibold mb-2">Give it a title</div>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={`e.g. NQ Pre-Market — ${format(new Date(), "MMM d")}`}
+                className="w-full rounded-2xl px-5 py-4 text-sm text-white bg-transparent outline-none"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              />
+              <style>{`input::placeholder { color: rgba(255,255,255,0.2); }`}</style>
+            </div>
 
-            {/* Discard */}
-            <button
-              onClick={() => { setPendingTranscript(null); setError(""); }}
-              disabled={analyzing}
-              className="w-full flex items-center justify-center gap-1.5 py-2 text-xs text-white/25 hover:text-white/50 transition-colors disabled:opacity-30 flex-shrink-0"
-            >
-              <RotateCcw size={11} />
-              Discard & record again
-            </button>
+            <div className="flex-1" />
+
+            {/* Actions */}
+            <div className="px-6 pb-6 space-y-3 flex-shrink-0">
+              {error && (
+                <div
+                  className="rounded-2xl px-4 py-3 text-xs leading-relaxed"
+                  style={{ background: "rgba(255,70,70,0.08)", border: "1px solid rgba(255,70,70,0.2)", color: "rgba(255,160,150,0.9)" }}
+                >
+                  {error}
+                </div>
+              )}
+
+              <button
+                onClick={analyze}
+                disabled={analyzing}
+                className="w-full rounded-2xl py-4 text-sm font-semibold flex items-center justify-center gap-2.5 disabled:opacity-50 transition-all"
+                style={{
+                  background: analyzing
+                    ? "rgba(107,155,251,0.1)"
+                    : "linear-gradient(135deg, rgba(107,155,251,0.22), rgba(121,113,249,0.16))",
+                  border:    "1px solid rgba(107,155,251,0.35)",
+                  color:     "#8BBEFF",
+                  boxShadow: analyzing ? "none" : "0 8px 32px rgba(107,155,251,0.15)",
+                }}
+              >
+                {analyzing
+                  ? <><Loader2 size={15} className="animate-spin" />{analyzeStep || "Analyzing..."}</>
+                  : <>Analyze My Psychology<ArrowRight size={15} /></>
+                }
+              </button>
+
+              <button
+                onClick={() => { setPendingTranscript(null); setError(""); }}
+                disabled={analyzing}
+                className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs text-white/25 hover:text-white/50 transition-colors disabled:opacity-30"
+              >
+                <RotateCcw size={11} />
+                Discard & record again
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── Error ──────────────────────────────────────── */}
+      {/* ── Error (recording stage) ─────────────────────── */}
       <AnimatePresence>
-        {error && (
+        {error && !hasPending && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
