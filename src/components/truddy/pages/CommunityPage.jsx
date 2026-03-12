@@ -116,9 +116,9 @@ export default function CommunityPage() {
   async function handleJoinLevel() {
     setJoining(true);
     try {
-      const levelStart = Math.floor((userLevel - 1) / 10) * 10 + 1;
-      await base44.functions.invoke('syncUserToDiscord', { userLevel });
-      window.open('https://discord.com/channels/1480680849857933322/1480686131107598529', '_blank');
+      const response = await base44.functions.invoke('syncUserToDiscord', {});
+      const { guildId, channelId } = response.data;
+      window.open(`https://discord.com/channels/${guildId}/${channelId}`, '_blank');
     } catch (error) {
       console.error('Error joining level channel:', error);
       alert('Could not join channel. Please try again.');
