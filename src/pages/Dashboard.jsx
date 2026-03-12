@@ -305,9 +305,9 @@ export default function Dashboard() {
         toggleTheme={toggle}
       />
 
-      <MDiv initial={{ opacity: 0, y: 12, scale: 0.995 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }} className="relative mx-auto max-w-[1280px] rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] overflow-hidden grain"
-        style={theme === "dark" ? { background: "rgba(10,10,20,0.95)", border: "1px solid rgba(104,155,251,0.15)", boxShadow: "0 30px 100px rgba(0,0,0,0.8)" } : undefined}>
-        {theme !== "dark" && <div className="absolute inset-0 glass-strong rounded-[24px] sm:rounded-[32px] lg:rounded-[40px]" style={{ zIndex: 0 }} />}
+      <MDiv initial={{ opacity: 0, y: 12, scale: 0.995 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
+        className={`relative mx-auto max-w-[1280px] rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] overflow-hidden grain ${theme !== "dark" ? "glass-strong" : ""}`}
+        style={theme === "dark" ? { background: "rgba(10,10,20,0.95)", border: "1px solid rgba(104,155,251,0.15)", boxShadow: "0 30px 100px rgba(0,0,0,0.8)" } : {}}>
         <CursorGlow />
         <div className="relative grid grid-cols-1 lg:grid-cols-[98px_1fr]">
           {/* Desktop Sidebar */}
