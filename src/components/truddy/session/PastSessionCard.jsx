@@ -103,7 +103,7 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22 }}
-            className="px-4 pb-5 space-y-4 border-t border-gray-100"
+            className="px-4 pb-5 space-y-4 border-t border-gray-100 dark:border-white/10"
           >
             {score !== null && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="pt-3">
