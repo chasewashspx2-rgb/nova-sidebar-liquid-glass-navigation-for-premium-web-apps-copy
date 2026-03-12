@@ -208,60 +208,98 @@ export default function TruddyHome({ onNavigate }) {
 
         {/* Truddy AI Insight */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-[24px] overflow-hidden"
-          style={{ border: "1px solid rgba(104,155,251,0.3)" }}>
-          {/* Top accent bar */}
-          <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #5b9af6, #7971f9, #5b9af6)" }} />
-          <div className="p-4 sm:p-5 relative"
-            style={{ background: "linear-gradient(160deg, rgba(104,155,251,0.18) 0%, rgba(121,113,249,0.12) 100%)", backdropFilter: "blur(18px)" }}>
-            {/* Header row */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-[10px] grid place-items-center"
-                  style={{ background: "rgba(91,154,246,0.22)", border: "1px solid rgba(91,154,246,0.35)" }}>
-                  <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
-                    <Sparkles size={13} style={{ color: "#7eb8f7" }} />
-                  </motion.div>
+          className="rounded-[28px] overflow-hidden relative"
+          style={{
+            background: "linear-gradient(145deg, #0d0d18 0%, #10101f 60%, #0c0c1a 100%)",
+            border: "1px solid rgba(104,155,251,0.25)",
+            boxShadow: "0 20px 60px rgba(104,155,251,0.12), 0 0 0 1px rgba(104,155,251,0.06) inset",
+          }}>
+          {/* Ambient glow blobs */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(121,113,249,0.2) 0%, transparent 70%)" }} />
+          <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(104,155,251,0.12) 0%, transparent 70%)" }} />
+
+          <div className="relative z-10 p-5">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-9 h-9 rounded-[14px] grid place-items-center"
+                    style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.3), rgba(121,113,249,0.25))", border: "1px solid rgba(104,155,251,0.4)" }}>
+                    <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
+                      <Sparkles size={15} style={{ color: "#a5c8ff" }} />
+                    </motion.div>
+                  </div>
+                  {/* Live dot */}
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-blue-400"
+                    style={{ boxShadow: "0 0 6px rgba(104,155,251,0.9)" }} />
                 </div>
-                <span className="font-semibold text-sm">Truddy's Insight</span>
+                <div>
+                  <div className="font-bold text-sm text-white leading-none">Truddy's Insight</div>
+                  <div className="text-[10px] mt-0.5" style={{ color: "rgba(104,155,251,0.6)" }}>AI-powered analysis</div>
+                </div>
               </div>
-              <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 2 }} whileTap={{ scale: 0.95 }}
-                className="text-[10px] font-semibold cursor-pointer inline-flex items-center gap-1 px-2.5 py-1 rounded-full"
-                style={{ background: "rgba(91,154,246,0.18)", border: "1px solid rgba(91,154,246,0.3)", color: "#7eb8f7" }}>
-                Full analysis →
+              <motion.button onClick={() => onNavigate("insights")} whileTap={{ scale: 0.95 }}
+                className="text-[10px] font-semibold cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full"
+                style={{ background: "rgba(104,155,251,0.12)", border: "1px solid rgba(104,155,251,0.25)", color: "rgba(104,155,251,0.9)" }}>
+                View all →
               </motion.button>
             </div>
+
+            {/* Divider */}
+            <div className="mb-4 h-px" style={{ background: "linear-gradient(90deg, rgba(104,155,251,0.25), transparent)" }} />
 
             {/* Content */}
             <div className="space-y-2.5">
               {loading ? (
-                <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
+                <div className="flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.4, repeat: Infinity }}>
+                    <Sparkles size={12} />
+                  </motion.div>
+                  Analyzing your patterns...
+                </div>
               ) : total === 0 ? (
-                <div className="rounded-[12px] p-3 text-sm leading-relaxed"
-                  style={{ background: "rgba(91,154,246,0.1)", border: "1px solid rgba(91,154,246,0.2)" }}>
-                  Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing.
+                <div className="rounded-[14px] p-4 text-sm leading-relaxed"
+                  style={{ background: "rgba(104,155,251,0.08)", border: "1px solid rgba(104,155,251,0.18)", color: "rgba(255,255,255,0.7)" }}>
+                  Welcome! Log your first trade <span style={{ color: "#7eb8f7" }}>+20 XP</span>, mood check-in <span style={{ color: "#7eb8f7" }}>+10 XP</span>, and Pre-Trade Gate <span style={{ color: "#7eb8f7" }}>+15 XP</span> to start climbing.
                 </div>
               ) : (
                 <>
                   {winRate >= 60 && (
-                    <div className="flex items-start gap-2.5 rounded-[12px] p-3"
-                      style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
-                      <CheckCircle2 size={13} className="text-green-500 mt-0.5 flex-shrink-0" />
-                      <div className="text-xs leading-relaxed text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
+                    <div className="flex items-start gap-3 rounded-[14px] p-3.5"
+                      style={{ background: "rgba(34,197,94,0.07)", border: "1px solid rgba(34,197,94,0.18)" }}>
+                      <div className="w-5 h-5 rounded-full grid place-items-center flex-shrink-0 mt-0.5"
+                        style={{ background: "rgba(34,197,94,0.15)" }}>
+                        <CheckCircle2 size={11} className="text-green-400" />
+                      </div>
+                      <div className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+                        Strong win rate of <span className="text-green-400 font-semibold">{winRate}%</span>. Your setups are working — protect your edge.
+                      </div>
                     </div>
                   )}
                   {disciplineRate < 70 && total >= 3 && (
-                    <div className="flex items-start gap-2.5 rounded-[12px] p-3"
-                      style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.2)" }}>
-                      <AlertCircle size={13} className="text-orange-400 mt-0.5 flex-shrink-0" />
-                      <div className="text-xs leading-relaxed text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP.</div>
+                    <div className="flex items-start gap-3 rounded-[14px] p-3.5"
+                      style={{ background: "rgba(251,146,60,0.07)", border: "1px solid rgba(251,146,60,0.18)" }}>
+                      <div className="w-5 h-5 rounded-full grid place-items-center flex-shrink-0 mt-0.5"
+                        style={{ background: "rgba(251,146,60,0.15)" }}>
+                        <AlertCircle size={11} className="text-orange-400" />
+                      </div>
+                      <div className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+                        Rule violations in <span className="text-orange-400 font-semibold">{100 - disciplineRate}%</span> of trades. Each clean trade earns +5 bonus XP.
+                      </div>
                     </div>
                   )}
                   {disciplineRate >= 70 && (
-                    <div className="flex items-start gap-2.5 rounded-[12px] p-3"
-                      style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
-                      <CheckCircle2 size={13} className="text-green-500 mt-0.5 flex-shrink-0" />
-                      <div className="text-xs leading-relaxed text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
+                    <div className="flex items-start gap-3 rounded-[14px] p-3.5"
+                      style={{ background: "rgba(34,197,94,0.07)", border: "1px solid rgba(34,197,94,0.18)" }}>
+                      <div className="w-5 h-5 rounded-full grid place-items-center flex-shrink-0 mt-0.5"
+                        style={{ background: "rgba(34,197,94,0.15)" }}>
+                        <CheckCircle2 size={11} className="text-green-400" />
+                      </div>
+                      <div className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+                        Excellent discipline at <span className="text-green-400 font-semibold">{disciplineRate}%</span>. Consistency is your competitive advantage.
+                      </div>
                     </div>
                   )}
                 </>
