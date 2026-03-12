@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { issueType } = body;
 
-    const { accessToken } = await base44.asServiceRole.connectors.getConnection('discord');
+    const botToken = Deno.env.get('DISCORD_BOT_TOKEN');
     const guildId = Deno.env.get('DISCORD_GUILD_ID');
 
     if (!guildId) {
@@ -21,16 +21,9 @@ Deno.serve(async (req) => {
 
     const channelName = `issue-${issueType}`;
 
-    // Get Discord user ID
-    const meResponse = await fetch('https://discord.com/api/v10/users/@me', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const discordUser = await meResponse.json();
-    const discordUserId = discordUser.id;
-
     // Get or create issue channel
     const channelsResponse = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bot ${botToken}` }
     });
     const channels = await channelsResponse.json();
     let issueChannel = channels.find(c => c.name === channelName);
@@ -41,7 +34,7 @@ Deno.serve(async (req) => {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bot ${botToken}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -54,21 +47,7 @@ Deno.serve(async (req) => {
       issueChannel = await createChannelResponse.json();
     }
 
-    // Add user to issue channel
-    const addResponse = await fetch(
-      `https://discord.com/api/v10/channels/${issueChannel.id}/members/${discordUserId}`,
-      {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }
-    );
-
-    if (!addResponse.ok && addResponse.status !== 204) {
-      const error = await addResponse.json();
-      return Response.json({ error: error.message }, { status: addResponse.status });
-    }
-
-    return Response.json({ success: true, channel: channelName });
+    return Response.json({ success: true, channel: channelName, channelId: issueChannel.id });
   } catch (error) {
     console.error('Error joining Discord channel:', error);
     return Response.json({ error: error.message }, { status: 500 });

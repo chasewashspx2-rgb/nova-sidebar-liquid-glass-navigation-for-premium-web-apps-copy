@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { accessToken } = await base44.asServiceRole.connectors.getConnection('discord');
+    const botToken = Deno.env.get('DISCORD_BOT_TOKEN');
     const guildId = Deno.env.get('DISCORD_GUILD_ID');
 
     if (!guildId) {
@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
 
     // Get all channels
     const channelsResponse = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bot ${botToken}` }
     });
     const channels = await channelsResponse.json();
 
@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       const messagesResponse = await fetch(
         `https://discord.com/api/v10/channels/${channel.id}/messages?limit=2`,
         {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bot ${botToken}` }
         }
       );
 
