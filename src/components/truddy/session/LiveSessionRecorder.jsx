@@ -29,23 +29,78 @@ const PHASES = [
 
 // Accept whatever the browser natively supports — mp4 on iOS, webm on Android
 function getBestMimeType() {
+  // Prefer formats that are more universally decodable by AudioContext.
+  // audio/mp4 is last resort — we'll always convert the final blob to WAV anyway.
   const candidates = [
-    "audio/mp4",
-    "audio/aac",
     "audio/webm;codecs=opus",
     "audio/webm",
     "audio/ogg;codecs=opus",
     "audio/ogg",
+    "audio/mp4",
+    "audio/aac",
   ];
   if (typeof MediaRecorder === "undefined") return "";
   return candidates.find((t) => MediaRecorder.isTypeSupported(t)) || "";
 }
 
-function getExtension(mimeType) {
-  if (!mimeType) return "webm";
-  if (mimeType.includes("ogg")) return "ogg";
-  if (mimeType.includes("mp4") || mimeType.includes("aac") || mimeType.includes("m4a")) return "m4a";
-  return "webm";
+// ── WAV conversion helpers ────────────────────────────────────────────────────
+
+function writeString(view, offset, str) {
+  for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+}
+
+function float32ToPCM16(float32Array) {
+  const buf = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32Array[i]));
+    buf[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  }
+  return buf;
+}
+
+function interleaveChannels(left, right) {
+  const out = new Float32Array(left.length + right.length);
+  let idx = 0;
+  for (let i = 0; i < left.length; i++) { out[idx++] = left[i]; out[idx++] = right[i]; }
+  return out;
+}
+
+async function convertBlobToWav(blob) {
+  const arrayBuffer = await blob.arrayBuffer();
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let audioBuffer;
+  try {
+    audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  } finally {
+    audioCtx.close();
+  }
+
+  const numChannels = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const rawData = numChannels > 1
+    ? interleaveChannels(audioBuffer.getChannelData(0), audioBuffer.getChannelData(1))
+    : audioBuffer.getChannelData(0);
+
+  const pcm16 = float32ToPCM16(rawData);
+  const dataLength = pcm16.byteLength;
+
+  const header = new ArrayBuffer(44);
+  const view = new DataView(header);
+  writeString(view, 0, "RIFF");
+  view.setUint32(4, 36 + dataLength, true);
+  writeString(view, 8, "WAVE");
+  writeString(view, 12, "fmt ");
+  view.setUint32(16, 16, true);         // chunk size
+  view.setUint16(20, 1, true);          // PCM
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * numChannels * 2, true); // byte rate
+  view.setUint16(32, numChannels * 2, true);              // block align
+  view.setUint16(34, 16, true);         // bits per sample
+  writeString(view, 36, "data");
+  view.setUint32(40, dataLength, true);
+
+  return new Blob([header, pcm16.buffer], { type: "audio/wav" });
 }
 
 function formatTime(s) {
