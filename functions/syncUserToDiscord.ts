@@ -20,11 +20,7 @@ Deno.serve(async (req) => {
     const profiles = await base44.entities.TraderProfile.filter({ created_by: user.email });
     const profile = profiles[0];
     
-    if (!profile) {
-      return Response.json({ error: 'No trader profile found' }, { status: 404 });
-    }
-
-    const userLevel = profile.level || 1;
+    const userLevel = profile?.level || 1;
     const levelRange = Math.floor((userLevel - 1) / 10) * 10;
     const levelChannelName = `level-${levelRange + 1}-${levelRange + 10}`;
 
