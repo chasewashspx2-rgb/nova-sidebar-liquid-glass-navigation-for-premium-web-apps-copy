@@ -1,6 +1,6 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, ChevronDown, ChevronUp, Lightbulb, Trash2, Calendar, Clock } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, Lightbulb, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import MentalStateIndicator from "@/components/truddy/session/MentalStateIndicator";
 
