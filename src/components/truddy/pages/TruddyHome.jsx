@@ -208,50 +208,65 @@ export default function TruddyHome({ onNavigate }) {
 
         {/* Truddy AI Insight */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-[28px] sm:rounded-[32px] p-4 sm:p-5 relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(104,155,251,0.35) 0%, rgba(121,113,249,0.28) 100%)", border: "1px solid rgba(104,155,251,0.35)" }}>
-          <div className="absolute inset-0 backdrop-blur-[18px]" style={{ background: "radial-gradient(300px 250px at 20% 20%, rgba(255,255,255,0.2), transparent 70%)" }} />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
-                <Sparkles size={16} className="text-[rgb(var(--accent))]" />
-              </motion.div>
-              <div className="font-semibold text-sm">Truddy's Insight</div>
+          className="rounded-[24px] overflow-hidden"
+          style={{ border: "1px solid rgba(104,155,251,0.3)" }}>
+          {/* Top accent bar */}
+          <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #5b9af6, #7971f9, #5b9af6)" }} />
+          <div className="p-4 sm:p-5 relative"
+            style={{ background: "linear-gradient(160deg, rgba(104,155,251,0.18) 0%, rgba(121,113,249,0.12) 100%)", backdropFilter: "blur(18px)" }}>
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-[10px] grid place-items-center"
+                  style={{ background: "rgba(91,154,246,0.22)", border: "1px solid rgba(91,154,246,0.35)" }}>
+                  <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}>
+                    <Sparkles size={13} style={{ color: "#7eb8f7" }} />
+                  </motion.div>
+                </div>
+                <span className="font-semibold text-sm">Truddy's Insight</span>
+              </div>
+              <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 2 }} whileTap={{ scale: 0.95 }}
+                className="text-[10px] font-semibold cursor-pointer inline-flex items-center gap-1 px-2.5 py-1 rounded-full"
+                style={{ background: "rgba(91,154,246,0.18)", border: "1px solid rgba(91,154,246,0.3)", color: "#7eb8f7" }}>
+                Full analysis →
+              </motion.button>
             </div>
-            {loading ? (
-              <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
-            ) : total === 0 ? (
-              <div className="text-sm leading-relaxed text-[rgba(var(--text),0.85)]">
-                Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing the leaderboard.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {winRate >= 60 && (
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
-                  </div>
-                )}
-                {disciplineRate < 70 && total >= 3 && (
-                  <div className="flex items-start gap-2">
-                    <AlertCircle size={14} className="text-orange-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP — consistency pays.</div>
-                  </div>
-                )}
-                {disciplineRate >= 70 && (
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 size={14} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
-                  </div>
-                )}
 
-              </div>
-            )}
-            <motion.button onClick={() => onNavigate("insights")} whileHover={{ x: 3 }} whileTap={{ scale: 0.95 }}
-              className="mt-4 text-xs font-semibold cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full"
-              style={{ background: "rgba(255,255,255,0.25)", border: "1px solid rgba(255,255,255,0.35)" }}>
-              See full analysis →
-            </motion.button>
+            {/* Content */}
+            <div className="space-y-2.5">
+              {loading ? (
+                <div className="text-sm text-[rgba(var(--muted),0.7)]">Analyzing your patterns...</div>
+              ) : total === 0 ? (
+                <div className="rounded-[12px] p-3 text-sm leading-relaxed"
+                  style={{ background: "rgba(91,154,246,0.1)", border: "1px solid rgba(91,154,246,0.2)" }}>
+                  Welcome! Log your first trade (+20 XP), complete a mood check-in (+10 XP), and run the Pre-Trade Gate (+15 XP) to start climbing.
+                </div>
+              ) : (
+                <>
+                  {winRate >= 60 && (
+                    <div className="flex items-start gap-2.5 rounded-[12px] p-3"
+                      style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
+                      <CheckCircle2 size={13} className="text-green-500 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs leading-relaxed text-[rgba(var(--text),0.85)]">Strong win rate of {winRate}%. Your setups are working — protect your edge.</div>
+                    </div>
+                  )}
+                  {disciplineRate < 70 && total >= 3 && (
+                    <div className="flex items-start gap-2.5 rounded-[12px] p-3"
+                      style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.2)" }}>
+                      <AlertCircle size={13} className="text-orange-400 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs leading-relaxed text-[rgba(var(--text),0.85)]">Rule violations in {100 - disciplineRate}% of trades. Each clean trade earns +5 bonus XP.</div>
+                    </div>
+                  )}
+                  {disciplineRate >= 70 && (
+                    <div className="flex items-start gap-2.5 rounded-[12px] p-3"
+                      style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
+                      <CheckCircle2 size={13} className="text-green-500 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs leading-relaxed text-[rgba(var(--text),0.85)]">Excellent discipline at {disciplineRate}%. Consistency is your competitive advantage.</div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </motion.div>
       </div>
