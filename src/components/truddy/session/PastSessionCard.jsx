@@ -78,16 +78,19 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
           >
             {title}
           </div>
-          <div className="flex items-center gap-3 mt-1.5">
-            <div className="flex items-center gap-1 text-[11px]" style={{ color: "rgba(var(--muted), 1)" }}>
-              <Calendar size={10} />
-              <span>{format(date, "MMM d, yyyy")}</span>
-            </div>
-            <div className="w-px h-3" style={{ background: "rgba(var(--text), 0.1)" }} />
-            <div className="flex items-center gap-1 text-[11px]" style={{ color: "rgba(var(--muted), 1)" }}>
-              <Clock size={10} />
-              <span>{format(date, "h:mm a")}</span>
-            </div>
+          <div className="flex items-center gap-2 mt-2">
+            <span
+              className="text-[11px] font-medium px-2 py-0.5 rounded-md"
+              style={{ background: "rgba(var(--text), 0.06)", color: "rgba(var(--text), 0.55)" }}
+            >
+              {format(date, "MMM d, yyyy")}
+            </span>
+            <span
+              className="text-[11px] font-medium px-2 py-0.5 rounded-md"
+              style={{ background: "rgba(var(--text), 0.06)", color: "rgba(var(--text), 0.55)" }}
+            >
+              {format(date, "h:mm a")}
+            </span>
           </div>
           {takeaway && !isExpanded && (
             <div
