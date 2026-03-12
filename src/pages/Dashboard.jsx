@@ -5,7 +5,6 @@ import { Bell, ChevronRight, Moon, Search, Settings, Sun, X, Brain, BookOpen, Sh
 import { cn } from "@/components/cn";
 import { useTheme } from "@/components/theme";
 import { Tooltip } from "@/components/tooltip";
-import { CursorGlow } from "@/components/cursor-glow";
 import { PremiumCursor } from "@/components/cursor";
 import { MDiv } from "@/components/motion";
 
