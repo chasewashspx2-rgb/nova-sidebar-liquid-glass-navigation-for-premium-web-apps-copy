@@ -29,8 +29,8 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
       onClick={onToggle}
       className="w-full text-left rounded-2xl overflow-hidden transition-all"
       style={{
-        background: isExpanded ? accent.light : "#ffffff",
-        border: `1px solid ${isExpanded ? accent.border : "#e5e7eb"}`,
+        background: isExpanded ? accent.light : "rgba(var(--glass), var(--glassA))",
+        border: `1px solid ${isExpanded ? accent.border : "rgba(var(--glass), 0.18)"}`,
         boxShadow: isExpanded
           ? `0 4px 20px ${accent.bg}, 0 1px 3px rgba(0,0,0,0.06)`
           : "0 1px 3px rgba(0,0,0,0.06)",
