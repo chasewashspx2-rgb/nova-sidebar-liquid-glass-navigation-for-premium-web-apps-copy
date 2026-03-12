@@ -66,10 +66,10 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
           {/* Date + time pills */}
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-            <span className="inline-flex items-center text-[11px] font-medium text-gray-500 bg-gray-100 border border-gray-200 rounded-full px-2.5 py-0.5">
+            <span className="inline-flex items-center text-[11px] font-medium text-gray-500 dark:text-[rgb(var(--muted))] bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full px-2.5 py-0.5">
               {format(date, "MMM d, yyyy")}
             </span>
-            <span className="inline-flex items-center text-[11px] font-medium text-gray-500 bg-gray-100 border border-gray-200 rounded-full px-2.5 py-0.5">
+            <span className="inline-flex items-center text-[11px] font-medium text-gray-500 dark:text-[rgb(var(--muted))] bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full px-2.5 py-0.5">
               {format(date, "h:mm a")}
             </span>
           </div>
