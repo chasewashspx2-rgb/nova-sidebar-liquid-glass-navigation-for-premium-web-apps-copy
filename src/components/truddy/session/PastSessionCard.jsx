@@ -114,7 +114,7 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
             {session.summary && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="space-y-1.5">
                 <div className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Summary</div>
-                <div className="text-[13px] leading-relaxed text-gray-700">{session.summary}</div>
+                <div className="text-[13px] leading-relaxed text-gray-700 dark:text-[rgb(var(--muted))]">{session.summary}</div>
               </motion.div>
             )}
 
