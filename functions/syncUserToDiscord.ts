@@ -57,6 +57,8 @@ Deno.serve(async (req) => {
     return Response.json({
       success: true,
       levelChannel: levelChannel.name,
+      channelId: levelChannel.id,
+      guildId,
       userLevel
     });
   } catch (error) {
