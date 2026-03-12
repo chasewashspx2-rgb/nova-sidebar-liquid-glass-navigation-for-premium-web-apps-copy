@@ -11,23 +11,12 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
   const recommendation = session.trading_recommendation || "";
   const takeaway = recommendation || session.summary || session.problem_identified || "";
 
-  const scoreColor =
-    score === null ? null
-    : score >= 7   ? "rgba(30,160,100,1)"
-    : score >= 4   ? "rgba(180,140,0,1)"
-    : "rgba(200,60,40,1)";
-
-  const scoreBg =
-    score === null ? null
-    : score >= 7   ? "rgba(30,160,100,0.1)"
-    : score >= 4   ? "rgba(200,160,0,0.1)"
-    : "rgba(200,60,40,0.1)";
-
-  const scoreBorder =
-    score === null ? null
-    : score >= 7   ? "rgba(30,160,100,0.25)"
-    : score >= 4   ? "rgba(200,160,0,0.2)"
-    : "rgba(200,60,40,0.2)";
+  // Score-based accent color
+  const accent =
+    score === null ? { color: "#888888", bg: "rgba(120,120,120,0.08)", border: "rgba(120,120,120,0.18)", light: "rgba(120,120,120,0.06)" }
+    : score >= 7   ? { color: "#1a9e64", bg: "rgba(26,158,100,0.1)",   border: "rgba(26,158,100,0.3)",  light: "rgba(26,158,100,0.06)" }
+    : score >= 4   ? { color: "#b08a00", bg: "rgba(176,138,0,0.1)",    border: "rgba(176,138,0,0.28)",  light: "rgba(176,138,0,0.06)" }
+    :                { color: "#c83c28", bg: "rgba(200,60,40,0.1)",    border: "rgba(200,60,40,0.28)",  light: "rgba(200,60,40,0.06)" };
 
   const handleDelete = (e) => {
     e.stopPropagation();
@@ -35,82 +24,72 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
   };
 
   return (
-    <motion.div
+    <motion.button
       layout
-      className="rounded-[20px] overflow-hidden cursor-pointer transition-all"
-      style={{
-        background: "rgba(var(--glass), 0.5)",
-        border: isExpanded
-          ? "1px solid rgba(var(--text), 0.15)"
-          : "1px solid rgba(var(--text), 0.08)",
-        boxShadow: isExpanded ? "0 4px 24px rgba(0,0,0,0.07)" : "none",
-      }}
       onClick={onToggle}
+      className="w-full text-left rounded-2xl overflow-hidden transition-all"
+      style={{
+        background: isExpanded ? accent.light : "#ffffff",
+        border: `1px solid ${isExpanded ? accent.border : "#e5e7eb"}`,
+        boxShadow: isExpanded
+          ? `0 4px 20px ${accent.bg}, 0 1px 3px rgba(0,0,0,0.06)`
+          : "0 1px 3px rgba(0,0,0,0.06)",
+        borderLeft: `3px solid ${accent.color}`,
+      }}
+      whileTap={{ scale: 0.995 }}
     >
       {/* ── Card header ── */}
-      <div className="px-5 py-4 flex items-start gap-4">
+      <div className="px-4 py-4 flex items-start gap-3">
 
         {/* Score badge */}
         <div className="flex-shrink-0 mt-0.5">
           {score !== null ? (
             <div
-              className="w-11 h-11 rounded-[14px] flex flex-col items-center justify-center"
-              style={{ background: scoreBg, border: `1px solid ${scoreBorder}` }}
+              className="w-10 h-10 rounded-xl flex flex-col items-center justify-center"
+              style={{ background: accent.bg, border: `1px solid ${accent.border}` }}
             >
-              <span className="text-[15px] font-bold leading-none" style={{ color: scoreColor }}>{score}</span>
-              <span className="text-[9px] font-medium mt-0.5" style={{ color: scoreColor, opacity: 0.65 }}>/10</span>
+              <span className="text-[14px] font-bold leading-none" style={{ color: accent.color }}>{score}</span>
+              <span className="text-[8px] font-medium mt-0.5" style={{ color: accent.color, opacity: 0.7 }}>/10</span>
             </div>
           ) : (
-            <div
-              className="w-11 h-11 rounded-[14px] grid place-items-center"
-              style={{ background: "rgba(var(--text), 0.04)", border: "1px solid rgba(var(--text), 0.08)" }}
-            >
-              <div className="w-2 h-2 rounded-full" style={{ background: "rgba(var(--text), 0.2)" }} />
+            <div className="w-10 h-10 rounded-xl grid place-items-center bg-gray-100 border border-gray-200">
+              <div className="w-2 h-2 rounded-full bg-gray-300" />
             </div>
           )}
         </div>
 
         {/* Title + meta */}
         <div className="flex-1 min-w-0">
-          <div
-            className="text-[14px] font-semibold leading-snug truncate"
-            style={{ color: "rgb(var(--text))" }}
-          >
+          <div className="text-[14px] font-semibold text-gray-900 leading-snug truncate">
             {title}
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <span
-              className="text-[11px] font-medium px-2 py-0.5 rounded-md"
-              style={{ background: "rgba(var(--text), 0.06)", color: "rgba(var(--text), 0.55)" }}
-            >
+
+          {/* Date + time pills */}
+          <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+            <span className="inline-flex items-center text-[11px] font-medium text-gray-500 bg-gray-100 border border-gray-200 rounded-full px-2.5 py-0.5">
               {format(date, "MMM d, yyyy")}
             </span>
-            <span
-              className="text-[11px] font-medium px-2 py-0.5 rounded-md"
-              style={{ background: "rgba(var(--text), 0.06)", color: "rgba(var(--text), 0.55)" }}
-            >
+            <span className="inline-flex items-center text-[11px] font-medium text-gray-500 bg-gray-100 border border-gray-200 rounded-full px-2.5 py-0.5">
               {format(date, "h:mm a")}
             </span>
           </div>
+
           {takeaway && !isExpanded && (
-            <div
-              className="text-[12px] mt-2 line-clamp-1 leading-snug"
-              style={{ color: "rgba(var(--muted), 1)" }}
-            >
+            <div className="text-[12px] mt-2 line-clamp-1 leading-snug text-gray-400">
               {takeaway}
             </div>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0 ml-1">
+        <div className="flex items-center gap-0.5 flex-shrink-0 ml-1">
           <button
             onClick={handleDelete}
             className="w-7 h-7 rounded-full grid place-items-center hover:bg-red-50 transition-colors"
           >
-            <Trash2 size={12} style={{ color: "rgba(var(--muted), 0.7)" }} />
+            <Trash2 size={12} className="text-gray-300 hover:text-red-400" />
           </button>
-          <div className="w-7 h-7 rounded-full grid place-items-center" style={{ color: "rgba(var(--muted), 1)" }}>
+          <div className="w-7 h-7 rounded-full grid place-items-center text-gray-400">
             {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </div>
         </div>
@@ -124,8 +103,7 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22 }}
-            className="px-5 pb-5 space-y-4"
-            style={{ borderTop: "1px solid rgba(var(--text), 0.07)" }}
+            className="px-4 pb-5 space-y-4 border-t border-gray-100"
           >
             {score !== null && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="pt-3">
@@ -135,19 +113,19 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
             {session.summary && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="space-y-1.5">
-                <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: "rgba(var(--muted), 1)" }}>Summary</div>
-                <div className="text-[13px] leading-relaxed" style={{ color: "rgba(var(--text), 0.75)" }}>{session.summary}</div>
+                <div className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Summary</div>
+                <div className="text-[13px] leading-relaxed text-gray-700">{session.summary}</div>
               </motion.div>
             )}
 
             {session.patterns?.length > 0 && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.11 }} className="space-y-2">
-                <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: "rgba(var(--muted), 1)" }}>Observed Patterns</div>
+                <div className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Observed Patterns</div>
                 <div className="space-y-1.5">
                   {session.patterns.map((p, i) => (
                     <div key={i} className="flex gap-2.5 text-[12px]">
-                      <span className="flex-shrink-0 mt-0.5" style={{ color: "rgba(var(--muted), 0.6)" }}>—</span>
-                      <span className="leading-snug" style={{ color: "rgba(var(--text), 0.7)" }}>{p}</span>
+                      <span className="flex-shrink-0 mt-0.5 text-gray-300">—</span>
+                      <span className="leading-snug text-gray-600">{p}</span>
                     </div>
                   ))}
                 </div>
@@ -156,40 +134,34 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
             {session.problem_identified && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}>
-                <div
-                  className="rounded-[14px] p-4 space-y-1.5"
-                  style={{ background: "rgba(200,60,40,0.06)", border: "1px solid rgba(200,60,40,0.18)" }}
-                >
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold" style={{ color: "rgba(180,50,30,0.9)" }}>
+                <div className="rounded-xl p-3.5 space-y-1.5 bg-red-50 border border-red-100">
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-red-500">
                     <AlertTriangle size={11} /> Biggest Problem
                   </div>
-                  <div className="text-[12px] leading-relaxed" style={{ color: "rgba(var(--text), 0.75)" }}>{session.problem_identified}</div>
+                  <div className="text-[12px] leading-relaxed text-gray-700">{session.problem_identified}</div>
                 </div>
               </motion.div>
             )}
 
             {session.proposed_solution && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }}>
-                <div
-                  className="rounded-[14px] p-4 space-y-1.5"
-                  style={{ background: "rgba(30,140,90,0.07)", border: "1px solid rgba(30,140,90,0.2)" }}
-                >
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold" style={{ color: "rgba(20,130,80,0.9)" }}>
+                <div className="rounded-xl p-3.5 space-y-1.5 bg-green-50 border border-green-100">
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-green-600">
                     <Lightbulb size={11} /> Recommended Fix
                   </div>
-                  <div className="text-[12px] leading-relaxed" style={{ color: "rgba(var(--text), 0.75)" }}>{session.proposed_solution}</div>
+                  <div className="text-[12px] leading-relaxed text-gray-700">{session.proposed_solution}</div>
                 </div>
               </motion.div>
             )}
 
             {session.recommendations?.length > 0 && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-2">
-                <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: "rgba(var(--muted), 1)" }}>Coach's Advice</div>
+                <div className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Coach's Advice</div>
                 <div className="space-y-1.5">
                   {session.recommendations.map((item, i) => (
                     <div key={i} className="flex gap-2.5 text-[12px]">
-                      <span className="flex-shrink-0 mt-0.5" style={{ color: "rgba(30,140,90,0.7)" }}>+</span>
-                      <span className="leading-snug" style={{ color: "rgba(var(--text), 0.7)" }}>{item}</span>
+                      <span className="flex-shrink-0 mt-0.5 text-green-500">+</span>
+                      <span className="leading-snug text-gray-600">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -198,15 +170,10 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
             {session.full_transcript && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.23 }} className="space-y-1.5">
-                <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: "rgba(var(--muted), 1)" }}>Transcript</div>
+                <div className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Transcript</div>
                 <div
-                  className="text-[12px] leading-relaxed max-h-32 overflow-y-auto rounded-[12px] px-3 py-3"
-                  style={{
-                    background: "rgba(var(--text), 0.03)",
-                    border: "1px solid rgba(var(--text), 0.07)",
-                    color: "rgba(var(--text), 0.55)",
-                    whiteSpace: "pre-wrap",
-                  }}
+                  className="text-[12px] leading-relaxed text-gray-500 max-h-32 overflow-y-auto rounded-xl px-3 py-3 bg-gray-50 border border-gray-100"
+                  style={{ whiteSpace: "pre-wrap" }}
                 >
                   {session.full_transcript}
                 </div>
@@ -215,6 +182,6 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </motion.button>
   );
 }
