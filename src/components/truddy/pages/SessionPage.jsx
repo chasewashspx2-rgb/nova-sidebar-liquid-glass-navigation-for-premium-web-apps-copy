@@ -99,33 +99,51 @@ export default function SessionPage() {
       {/* Stats row */}
       {completedSessions.length > 0 && (
         <div className="grid grid-cols-2 gap-3">
+          {/* Sessions count */}
           <div
-            className="rounded-[18px] px-4 py-3.5 flex items-center gap-3"
-            style={{ background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.18)" }}
+            className="rounded-2xl px-4 py-4 flex flex-col gap-2 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, rgba(104,155,251,0.12) 0%, rgba(121,113,249,0.08) 100%)",
+              border: "1px solid rgba(104,155,251,0.25)",
+            }}
           >
-            <div className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0"
-              style={{ background: "rgba(104,155,251,0.15)", border: "1px solid rgba(104,155,251,0.25)" }}>
-              <Brain size={15} style={{ color: "rgba(104,155,251,0.9)" }} />
+            <div
+              className="w-8 h-8 rounded-xl grid place-items-center"
+              style={{ background: "rgba(104,155,251,0.18)", border: "1px solid rgba(104,155,251,0.3)" }}
+            >
+              <Brain size={15} style={{ color: "rgba(104,155,251,1)" }} />
             </div>
             <div>
-              <div className="font-bold text-lg leading-none">{completedSessions.length}</div>
-              <div className="text-[11px] opacity-45 mt-0.5">Sessions analyzed</div>
+              <div className="font-black text-2xl leading-none tracking-tight" style={{ color: "rgba(104,155,251,1)" }}>
+                {completedSessions.length}
+              </div>
+              <div className="text-[11px] font-medium text-gray-400 mt-1">Sessions analyzed</div>
             </div>
+            {/* Decorative circle */}
+            <div className="absolute -right-4 -bottom-4 w-16 h-16 rounded-full" style={{ background: "rgba(104,155,251,0.08)" }} />
           </div>
+
+          {/* Last session */}
           <div
-            className="rounded-[18px] px-4 py-3.5 flex items-center gap-3"
-            style={{ background: "rgba(var(--glass),0.3)", border: "1px solid rgba(255,255,255,0.18)" }}
+            className="rounded-2xl px-4 py-4 flex flex-col gap-2 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, rgba(26,158,100,0.1) 0%, rgba(26,158,100,0.06) 100%)",
+              border: "1px solid rgba(26,158,100,0.22)",
+            }}
           >
-            <div className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0"
-              style={{ background: "rgba(80,220,160,0.12)", border: "1px solid rgba(80,220,160,0.25)" }}>
-              <Clock size={15} style={{ color: "rgba(80,220,160,0.9)" }} />
+            <div
+              className="w-8 h-8 rounded-xl grid place-items-center"
+              style={{ background: "rgba(26,158,100,0.15)", border: "1px solid rgba(26,158,100,0.28)" }}
+            >
+              <Clock size={15} style={{ color: "rgba(26,158,100,1)" }} />
             </div>
             <div>
-              <div className="font-bold text-sm leading-none truncate">
+              <div className="font-black text-[13px] leading-tight tracking-tight" style={{ color: "rgba(26,158,100,1)" }}>
                 {formatDistanceToNow(new Date(completedSessions[0].started_at), { addSuffix: true })}
               </div>
-              <div className="text-[11px] opacity-45 mt-0.5">Last session</div>
+              <div className="text-[11px] font-medium text-gray-400 mt-1">Last session</div>
             </div>
+            <div className="absolute -right-4 -bottom-4 w-16 h-16 rounded-full" style={{ background: "rgba(26,158,100,0.08)" }} />
           </div>
         </div>
       )}
