@@ -134,11 +134,11 @@ export default function PastSessionCard({ session, isExpanded, onToggle, onDelet
 
             {session.problem_identified && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}>
-                <div className="rounded-xl p-3.5 space-y-1.5 bg-red-50 border border-red-100">
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-red-500">
-                    <AlertTriangle size={11} /> Biggest Problem
-                  </div>
-                  <div className="text-[12px] leading-relaxed text-gray-700">{session.problem_identified}</div>
+                <div className="rounded-xl p-3.5 space-y-1.5 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/40">
+                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-red-500">
+                  <AlertTriangle size={11} /> Biggest Problem
+                </div>
+                <div className="text-[12px] leading-relaxed text-gray-700 dark:text-red-200/70">{session.problem_identified}</div>
                 </div>
               </motion.div>
             )}
